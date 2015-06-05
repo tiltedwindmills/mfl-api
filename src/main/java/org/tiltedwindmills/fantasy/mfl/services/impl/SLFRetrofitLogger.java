@@ -7,8 +7,12 @@ import retrofit.RestAdapter.Log;
 import retrofit.RestAdapter.LogLevel;
 
 /**
- * An implementation of the Retrofit Log class that simply logs all Retrofit output to an SLF logger at @{code info}
- * level.
+ * An implementation of the Retrofit Log class that simply logs all output to an SLF logger at {@code info} level.
+ *
+ * If the class's logging level is set to {@code DEBUG}, the Retrofit logged at {@code LogLevel.FULL}.
+ * If the class's logging level is set to {@code INFO}, the Retrofit logged at {@code LogLevel.BASIC}.
+ * Otherwise, no output is logged.
+ *
  */
 public final class SLFRetrofitLogger implements Log {
 
@@ -35,10 +39,10 @@ public final class SLFRetrofitLogger implements Log {
 	public static LogLevel getLogLevel() {
 
 		// logging options are:
-	    // NONE    - No logging
-	    // BASIC   - Log only the request method and URL and the response status code and execution time.
-	    // HEADERS - Log the basic information along with request and response headers.
-	    // FULL    - Log the headers, body, and metadata for both requests and responses.  Note: This requires that
+		// NONE    - No logging
+		// BASIC   - Log only the request method and URL and the response status code and execution time.
+		// HEADERS - Log the basic information along with request and response headers.
+		// FULL    - Log the headers, body, and metadata for both requests and responses.  Note: This requires that
 		//			 the entire request and response body be buffered in memory!
 
 		LogLevel level = LogLevel.NONE;
