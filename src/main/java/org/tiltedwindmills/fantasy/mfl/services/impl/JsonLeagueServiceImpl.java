@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.tiltedwindmills.fantasy.mfl.model.League;
 import org.tiltedwindmills.fantasy.mfl.model.LeagueResponse;
@@ -28,6 +29,7 @@ import org.tiltedwindmills.fantasy.mfl.services.LeagueService;
 public final class JsonLeagueServiceImpl extends AbstractJsonServiceImpl implements LeagueService {
 
 	private static final Logger LOG = LoggerFactory.getLogger(JsonLeagueServiceImpl.class);
+
 
 	/*
 	 * (non-Javadoc)
@@ -55,6 +57,7 @@ public final class JsonLeagueServiceImpl extends AbstractJsonServiceImpl impleme
 	 * @see org.tiltedwindmills.fantasy.mfl.services.LeagueService#getLeague(int, java.lang.String)
 	 */
 	@Override
+	@Cacheable(value=CacheNames.LEAGUES, key="#mflLeagueId")
 	public League getLeague(final int mflLeagueId, final String serverId) {
 
 		LOG.info("Retrieving {} league with ID: {}", CURRENT_YEAR, mflLeagueId);
@@ -146,7 +149,7 @@ public final class JsonLeagueServiceImpl extends AbstractJsonServiceImpl impleme
 		final MflLeagueExport leagueExport = getRestAdapter(serverId).create(MflLeagueExport.class);
 		final DraftResultsResponse draftResultsResponse = leagueExport.getDraftResults(mflLeagueId, CURRENT_YEAR);
 
-		/* XXX : lots of NPE issues here */
+		/* TODO : lots of NPE issues here */
 		if (draftResultsResponse != null && draftResultsResponse.getDraftResults() != null) {
 			return draftResultsResponse.getDraftResults().getDrafts().get(0).getPicks();
 		}
