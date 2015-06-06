@@ -336,4 +336,50 @@ public class PositionTest {
 	public void getFromValueTestUnknown() {
 		assertThat(Position.fromValue("some value"), is(Position.UNKNOWN));
 	}
+
+	@Test
+	public void isIdpTest() {
+
+		// offensive positions
+		assertThat(Position.HEAD_COACH.isIDP(), is(false));
+		assertThat(Position.QUARTERBACK.isIDP(), is(false));
+		assertThat(Position.TEAM_QUARTERBACK.isIDP(), is(false));
+		assertThat(Position.RUNNING_BACK.isIDP(), is(false));
+		assertThat(Position.TEAM_RUNNINGBACK.isIDP(), is(false));
+		assertThat(Position.WIDE_RECEIVER.isIDP(), is(false));
+		assertThat(Position.TEAM_WIDE_RECEIVER.isIDP(), is(false));
+		assertThat(Position.TIGHT_END.isIDP(), is(false));
+		assertThat(Position.TEAM_TIGHT_END.isIDP(), is(false));
+		assertThat(Position.KICKER.isIDP(), is(false));
+		assertThat(Position.TEAM_KICKER.isIDP(), is(false));
+		assertThat(Position.PUNTER.isIDP(), is(false));
+		assertThat(Position.TEAM_PUNTER.isIDP(), is(false));
+		assertThat(Position.FULL_BACK.isIDP(), is(false));
+		assertThat(Position.KICK_RETURNER.isIDP(), is(false));
+
+		// offensive flex positions
+		assertThat(Position.COMBINED_RECEIVER.isIDP(), is(false));
+		assertThat(Position.FLEX.isIDP(), is(false));
+
+		// team activites
+		assertThat(Position.TEAM_OFFENSE.isIDP(), is(false));
+		assertThat(Position.TEAM_DEFENSE.isIDP(), is(false));
+		assertThat(Position.SPECIAL_TEAMS.isIDP(), is(false));
+
+		// traditional IDPs
+		assertThat(Position.DEFENSIVE_TACKLE.isIDP(), is(true));
+		assertThat(Position.DEFENSIVE_END.isIDP(), is(true));
+		assertThat(Position.DEFENSIVE_LINEMAN.isIDP(), is(true));
+		assertThat(Position.LINEBACKER.isIDP(), is(true));
+		assertThat(Position.CORNERBACK.isIDP(), is(true));
+		assertThat(Position.SAFETY.isIDP(), is(true));
+		assertThat(Position.DEFENSIVE_BACK.isIDP(), is(true));
+
+		// team IDPs ... hmmm....
+		assertThat(Position.TEAM_DEFENSIVE_LINE.isIDP(), is(true));
+		assertThat(Position.TEAM_LINEBACKER.isIDP(), is(true));
+		assertThat(Position.TEAM_DEFENSIVE_BACK.isIDP(), is(true));
+
+		assertThat(Position.UNKNOWN.isIDP(), is(false));
+	}
 }
