@@ -226,7 +226,6 @@ public final class JsonPlayerServiceImpl extends AbstractJsonServiceImpl impleme
 	// constructs a comma separated array suitable for querystring parameter from a given list.
 	private String getPlayerIdParameterFromList(final Collection<?> playerIds) {
 
-		final String playerIdsParameter = Joiner.on(",").skipNulls().join(playerIds);
-		return playerIdsParameter;
+		return Joiner.on(",").skipNulls().join(playerIds);
 	}
 }
