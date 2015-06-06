@@ -15,6 +15,7 @@ target/
 *.jar
 *.war
 *.ear
+sonar-project.properties
 
 
 # Eclipse junk
