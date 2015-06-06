@@ -12,164 +12,158 @@ import com.fasterxml.jackson.annotation.JsonCreator;
  */
 public enum Position {
 
-    /** The head coach. */
-    HEAD_COACH("Coach"),
+	/** The head coach. */
+	HEAD_COACH("Coach"),
 
-    /** The quarterback. */
-    QUARTERBACK("QB"),
+	/** The quarterback. */
+	QUARTERBACK("QB"),
 
-    /** The team quarterback. */
-    TEAM_QUARTERBACK("TMQB"),
+	/** The team quarterback. */
+	TEAM_QUARTERBACK("TMQB"),
 
-    /** The running back. */
-    RUNNING_BACK("RB"),
+	/** The running back. */
+	RUNNING_BACK("RB"),
 
-    /** The team running back. */
-    TEAM_RUNNINGBACK("TMRB"),
+	/** The team running back. */
+	TEAM_RUNNINGBACK("TMRB"),
 
-    /** The full back. */
-    FULL_BACK("FB"),
+	/** The full back. */
+	FULL_BACK("FB"),
 
-    /** The wide receiver. */
-    WIDE_RECEIVER("WR"),
+	/** The wide receiver. */
+	WIDE_RECEIVER("WR"),
 
-    /** The team wide receiver. */
-    TEAM_WIDE_RECEIVER("TMWR"),
+	/** The team wide receiver. */
+	TEAM_WIDE_RECEIVER("TMWR"),
 
-    /** The tight end. */
-    TIGHT_END("TE"),
+	/** The tight end. */
+	TIGHT_END("TE"),
 
-    /** The team tight end. */
-    TEAM_TIGHT_END("TMTE"),
+	/** The team tight end. */
+	TEAM_TIGHT_END("TMTE"),
 
-    /** The combined receiver. */
-    COMBINED_RECEIVER("WR+TE"),
+	/** The combined receiver. */
+	COMBINED_RECEIVER("WR+TE"),
 
-    /** The flex. */
-    FLEX("RB+WR+TE"),
+	/** The flex. */
+	FLEX("RB+WR+TE"),
 
-    /** The kick returner. */
-    KICK_RETURNER("KR"),
+	/** The kick returner. */
+	KICK_RETURNER("KR"),
 
-    /** The kicker. */
-    KICKER("PK"),
+	/** The kicker. */
+	KICKER("PK"),
 
-    /** The team kicker. */
-    TEAM_KICKER("TMPK"),
+	/** The team kicker. */
+	TEAM_KICKER("TMPK"),
 
-    /** The punter. */
-    PUNTER("PN"),
+	/** The punter. */
+	PUNTER("PN"),
 
-    /** The team punter. */
-    TEAM_PUNTER("TMPN"),
+	/** The team punter. */
+	TEAM_PUNTER("TMPN"),
 
-    /** The defensive lineman. */
-    DEFENSIVE_LINEMAN("DT+DE"),
+	/** The defensive lineman. */
+	DEFENSIVE_LINEMAN("DT+DE"),
 
-    /** The defensive tackle. */
-    DEFENSIVE_TACKLE("DT"),
+	/** The defensive tackle. */
+	DEFENSIVE_TACKLE("DT"),
 
-    /** The defensive end. */
-    DEFENSIVE_END("DE"),
+	/** The defensive end. */
+	DEFENSIVE_END("DE"),
 
-    /** The team defensive line. */
-    TEAM_DEFENSIVE_LINE("TMDL"),
+	/** The team defensive line. */
+	TEAM_DEFENSIVE_LINE("TMDL"),
 
-    /** The linebacker. */
-    LINEBACKER("LB"),
+	/** The linebacker. */
+	LINEBACKER("LB"),
 
-    /** The team linebacker. */
-    TEAM_LINEBACKER("TMLB"),
+	/** The team linebacker. */
+	TEAM_LINEBACKER("TMLB"),
 
-    /** The defensive back. */
-    DEFENSIVE_BACK("CB+S"),
+	/** The defensive back. */
+	DEFENSIVE_BACK("CB+S"),
 
-    /** The cornerback. */
-    CORNERBACK("CB"),
+	/** The cornerback. */
+	CORNERBACK("CB"),
 
-    /** The safety. */
-    SAFETY("S"),
+	/** The safety. */
+	SAFETY("S"),
 
-    /** The team defensive back. */
-    TEAM_DEFENSIVE_BACK("TMDB"),
+	/** The team defensive back. */
+	TEAM_DEFENSIVE_BACK("TMDB"),
 
-    /** The team defense. */
-    TEAM_DEFENSE("Def"),
+	/** The team defense. */
+	TEAM_DEFENSE("Def"),
 
-    /** The special teams. */
-    SPECIAL_TEAMS("ST"),
+	/** The special teams. */
+	SPECIAL_TEAMS("ST"),
 
-    /** The team offense. */
-    TEAM_OFFENSE("Off"),
+	/** The team offense. */
+	TEAM_OFFENSE("Off"),
 
-    /** Position unknown. */
-    UNKNOWN("XX");
+	/** Position unknown. */
+	UNKNOWN("XX");
 
-    /** The type. */
-    private String type;
+	/** The type. */
+	private String type;
 
-    /**
-     * Instantiates a new position type.
-     *
-     * @param type the type
-     */
-    private Position(final String type) {
-        this.type = type;
-    }
+	/**
+	 * Instantiates a new position type.
+	 *
+	 * @param type the type
+	 */
+	private Position(final String type) {
+		this.type = type;
+	}
 
-    /**
-     * Gets the type.
-     *
-     * @return the type
-     */
-    public String getType() {
-        return type;
-    }
+	/**
+	 * Gets the type.
+	 *
+	 * @return the type
+	 */
+	public String getType() {
+		return type;
+	}
 
+	private static Logger getLogger() {
+		return LoggerFactory.getLogger(Position.class);
+	}
 
-    /**
-     * Gets the logger.
-     *
-     * @return the logger
-     */
-    private static Logger getLogger() {
-      return LoggerFactory.getLogger(Position.class);
-    }
+	/**
+	 * Creates an instance of this enumeration from an input string.  This input corresponds to the value of the
+	 * "position" attribute on an MFL "player" and "league" exports.
+	 *
+	 * @param pos the pos
+	 * @return the position
+	 */
+	@JsonCreator
+	public static Position fromValue(final String pos) {
 
-    /**
-     * Creates an instance of this enumeration from an input string.  This input corresponds to the value of the
-     * "position" attribute on an MFL "player" and "league" exports.
-     *
-     * @param pos the pos
-     * @return the position
-     */
-    @JsonCreator
-    public static Position fromValue(final String pos) {
+		// iterate the list to make sure we're getting the right entry.
+		if (StringUtils.isNotBlank(pos)) {
+			for(Position type : Position.values()) {
+				if (pos.equalsIgnoreCase(type.getType())) {
+					return type;
+				}
+			}
 
-    	// iterate the list to make sure we're getting the right entry.
-        if (StringUtils.isNotBlank(pos)) {
-            for(Position type : Position.values()) {
-                if (pos.equalsIgnoreCase(type.getType())) {
-                    return type;
-                }
-            }
+			getLogger().warn("Tried to create Position type from invalue value '{}'.", pos);
+		}
+		else {
+			getLogger().warn("Cannot create Position from an empty value.");
+		}
 
-            getLogger().warn("{} is an invalid value.", pos);
-        }
-        else {
-        	getLogger().warn("A value was not provided.");
-        }
-
-        return UNKNOWN;
-    }
+		return UNKNOWN;
+	}
 
 	/**
 	 * Checks if is an IDP position.
 	 *
 	 * @return true, if is idp
 	 */
-    // jd - ignoring cyclomatic complexity.  Pretty obvious why.
-    // CHECKSTYLE:OFF
+	// jd - ignoring cyclomatic complexity.  Pretty obvious why.
+	// CHECKSTYLE:OFF
 	public boolean isIDP() {
 	// CHECKSTYLE:ON
 
