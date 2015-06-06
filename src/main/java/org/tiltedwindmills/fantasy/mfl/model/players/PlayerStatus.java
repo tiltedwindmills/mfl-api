@@ -5,9 +5,13 @@ import org.tiltedwindmills.fantasy.mfl.model.AbstractObject;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
- * The Class PlayerScore.
+ * The Class PlayerStatus.
+ *
+ * @author John Daniel
  */
 public class PlayerStatus extends AbstractObject {
+
+	// TODO : two PlayerStatus classes are confusing.
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = -3751405581376916615L;
