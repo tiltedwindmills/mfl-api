@@ -24,6 +24,8 @@ import org.tiltedwindmills.fantasy.mfl.model.players.PlayerStatus;
 import org.tiltedwindmills.fantasy.mfl.model.players.PlayerStatusResponse;
 import org.tiltedwindmills.fantasy.mfl.services.PlayerService;
 
+import retrofit.RetrofitError;
+
 import com.google.common.base.Joiner;
 
 /**
@@ -87,10 +89,20 @@ public final class JsonPlayerServiceImpl extends AbstractJsonServiceImpl impleme
 	@Override
 	public List<Player> getAllPlayers() {
 
-		final MflPlayerExport playerExport = getRestAdapter(SERVER_ID).create(MflPlayerExport.class);
-		final PlayerResponse playerResponse = playerExport.getAllPlayers(CURRENT_YEAR);
+		try {
 
-		return playerResponse.getWrapper().getPlayers();
+			final MflPlayerExport playerExport = getRestAdapter(SERVER_ID).create(MflPlayerExport.class);
+			final PlayerResponse playerResponse = playerExport.getAllPlayers(CURRENT_YEAR);
+
+			if (playerResponse != null && playerResponse.getWrapper() != null) {
+				return playerResponse.getWrapper().getPlayers();
+			}
+
+		} catch (RetrofitError e) {
+			LOG.error("Error retrieving all player data: {}", e);
+		}
+
+		return new ArrayList<Player>();
 	}
 
 	/*
