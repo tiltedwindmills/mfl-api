@@ -1,6 +1,7 @@
 package org.tiltedwindmills.fantasy.mfl.model;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -14,7 +15,7 @@ public class FranchiseArrayWrapper extends AbstractObject {
 
 	/** The franchises. */
 	@JsonProperty("franchise")
-	private ArrayList<Franchise> franchises;
+	private List<Franchise> franchises;
 
 	/** The count. */
 	@JsonProperty("count")
@@ -25,7 +26,7 @@ public class FranchiseArrayWrapper extends AbstractObject {
 	 *
 	 * @return the franchises
 	 */
-	public final ArrayList<Franchise> getFranchises() {
+	public final List<Franchise> getFranchises() {
 		if (franchises == null) {
 			franchises = new ArrayList<Franchise>();
 		}
@@ -37,7 +38,7 @@ public class FranchiseArrayWrapper extends AbstractObject {
 	 *
 	 * @param franchises the new franchises
 	 */
-	public final void setFranchises(final ArrayList<Franchise> franchises) {
+	public final void setFranchises(final List<Franchise> franchises) {
 		this.franchises = franchises;
 	}
 
