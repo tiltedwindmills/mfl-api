@@ -451,6 +451,19 @@ public class Player extends AbstractObject {
 	 */
 	@Override
 	public final int hashCode(){
+		// hash code of a player is really just that of his ID.  Everything else is noise.
 		return Objects.hashCode(id);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 *
+	 * @see org.tiltedwindmills.fantasy.mfl.model.AbstractObject#equals(java.lang.Object)
+	 */
+	@Override
+	public final boolean equals(final Object obj) {
+
+		// could probably do just the ID here as well, but I'm being lazy.
+		return super.equals(obj);
 	}
 }
