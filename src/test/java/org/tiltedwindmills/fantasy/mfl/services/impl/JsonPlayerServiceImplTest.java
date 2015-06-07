@@ -1,9 +1,11 @@
 package org.tiltedwindmills.fantasy.mfl.services.impl;
 
+import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,6 +18,7 @@ import org.tiltedwindmills.fantasy.mfl.JsonDataConverter;
 import org.tiltedwindmills.fantasy.mfl.model.Player;
 import org.tiltedwindmills.fantasy.mfl.model.players.PlayerResponse;
 import org.tiltedwindmills.fantasy.mfl.services.PlayerService;
+import org.tiltedwindmills.fantasy.mfl.services.exception.MFLServiceException;
 
 import retrofit.RetrofitError;
 import retrofit.client.Header;
@@ -66,14 +69,18 @@ public class JsonPlayerServiceImplTest {
 			mflPlayerExport.getAllPlayers(anyInt); result = error;
 		}};
 
-		PlayerService playerService = new JsonPlayerServiceImpl();
-		List<Player> players = playerService.getAllPlayers();
+		try {
+			PlayerService playerService = new JsonPlayerServiceImpl();
+			playerService.getAllPlayers();
+			fail("should have thrown exception.");
 
-		assertThat(players, is(not(nullValue())));
-		assertThat(players.size(), is(0));
+		} catch (MFLServiceException e) {
+			// expected behavior.  Confirm root cause is propagated.
+			assertThat(e.getCause(), instanceOf(RetrofitError.class));
+		}
 	}
 
-	@Test
+	@Test(expected = MFLServiceException.class)
 	public void getAllPlayersTest_NullResponse() {
 
 		new NonStrictExpectations() {{
@@ -81,13 +88,10 @@ public class JsonPlayerServiceImplTest {
 		}};
 
 		PlayerService playerService = new JsonPlayerServiceImpl();
-		List<Player> players = playerService.getAllPlayers();
-
-		assertThat(players, is(not(nullValue())));
-		assertThat(players.size(), is(0));
+		playerService.getAllPlayers();
 	}
 
-	@Test
+	@Test(expected = MFLServiceException.class)
 	public void getAllPlayersTest_NullWrapper() {
 
 		new NonStrictExpectations() {{
@@ -95,9 +99,6 @@ public class JsonPlayerServiceImplTest {
 		}};
 
 		PlayerService playerService = new JsonPlayerServiceImpl();
-		List<Player> players = playerService.getAllPlayers();
-
-		assertThat(players, is(not(nullValue())));
-		assertThat(players.size(), is(0));
+		playerService.getAllPlayers();
 	}
 }

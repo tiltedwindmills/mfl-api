@@ -23,6 +23,7 @@ import org.tiltedwindmills.fantasy.mfl.model.players.PlayerScoresResponse;
 import org.tiltedwindmills.fantasy.mfl.model.players.PlayerStatus;
 import org.tiltedwindmills.fantasy.mfl.model.players.PlayerStatusResponse;
 import org.tiltedwindmills.fantasy.mfl.services.PlayerService;
+import org.tiltedwindmills.fantasy.mfl.services.exception.MFLServiceException;
 
 import retrofit.RetrofitError;
 
@@ -30,13 +31,15 @@ import com.google.common.base.Joiner;
 
 /**
  * Implementation of the Player API operations that uses the JSON MFL API.
+ *
+ * @author John Daniel
  */
 @Service
 public final class JsonPlayerServiceImpl extends AbstractJsonServiceImpl implements PlayerService {
 
 	private static final Logger LOG = LoggerFactory.getLogger(JsonPlayerServiceImpl.class);
 
-	// no need to be server specific about player ops.
+	// no need to be server specific about generic player ops.
 	private static final String SERVER_ID = "";
 
 	/*
@@ -94,15 +97,18 @@ public final class JsonPlayerServiceImpl extends AbstractJsonServiceImpl impleme
 			final MflPlayerExport playerExport = getRestAdapter(SERVER_ID).create(MflPlayerExport.class);
 			final PlayerResponse playerResponse = playerExport.getAllPlayers(CURRENT_YEAR);
 
-			if (playerResponse != null && playerResponse.getWrapper() != null) {
+			if (playerResponse == null || playerResponse.getWrapper() == null) {
+				LOG.error("Invalid response retrieving all players.");
+				throw new MFLServiceException("Invalid response retrieving all players");
+
+			} else {
 				return playerResponse.getWrapper().getPlayers();
 			}
 
 		} catch (RetrofitError e) {
-			LOG.error("Error retrieving all player data: {}", e);
+			LOG.error("Error retrieving all player data: {}", e.getMessage());
+			throw new MFLServiceException("Error retrieving all player data", e);
 		}
-
-		return new ArrayList<Player>();
 	}
 
 	/*
