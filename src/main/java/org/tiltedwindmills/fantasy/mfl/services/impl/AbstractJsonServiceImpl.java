@@ -1,7 +1,6 @@
 package org.tiltedwindmills.fantasy.mfl.services.impl;
 
 import retrofit.RestAdapter;
-import retrofit.RestAdapter.LogLevel;
 import retrofit.converter.JacksonConverter;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -33,11 +32,10 @@ public abstract class AbstractJsonServiceImpl {
 
 		// Note:  Setting LogLevel.FULL rather than BASIC will give response body.
 		return new RestAdapter.Builder()
-							  .setEndpoint(server)
-							  .setConverter(new JacksonConverter(objectMapper))
-							  .setLog(new SLFRetrofitLogger())
-							  .setLogLevel(SLFRetrofitLogger.getLogLevel())
-							  .setLogLevel(LogLevel.BASIC)
-							  .build();
+							.setEndpoint(server)
+							.setConverter(new JacksonConverter(objectMapper))
+							.setLog(new SLFRetrofitLogger())
+							.setLogLevel(SLFRetrofitLogger.getLogLevel())
+							.build();
 	}
 }
