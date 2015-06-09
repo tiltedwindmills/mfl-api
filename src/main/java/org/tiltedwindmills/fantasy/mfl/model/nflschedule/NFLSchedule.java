@@ -7,12 +7,12 @@ import org.tiltedwindmills.fantasy.mfl.model.AbstractObject;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
- * The Class NFLScheduleWrapper.
+ * The Class NFLSchedule.
  */
 public class NFLSchedule extends AbstractObject {
 
 	/** The Constant serialVersionUID. */
-	private static final long serialVersionUID = -7943439873194100185L;
+	private static final long serialVersionUID = -6370606404464694029L;
 
 	/** The week. */
 	private int week;
