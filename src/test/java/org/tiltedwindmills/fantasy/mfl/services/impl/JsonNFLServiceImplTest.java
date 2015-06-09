@@ -19,7 +19,6 @@ import org.junit.Test;
 import org.tiltedwindmills.fantasy.mfl.JsonDataConverter;
 import org.tiltedwindmills.fantasy.mfl.model.nflschedule.NFLMatchup;
 import org.tiltedwindmills.fantasy.mfl.model.nflschedule.NFLSchedule;
-import org.tiltedwindmills.fantasy.mfl.model.nflschedule.NFLScheduleResponse;
 import org.tiltedwindmills.fantasy.mfl.model.nflschedule.NFLTeam;
 import org.tiltedwindmills.fantasy.mfl.services.NFLService;
 import org.tiltedwindmills.fantasy.mfl.services.exception.MFLServiceException;
@@ -28,7 +27,11 @@ import retrofit.RetrofitError;
 import retrofit.client.Header;
 import retrofit.client.Response;
 
-
+/**
+ * Tests for {@code org.tiltedwindmills.fantasy.mfl.services.impl.JsonNFLServiceImpl}.
+ *
+ * @author John Daniel
+ */
 public class JsonNFLServiceImplTest {
 
 	@Capturing private MflNflExport mflNflExport;

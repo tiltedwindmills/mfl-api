@@ -24,7 +24,11 @@ import retrofit.RetrofitError;
 import retrofit.client.Header;
 import retrofit.client.Response;
 
-
+/**
+ * Tests for {@code org.tiltedwindmills.fantasy.mfl.services.impl.JsonPlayerServiceImpl}.
+ *
+ * @author John Daniel
+ */
 public class JsonPlayerServiceImplTest {
 
 	@Capturing private MflPlayerExport mflPlayerExport;
