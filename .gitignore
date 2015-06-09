@@ -15,7 +15,6 @@ target/
 *.jar
 *.war
 *.ear
-sonar-project.properties
 
 
 # Eclipse junk
@@ -47,3 +46,7 @@ node_modules/
 # Bower
 bower_components/
 
+
+# Project Specific
+sonar-project.properties
+update-sonar.sh
