@@ -14,6 +14,8 @@ public abstract class AbstractJsonServiceImpl {
 	// TODO : fixme
 	protected static final int CURRENT_YEAR = 2015;
 
+	protected static final int FIRST_MFL_SUPPORTED_YEAR = 1980;
+
 	/* TODO : make this spring bean? */
 
 	/**

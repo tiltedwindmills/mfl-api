@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
+import org.tiltedwindmills.fantasy.mfl.model.nflschedule.NFLScheduleResponse;
 import org.tiltedwindmills.fantasy.mfl.model.players.PlayerResponse;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -39,19 +40,33 @@ public class JsonDataConverter {
 	 * @return the player response
 	 */
 	public static final PlayerResponse players(final String fileName) {
+		return getResponse(fileName, "players", PlayerResponse.class);
+	}
+
+	/**
+	 * Gets the NFL schedule from the given file in the "exports/nflSchedule" directory.
+	 *
+	 * @param fileName the file name, without the ".json" extension
+	 * @return the NFL schedule response
+	 */
+	public static final NFLScheduleResponse nflSchedule(final String fileName) {
+		return getResponse(fileName, "nflSchedule", NFLScheduleResponse.class);
+	}
+
+	/** heavy lifting.  Read the appropriate file and return a response of the expected type */
+	private static <T> T getResponse(final String fileName, final String directory, final Class<T> returnType) {
 
 		try {
 
-			final Resource resource = new ClassPathResource("exports/players/" + fileName + ".json");
+			final Resource resource = new ClassPathResource("exports/" + directory + "/" + fileName + ".json");
 			final InputStream resourceInputStream = resource.getInputStream();
 
-			return objectMapper.readValue(resourceInputStream, PlayerResponse.class);
+			return objectMapper.readValue(resourceInputStream, returnType);
 
 		} catch (IOException e) {
-			LOG.error("Failed to load MFL players from file: {}", e.getMessage());
+			LOG.error("Could not load data from 'exports/{}/{}.json: {}", directory, fileName, e.getMessage(), e);
 		}
 
 		return null;
 	}
-
 }
