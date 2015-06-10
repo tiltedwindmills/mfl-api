@@ -14,6 +14,7 @@ import org.apache.commons.lang3.math.NumberUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 import org.tiltedwindmills.fantasy.mfl.model.Player;
 import org.tiltedwindmills.fantasy.mfl.model.injuries.InjuriesResponse;
 import org.tiltedwindmills.fantasy.mfl.model.injuries.Injury;
@@ -52,10 +53,27 @@ public final class JsonPlayerServiceImpl extends AbstractJsonServiceImpl impleme
 
 		final String playerIdsParameter = getPlayerIdParameterFromList(playerIds);
 
-		final MflPlayerExport playerExport = getRestAdapter(SERVER_ID).create(MflPlayerExport.class);
-		final PlayerResponse playerResponse = playerExport.getPlayers(playerIdsParameter, CURRENT_YEAR);
+		if (StringUtils.isBlank(playerIdsParameter)) {
+			LOG.warn("Invalid parameters for retrieving players.  Found '{}' list.", playerIds);
+			throw new MFLServiceException("Cannot retrieve player information without IDs.");
+		}
+		try {
 
-		return playerResponse.getWrapper().getPlayers();
+			final MflPlayerExport playerExport = getRestAdapter(SERVER_ID).create(MflPlayerExport.class);
+			final PlayerResponse playerResponse = playerExport.getPlayers(playerIdsParameter, CURRENT_YEAR);
+
+			if (playerResponse == null || playerResponse.getWrapper() == null) {
+				LOG.error("Invalid response retrieving players for IDs '{}'.", playerIds);
+				throw new MFLServiceException("Invalid response retrieving players with IDs : " + playerIds);
+
+			} else {
+				return playerResponse.getWrapper().getPlayers();
+			}
+
+		} catch (RetrofitError e) {
+			LOG.error("Error retrieving player data for IDs '{}' : {}", playerIds, e.getMessage());
+			throw new MFLServiceException("Error retrieving player data.", e);
+		}
 	}
 
 	/*
@@ -241,9 +259,12 @@ public final class JsonPlayerServiceImpl extends AbstractJsonServiceImpl impleme
 		return playerStatuses;
 	}
 
-	// constructs a comma separated array suitable for querystring parameter from a given list.
+	/** constructs a comma separated array suitable for querystring parameter from a given list. */
 	private String getPlayerIdParameterFromList(final Collection<?> playerIds) {
 
+		if (CollectionUtils.isEmpty(playerIds)) {
+			return "";
+		}
 		return Joiner.on(",").skipNulls().join(playerIds);
 	}
 }
