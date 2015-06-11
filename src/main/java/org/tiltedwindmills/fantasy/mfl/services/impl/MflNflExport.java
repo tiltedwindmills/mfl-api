@@ -16,7 +16,7 @@ public interface MflNflExport {
 	 *
 	 * @param week the week
 	 * @param year the year
-	 * @return the nFL schedule
+	 * @return the NFL schedule
 	 */
 	@GET("/{year}/export?TYPE=nflSchedule&JSON=1")
 	NFLScheduleResponse getNFLSchedule(@Query("W") int week, @Path("year") int year);

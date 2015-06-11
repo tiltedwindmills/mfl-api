@@ -8,11 +8,11 @@ import org.tiltedwindmills.fantasy.mfl.model.nflschedule.NFLSchedule;
 public interface NFLService {
 
 	/**
-	 * Gets the nFL schedule.
+	 * Gets the NFL schedule.
 	 *
 	 * @param week the week
 	 * @param year the year
-	 * @return the nFL schedule
+	 * @return the NFL schedule
 	 */
 	NFLSchedule getNFLSchedule(int week, int year);
 }
