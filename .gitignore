@@ -24,6 +24,12 @@ target/
 .springBeans
 .checkstyle
 
+# IntelliJ files
+.idea
+*.iml
+*.iws
+*.ipr
+
 
 # OS files
 .DS_Store
