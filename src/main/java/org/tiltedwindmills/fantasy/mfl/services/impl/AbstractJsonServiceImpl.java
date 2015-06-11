@@ -27,8 +27,8 @@ public abstract class AbstractJsonServiceImpl {
 	protected final RestAdapter getRestAdapter(final String serverId) {
 
 		final ObjectMapper objectMapper = new ObjectMapper();
-		objectMapper.configure(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true);
-		objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+		objectMapper.enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY);
+		objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
 
 		final String server = "http://football" + ServiceUtils.safeServerId(serverId) + ".myfantasyleague.com";
 
