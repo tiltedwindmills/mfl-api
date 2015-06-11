@@ -16,7 +16,7 @@ import org.junit.Test;
 public class NFLScheduleTest {
 
 	@Test
-	public void getTeamsTest() {
+	public void getMatchupsTest() {
 
 		NFLSchedule nflSchedule = new NFLSchedule();
 
@@ -24,6 +24,4 @@ public class NFLScheduleTest {
 		nflSchedule.setMatchups(null);
 		assertThat(nflSchedule.getMatchups(), is(emptyCollectionOf(NFLMatchup.class)));
 	}
-
-
 }

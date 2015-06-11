@@ -17,7 +17,7 @@ import org.tiltedwindmills.fantasy.mfl.model.Player;
 public class PlayerWrapperTest {
 
 	@Test
-	public void getTeamsTest() {
+	public void getPlayersTest() {
 
 		PlayerWrapper playerWrapper = new PlayerWrapper();
 

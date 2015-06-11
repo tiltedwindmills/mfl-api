@@ -1,12 +1,8 @@
 package org.tiltedwindmills.fantasy.mfl.model.nflschedule;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.not;
-import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.emptyCollectionOf;
-
-import java.util.List;
 
 import org.junit.Test;
 

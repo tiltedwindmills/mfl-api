@@ -1,6 +1,7 @@
 package org.tiltedwindmills.fantasy.mfl.model.nflschedule;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.tiltedwindmills.fantasy.mfl.model.AbstractObject;
 
@@ -19,14 +20,14 @@ public class NFLSchedule extends AbstractObject {
 
 	/** The matchups. */
 	@JsonProperty("matchup")
-	private ArrayList<NFLMatchup> matchups;
+	private List<NFLMatchup> matchups;
 
 	/**
 	 * Gets the matchups.
 	 *
 	 * @return the matchups
 	 */
-	public final ArrayList<NFLMatchup> getMatchups() {
+	public final List<NFLMatchup> getMatchups() {
 
 		if (matchups == null) {
 			matchups = new ArrayList<NFLMatchup>();
@@ -39,7 +40,7 @@ public class NFLSchedule extends AbstractObject {
 	 *
 	 * @param matchups the new matchups
 	 */
-	public final void setMatchups(final ArrayList<NFLMatchup> matchups) {
+	public final void setMatchups(final List<NFLMatchup> matchups) {
 		this.matchups = matchups;
 	}
 
