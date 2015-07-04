@@ -64,22 +64,22 @@ public interface MflPlayerExport {
 	 */
 	@GET("/{year}/export?TYPE=playerScores&JSON=1")
 	PlayerScoresResponse getPlayerScores(@Query("L") int league,
-										 @Query("PLAYERS") String playerId,
-										 @Query("W") String week,
-										 @Path("year") int year);
+										@Query("PLAYERS") String playerId,
+										@Query("W") String week,
+										@Path("year") int year);
 //	http://football7.myfantasyleague.com/2012/export?TYPE=playerScores&L=35465&PLAYERS=8658,3291&W=YTD
 
 	/**
-	 * Gets the player status.
+	 * Gets the player's league availability status. ( e.g. locked, free agent, rostered, etc. )
 	 *
 	 * @param league the league
-	 * @param playerId the player id
+	 * @param playerIds the player ids ( comma separated list )
 	 * @param year the year
 	 * @return the player status
 	 */
 	@GET("/{year}/export?TYPE=playerStatus&JSON=1")
 	PlayerStatusResponse getPlayerStatus(@Query("L") int league,
-										 @Query("P") String playerId,
-										 @Path("year") int year);
+										@Query("P") String playerIds,
+										@Path("year") int year);
 //	http://football3.myfantasyleague.com/2013/export?TYPE=playerStatus&L=10779&P=8658,10788,9999999999
 }

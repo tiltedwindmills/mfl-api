@@ -5,13 +5,14 @@ import org.tiltedwindmills.fantasy.mfl.model.AbstractObject;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
- * The Class PlayerStatus.
+ * The Class PlayerAvailabilityStatus.  Defines the current state of a player respective to his ownership in a
+ * specific MFL league.  ( e.g. locked, free agent, rostered, etc. ).  Will typically be either "Free Agent" or the
+ * name of the team owning the player.  Depending on current lineup submission, this could also be appended with the
+ * lineup status. ( e.g. "Team A", or "Team A - NS", etc. )
  *
  * @author John Daniel
  */
-public class PlayerStatus extends AbstractObject {
-
-	// TODO : two PlayerStatus classes are confusing.
+public class PlayerAvailabilityStatus extends AbstractObject {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = -3751405581376916615L;

@@ -9,6 +9,7 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.tiltedwindmills.fantasy.mfl.model.nflschedule.NFLScheduleResponse;
 import org.tiltedwindmills.fantasy.mfl.model.players.PlayerResponse;
+import org.tiltedwindmills.fantasy.mfl.model.players.PlayerStatusResponse;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -41,6 +42,16 @@ public class JsonDataConverter {
 	 */
 	public static final PlayerResponse players(final String fileName) {
 		return getResponse(fileName, "players", PlayerResponse.class);
+	}
+
+	/**
+	 * Gets the players stat-uses/-i from the given file in the "exports/playerStatus" directory.
+	 *
+	 * @param fileName the file name
+	 * @return the player status response
+	 */
+	public static final PlayerStatusResponse playerStatus(final String fileName) {
+		return getResponse(fileName, "playerStatus", PlayerStatusResponse.class);
 	}
 
 	/**

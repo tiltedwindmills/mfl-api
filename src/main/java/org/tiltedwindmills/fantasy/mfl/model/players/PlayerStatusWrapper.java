@@ -16,14 +16,14 @@ public class PlayerStatusWrapper extends AbstractObject {
 
 	/** The player statuses. */
 	@JsonProperty("playerStatus")
-	private List<PlayerStatus> playerStatuses;
+	private List<PlayerAvailabilityStatus> playerStatuses;
 
 	/**
 	 * Gets the player statuses.
 	 *
 	 * @return the player statuses
 	 */
-	public final List<PlayerStatus> getPlayerStatuses() {
+	public final List<PlayerAvailabilityStatus> getPlayerStatuses() {
 		return playerStatuses;
 	}
 
@@ -32,7 +32,7 @@ public class PlayerStatusWrapper extends AbstractObject {
 	 *
 	 * @param playerStatuses the new player statuses
 	 */
-	public final void setPlayerStatuses(final List<PlayerStatus> playerStatuses) {
+	public final void setPlayerStatuses(final List<PlayerAvailabilityStatus> playerStatuses) {
 		this.playerStatuses = playerStatuses;
 	}
 }

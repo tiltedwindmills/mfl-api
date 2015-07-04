@@ -11,49 +11,71 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class PlayerStatusResponse extends AbstractObject {
 
-    /** The Constant serialVersionUID. */
-    private static final long serialVersionUID = -1311614876244706842L;
+	/** The Constant serialVersionUID. */
+	private static final long serialVersionUID = -1311614876244706842L;
 
-    /** The wrapper. */
-    @JsonProperty("playerStatuses")
-    private PlayerStatusWrapper wrapper;
+	/** The wrapper. */
+	@JsonProperty("playerStatuses")
+	private PlayerStatusWrapper wrapper;
 
-    /** The player status. */
-    private PlayerStatus playerStatus;
+	/** The player status. */
+	private PlayerAvailabilityStatus playerAvailabilityStatus;
 
-    /**
-     * Gets the wrapper.
-     *
-     * @return the wrapper
-     */
-    public final PlayerStatusWrapper getWrapper() {
-        return wrapper;
-    }
+	/** The error. */
+	@JsonProperty("error")
+	private PlayerErrorMessage error;
 
-    /**
-     * Sets the wrapper.
-     *
-     * @param wrapper the new wrapper
-     */
-    public final void setWrapper(final PlayerStatusWrapper wrapper) {
-        this.wrapper = wrapper;
-    }
+	/**
+	 * Gets the wrapper.
+	 *
+	 * @return the wrapper
+	 */
+	public final PlayerStatusWrapper getWrapper() {
+		return wrapper;
+	}
 
-    /**
-     * Gets the player status.
-     *
-     * @return the player status
-     */
-    public final PlayerStatus getPlayerStatus() {
-        return playerStatus;
-    }
+	/**
+	 * Sets the wrapper.
+	 *
+	 * @param wrapper the new wrapper
+	 */
+	public final void setWrapper(final PlayerStatusWrapper wrapper) {
+		this.wrapper = wrapper;
+	}
 
-    /**
-     * Sets the player status.
-     *
-     * @param playerStatus the new player status
-     */
-    public final void setPlayerStatus(final PlayerStatus playerStatus) {
-        this.playerStatus = playerStatus;
-    }
+	/**
+	 * Gets the player status.
+	 *
+	 * @return the player status
+	 */
+	public final PlayerAvailabilityStatus getPlayerStatus() {
+		return playerAvailabilityStatus;
+	}
+
+	/**
+	 * Sets the player status.
+	 *
+	 * @param playerAvailabilityStatus the new player status
+	 */
+	public final void setPlayerStatus(final PlayerAvailabilityStatus playerAvailabilityStatus) {
+		this.playerAvailabilityStatus = playerAvailabilityStatus;
+	}
+
+	/**
+	 * Gets the error.
+	 *
+	 * @return the error
+	 */
+	public final PlayerErrorMessage getError() {
+		return error;
+	}
+
+	/**
+	 * Sets the error.
+	 *
+	 * @param error the new error
+	 */
+	public final void setError(final PlayerErrorMessage error) {
+		this.error = error;
+	}
 }

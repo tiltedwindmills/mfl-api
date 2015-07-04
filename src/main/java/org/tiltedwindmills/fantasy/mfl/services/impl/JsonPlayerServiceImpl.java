@@ -21,7 +21,7 @@ import org.tiltedwindmills.fantasy.mfl.model.injuries.Injury;
 import org.tiltedwindmills.fantasy.mfl.model.players.PlayerResponse;
 import org.tiltedwindmills.fantasy.mfl.model.players.PlayerScore;
 import org.tiltedwindmills.fantasy.mfl.model.players.PlayerScoresResponse;
-import org.tiltedwindmills.fantasy.mfl.model.players.PlayerStatus;
+import org.tiltedwindmills.fantasy.mfl.model.players.PlayerAvailabilityStatus;
 import org.tiltedwindmills.fantasy.mfl.model.players.PlayerStatusResponse;
 import org.tiltedwindmills.fantasy.mfl.services.PlayerService;
 import org.tiltedwindmills.fantasy.mfl.services.exception.MFLServiceException;
@@ -40,6 +40,9 @@ public final class JsonPlayerServiceImpl extends AbstractJsonServiceImpl impleme
 
 	private static final Logger LOG = LoggerFactory.getLogger(JsonPlayerServiceImpl.class);
 
+	// service names for validation routines
+	private static final String PLAYER_AVAILABILITY_SERVICE = "player availability";
+
 	// no need to be server specific about generic player ops.
 	private static final String SERVER_ID = "";
 
@@ -57,6 +60,7 @@ public final class JsonPlayerServiceImpl extends AbstractJsonServiceImpl impleme
 			LOG.warn("Invalid parameters for retrieving players.  Found '{}' list.", playerIds);
 			throw new MFLServiceException("Cannot retrieve player information without IDs.");
 		}
+
 		try {
 
 			final MflPlayerExport playerExport = getRestAdapter(SERVER_ID).create(MflPlayerExport.class);
@@ -223,43 +227,86 @@ public final class JsonPlayerServiceImpl extends AbstractJsonServiceImpl impleme
 	 * java.lang.String, int)
 	 */
 	@Override
-	public Map<Integer, String> getPlayerStatus(final int leagueId, final Set<String> playerIds,
-			final String serverId, final int currentYear) {
+	public Map<Integer, String> getPlayerAvailability(final int leagueId, final Set<String> playerIds,
+			final String serverId, final int year) {
+
+		validateLeagueId(leagueId, PLAYER_AVAILABILITY_SERVICE);
+		validateServerId(serverId, PLAYER_AVAILABILITY_SERVICE);
+		validateYear(year, PLAYER_AVAILABILITY_SERVICE);
+
+		// turn our list of player IDs into a comma separated string.
+		final String playerIdsParameter = getPlayerIdParameterFromList(playerIds);
+
+		if (StringUtils.isBlank(playerIdsParameter)) {
+			LOG.warn("Invalid parameters for retrieving player status.  Found '{}' list.", playerIds);
+			throw new MFLServiceException("Cannot retrieve player status information without IDs.");
+		}
+
+		try {
+			final MflPlayerExport playerExport = getRestAdapter(serverId).create(MflPlayerExport.class);
+			final PlayerStatusResponse response = playerExport
+					.getPlayerStatus(leagueId, playerIdsParameter, year);
+
+			if (response == null) {
+				LOG.error("Invalid response retrieving player status for IDs '{}'.", playerIds);
+				throw new MFLServiceException("Invalid response retrieving player status");
+			}
+
+			if (response.getError() != null) {
+				LOG.error("MFL reported error retrieving player status for IDs '{}'.", playerIds);
+				throw new MFLServiceException("Error retrieving player status : " + response.getError().getMessage());
+			}
+
+			return mapPlayerStatus(response, playerIds.size() > 1);
+
+		} catch (RetrofitError e) {
+
+			LOG.error("Error retrieving {} leauge {} player status data for IDs '{}' : {}",
+					year, leagueId, playerIds, e.getMessage());
+
+			throw new MFLServiceException("Error retrieving player data.", e);
+		}
+	}
+
+	private Map<Integer, String> mapPlayerStatus(final PlayerStatusResponse response, final boolean isMultiplePlayers) {
 
 		final Map<Integer, String> playerStatuses = new HashMap<Integer, String>();
 
-		// if no players requested, just return the blank array.
-		if (playerIds == null || playerIds.isEmpty()) {
-			return playerStatuses;
-		}
-
-		// turn our list of player IDs into a comma separated string.
-		final String playerParameter = getPlayerIdParameterFromList(playerIds);
-
-		final MflPlayerExport playerExport = getRestAdapter(serverId).create(MflPlayerExport.class);
-		final PlayerStatusResponse playerResponse = playerExport
-				.getPlayerStatus(leagueId, playerParameter, currentYear);
-
 		// MFL API only returns a single element for a one-player request, so manage that difference here.
 		// TODO : still necessary?
-		if (playerIds.size() == 1) {
+		if (isMultiplePlayers) {
 
-			final PlayerStatus playerStatus = playerResponse.getPlayerStatus();
-			playerStatuses.put(playerStatus.getPlayerId(), playerStatus.getStatus());
-		}
+			if (response.getWrapper() == null) {
+				throw new MFLServiceException("Invalid wrapper response retrieving player status");
+			}
 
-		else {
+			final List<PlayerAvailabilityStatus> apiStatuses = response.getWrapper().getPlayerStatuses();
+			if (apiStatuses == null) {
+				LOG.warn("Found null player status list.  Ignoring.");
+			} else {
+				for (PlayerAvailabilityStatus apiStatus : apiStatuses) {
+					if (apiStatus == null) {
+						LOG.warn("Found null player status.  Ignoring.");
+					} else {
+						playerStatuses.put(apiStatus.getPlayerId(), apiStatus.getStatus());
+					}
+				}
+			}
 
-			final List<PlayerStatus> apiStatuses = playerResponse.getWrapper().getPlayerStatuses();
-			for (PlayerStatus apiStatus : apiStatuses) {
-				playerStatuses.put(apiStatus.getPlayerId(), apiStatus.getStatus());
+		} else {
+			final PlayerAvailabilityStatus playerAvailabilityStatus = response.getPlayerStatus();
+			if (playerAvailabilityStatus == null) {
+				LOG.warn("Found null single player status.  Ignoring.");
+			} else {
+				playerStatuses.put(playerAvailabilityStatus.getPlayerId(), playerAvailabilityStatus.getStatus());
 			}
 		}
 
 		return playerStatuses;
 	}
 
-	/** constructs a comma separated array suitable for querystring parameter from a given list. */
+
+	/** constructs a comma separated array suitable for querystring parameter from a given collection. */
 	private String getPlayerIdParameterFromList(final Collection<?> playerIds) {
 
 		if (CollectionUtils.isEmpty(playerIds)) {

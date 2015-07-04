@@ -59,10 +59,10 @@ public interface PlayerService {
 	 * @return the multiple players scores
 	 */
 	Map<Integer, Double> getMultiplePlayersScores(int leagueId,
-												  List<Integer> playerIds,
-												  String week,
-												  String serverId,
-												  int currentYear);
+												List<Integer> playerIds,
+												String week,
+												String serverId,
+												int currentYear);
 
 	/**
 	 * Gets the all injuries.
@@ -74,13 +74,15 @@ public interface PlayerService {
 	List<Injury> getAllInjuries(int week, int year);
 
 	/**
-	 * Gets the player status.
+	 * Gets the player's availability status in their MFL league. ( e.g. locked, free agent, rostered, etc. ).  Note
+	 * that invalid player IDs will not throw an error, but are rather responded as <i>"League Does Not Use This
+	 * Position"</i>.
 	 *
 	 * @param leagueId the league id
 	 * @param playerIds the player ids
 	 * @param serverId the server id
-	 * @param currentYear the current year
-	 * @return the player status
+	 * @param year the MFL league year of the site being requested
+	 * @return the mapping of player ID to league availability status.
 	 */
-	Map<Integer, String> getPlayerStatus(int leagueId, Set<String> playerIds, String serverId, int currentYear);
+	Map<Integer, String> getPlayerAvailability(int leagueId, Set<String> playerIds, String serverId, int year);
 }
