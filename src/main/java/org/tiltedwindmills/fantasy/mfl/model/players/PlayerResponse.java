@@ -28,7 +28,6 @@ public class PlayerResponse extends AbstractObject {
 	 * @return the wrapper
 	 */
 	public final PlayerWrapper getWrapper() {
-
 		return wrapper;
 	}
 
@@ -38,7 +37,6 @@ public class PlayerResponse extends AbstractObject {
 	 * @param wrapper the new wrapper
 	 */
 	public final void setWrapper(final PlayerWrapper wrapper) {
-
 		this.wrapper = wrapper;
 	}
 
@@ -48,7 +46,6 @@ public class PlayerResponse extends AbstractObject {
 	 * @return the error
 	 */
 	public final PlayerErrorMessage getError() {
-
 		return error;
 	}
 
@@ -58,7 +55,6 @@ public class PlayerResponse extends AbstractObject {
 	 * @param error the new error
 	 */
 	public final void setError(final PlayerErrorMessage error) {
-
 		this.error = error;
 	}
 }
