@@ -70,6 +70,29 @@ public class AbstractJsonServiceImplTest {
 	}
 
 	@Test
+	public void validateWeekTest() {
+
+		MockJsonServiceImpl serviceImpl = new MockJsonServiceImpl();
+		for (int i = 1; i <= 21; i++) {
+			serviceImpl.validateWeek(i, MOCK_SERVICE_ID);
+		}
+	}
+
+	@Test(expected = MFLServiceException.class)
+	public void validateWeek_Before1() {
+
+		MockJsonServiceImpl serviceImpl = new MockJsonServiceImpl();
+		serviceImpl.validateWeek(0, MOCK_SERVICE_ID);
+	}
+
+	@Test(expected = MFLServiceException.class)
+	public void validateWeekTest_After21() {
+
+		MockJsonServiceImpl serviceImpl = new MockJsonServiceImpl();
+		serviceImpl.validateWeek(22, MOCK_SERVICE_ID);
+	}
+
+	@Test
 	public void validateServerIdTest() {
 
 		MockJsonServiceImpl serviceImpl = new MockJsonServiceImpl();
@@ -78,28 +101,28 @@ public class AbstractJsonServiceImplTest {
 	}
 
 	@Test(expected = MFLServiceException.class)
-	public void validateLeagueIdTest_Null() {
+	public void validateServerIdTest_Null() {
 
 		MockJsonServiceImpl serviceImpl = new MockJsonServiceImpl();
 		serviceImpl.validateServerId(null, MOCK_SERVICE_ID);
 	}
 
 	@Test(expected = MFLServiceException.class)
-	public void validateLeagueIdTest_Empty() {
+	public void validateServerIdTest_Empty() {
 
 		MockJsonServiceImpl serviceImpl = new MockJsonServiceImpl();
 		serviceImpl.validateServerId("", MOCK_SERVICE_ID);
 	}
 
 	@Test(expected = MFLServiceException.class)
-	public void validateLeagueIdTest_Alphabetic() {
+	public void validateServerIdTest_Alphabetic() {
 
 		MockJsonServiceImpl serviceImpl = new MockJsonServiceImpl();
 		serviceImpl.validateServerId("1a", MOCK_SERVICE_ID);
 	}
 
 	@Test(expected = MFLServiceException.class)
-	public void validateLeagueIdTest_TooManyDigits() {
+	public void validateServerIdTest_TooManyDigits() {
 
 		MockJsonServiceImpl serviceImpl = new MockJsonServiceImpl();
 		serviceImpl.validateServerId("100", MOCK_SERVICE_ID);

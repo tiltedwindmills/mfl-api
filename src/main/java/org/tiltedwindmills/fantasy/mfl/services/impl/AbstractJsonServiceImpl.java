@@ -71,6 +71,25 @@ public abstract class AbstractJsonServiceImpl {
 		}
 	}
 
+
+	/**
+	 * Validates a provide week against expected MFL parameters. ( 1 - 22 )
+	 *
+	 * @param week the week
+	 * @param serviceId the service id
+	 */
+	protected final void validateWeek(final int week, final String serviceId) {
+
+		// CHECKSTYLE:OFF
+		// jd - eat the magic numbers
+		if (week < 1 || week > 21) {
+		// CHECKSTYLE:ON
+			LOG.error("'{}' is an invalid week for MFL '{}' service requests", week, serviceId);
+			throw new MFLServiceException(week + " is an invalid week for MFL '" + serviceId + SERVICE_REQUESTS);
+		}
+	}
+
+
 	/**
 	 * Validates a provide server ID against expected MFL parameters. ( numeric & <= 2 digits )
 	 *
