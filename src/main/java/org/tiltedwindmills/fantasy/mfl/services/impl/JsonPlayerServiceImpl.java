@@ -294,7 +294,7 @@ public final class JsonPlayerServiceImpl extends AbstractJsonServiceImpl impleme
 			}
 
 		} else {
-			final PlayerAvailabilityStatus playerAvailabilityStatus = response.getPlayerStatus();
+			final PlayerAvailabilityStatus playerAvailabilityStatus = response.getPlayerAvailabilityStatus();
 			if (playerAvailabilityStatus == null) {
 				LOG.warn("Found null single player status.  Ignoring.");
 			} else {

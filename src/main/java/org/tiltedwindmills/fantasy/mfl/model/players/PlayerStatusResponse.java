@@ -48,7 +48,7 @@ public class PlayerStatusResponse extends AbstractObject {
 	 *
 	 * @return the player status
 	 */
-	public final PlayerAvailabilityStatus getPlayerStatus() {
+	public final PlayerAvailabilityStatus getPlayerAvailabilityStatus() {
 		return playerAvailabilityStatus;
 	}
 
@@ -57,7 +57,7 @@ public class PlayerStatusResponse extends AbstractObject {
 	 *
 	 * @param playerAvailabilityStatus the new player status
 	 */
-	public final void setPlayerStatus(final PlayerAvailabilityStatus playerAvailabilityStatus) {
+	public final void setPlayerAvailabilityStatus(final PlayerAvailabilityStatus playerAvailabilityStatus) {
 		this.playerAvailabilityStatus = playerAvailabilityStatus;
 	}
 
