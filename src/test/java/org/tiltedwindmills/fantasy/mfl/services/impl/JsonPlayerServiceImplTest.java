@@ -272,7 +272,7 @@ public class JsonPlayerServiceImplTest {
 
 		try {
 			PlayerService playerService = new JsonPlayerServiceImpl();
-			playerService.getPlayerAvailability(1, null, "1", 2015);
+			playerService.getPlayerAvailability(11111, null, "1", 2015);
 
 			fail("should have thrown exception");
 
@@ -291,7 +291,7 @@ public class JsonPlayerServiceImplTest {
 
 		try {
 			PlayerService playerService = new JsonPlayerServiceImpl();
-			playerService.getPlayerAvailability(1, new HashSet<String>(), "1", 2015);
+			playerService.getPlayerAvailability(11111, new HashSet<String>(), "1", 2015);
 
 			fail("should have thrown exception");
 
