@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
+import org.tiltedwindmills.fantasy.mfl.model.injuries.InjuriesResponse;
 import org.tiltedwindmills.fantasy.mfl.model.nflschedule.NFLScheduleResponse;
 import org.tiltedwindmills.fantasy.mfl.model.players.PlayerResponse;
 import org.tiltedwindmills.fantasy.mfl.model.players.PlayerStatusResponse;
@@ -42,6 +43,10 @@ public class JsonDataConverter {
 	 */
 	public static final PlayerResponse players(final String fileName) {
 		return getResponse(fileName, "players", PlayerResponse.class);
+	}
+
+	public static final InjuriesResponse injuries(final String fileName) {
+		return getResponse(fileName, "injuries", InjuriesResponse.class);
 	}
 
 	/**

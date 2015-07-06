@@ -3,6 +3,7 @@ package org.tiltedwindmills.fantasy.mfl.model.injuries;
 import org.tiltedwindmills.fantasy.mfl.model.AbstractObject;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * Encapsulates the response from a request to the "injuries" MFL export.
@@ -11,26 +12,27 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 public class InjuriesResponse extends AbstractObject {
 
 	/** The Constant serialVersionUID. */
-	private static final long serialVersionUID = -5746719180237454152L;
+	private static final long serialVersionUID = 6784817084571452996L;
 
-	/** The leagues. */
-	private InjuriesWrapper injuries;
+	/** The injuries wrapper. */
+	@JsonProperty("injuries")
+	private InjuriesWrapper wrapper;
 
 	/**
-	 * Gets the injuries.
+	 * Gets the wrapper.
 	 *
-	 * @return the injuries
+	 * @return the wrapper
 	 */
-	public final InjuriesWrapper getInjuries() {
-		return injuries;
+	public final InjuriesWrapper getWrapper() {
+		return wrapper;
 	}
 
 	/**
-	 * Sets the injuries.
+	 * Sets the wrapper.
 	 *
-	 * @param injuries the new injuries
+	 * @param wrapper the new wrapper
 	 */
-	public final void setInjuries(final InjuriesWrapper injuries) {
-		this.injuries = injuries;
+	public final void setWrapper(final InjuriesWrapper wrapper) {
+		this.wrapper = wrapper;
 	}
 }

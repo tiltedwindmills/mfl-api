@@ -42,6 +42,7 @@ public final class JsonPlayerServiceImpl extends AbstractJsonServiceImpl impleme
 
 	// service names for validation routines
 	private static final String PLAYER_AVAILABILITY_SERVICE = "player availability";
+	private static final String INJURY_SERVICE = "injury";
 
 	// no need to be server specific about generic player ops.
 	private static final String SERVER_ID = "";
@@ -69,10 +70,9 @@ public final class JsonPlayerServiceImpl extends AbstractJsonServiceImpl impleme
 			if (playerResponse == null || playerResponse.getWrapper() == null) {
 				LOG.error("Invalid response retrieving players for IDs '{}'.", playerIds);
 				throw new MFLServiceException("Invalid response retrieving players with IDs : " + playerIds);
-
-			} else {
-				return playerResponse.getWrapper().getPlayers();
 			}
+
+			return playerResponse.getWrapper().getPlayers();
 
 		} catch (RetrofitError e) {
 			LOG.error("Error retrieving player data for IDs '{}' : {}", playerIds, e.getMessage());
@@ -122,10 +122,9 @@ public final class JsonPlayerServiceImpl extends AbstractJsonServiceImpl impleme
 			if (playerResponse == null || playerResponse.getWrapper() == null) {
 				LOG.error("Invalid response retrieving all players.");
 				throw new MFLServiceException("Invalid response retrieving all players");
-
-			} else {
-				return playerResponse.getWrapper().getPlayers();
 			}
+
+			return playerResponse.getWrapper().getPlayers();
 
 		} catch (RetrofitError e) {
 			LOG.error("Error retrieving all player data: {}", e.getMessage());
@@ -210,14 +209,30 @@ public final class JsonPlayerServiceImpl extends AbstractJsonServiceImpl impleme
 	@Override
 	public List<Injury> getAllInjuries(final int week, final int year) {
 
-		final MflPlayerExport playerExport = getRestAdapter(SERVER_ID).create(MflPlayerExport.class);
-		final InjuriesResponse injuriesResponse = playerExport.getInjuries(week, year);
+		validateWeek(week, INJURY_SERVICE);
+		validateYear(year, INJURY_SERVICE);
 
-		for (Injury injury : injuriesResponse.getInjuries().getInjuries()) {
-			injury.setWeek(injuriesResponse.getInjuries().getWeek());
+		try {
+			final MflPlayerExport playerExport = getRestAdapter(SERVER_ID).create(MflPlayerExport.class);
+			final InjuriesResponse injuriesResponse = playerExport.getInjuries(week, year);
+
+			if (injuriesResponse == null || injuriesResponse.getWrapper() == null) {
+				LOG.error("Invalid response retrieving injuries for {} week {}.", year, week);
+				throw new MFLServiceException("Invalid response retrieving injuries in " + year + " week " + week);
+			}
+
+			// set the week element manually, as its returned as an aggregate from MFL.
+			for (Injury injury : injuriesResponse.getWrapper().getInjuries()) {
+				injury.setWeek(injuriesResponse.getWrapper().getWeek());
+			}
+
+			return injuriesResponse.getWrapper().getInjuries();
+
+		} catch (RetrofitError e) {
+
+			LOG.error("Error retrieving {} week {} injuries : {}", year, week, e.getMessage());
+			throw new MFLServiceException("Error retrieving player injury data.", e);
 		}
-
-		return injuriesResponse.getInjuries().getInjuries();
 	}
 
 	/*
@@ -261,7 +276,7 @@ public final class JsonPlayerServiceImpl extends AbstractJsonServiceImpl impleme
 
 		} catch (RetrofitError e) {
 
-			LOG.error("Error retrieving {} leauge {} player status data for IDs '{}' : {}",
+			LOG.error("Error retrieving {} league {} player status data for IDs '{}' : {}",
 					year, leagueId, playerIds, e.getMessage());
 
 			throw new MFLServiceException("Error retrieving player availability data.", e);
