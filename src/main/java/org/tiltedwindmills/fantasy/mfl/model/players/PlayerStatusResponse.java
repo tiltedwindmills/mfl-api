@@ -20,6 +20,7 @@ public class PlayerStatusResponse extends AbstractObject {
 	private PlayerStatusWrapper wrapper;
 
 	/** The player status. This is the fundamental element returned when a single player status is returned. */
+	@JsonProperty("playerStatus")
 	private PlayerAvailabilityStatus playerAvailabilityStatus;
 
 	/** The error. */

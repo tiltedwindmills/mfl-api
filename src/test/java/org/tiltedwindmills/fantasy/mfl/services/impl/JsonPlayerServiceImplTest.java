@@ -363,6 +363,25 @@ public class JsonPlayerServiceImplTest {
 	}
 
 	@Test
+	public void getPlayerAvailabilityTest_Single_Player() {
+
+		new NonStrictExpectations() {{
+			mflPlayerExport.getPlayerStatus(anyInt, anyString, anyInt);
+						returns(JsonDataConverter.playerStatus("single-player"));
+		}};
+
+		PlayerService playerService = new JsonPlayerServiceImpl();
+		Set<String> playerIds = new HashSet<>(Arrays.asList("1234"));
+		Map<Integer, String> playerAvailabilityMap = playerService.getPlayerAvailability(RANDOM_LEAGUE_ID, playerIds, "1", 2015);
+
+
+		assertThat(playerAvailabilityMap, is(not(nullValue())));
+		assertThat(playerAvailabilityMap.size(), is(1));
+		assertThat(playerAvailabilityMap.containsKey(11192), is(true));
+		assertThat(playerAvailabilityMap.get(11192), is("New Orleans Saints - NS"));
+	}
+
+	@Test
 	public void getPlayerAvailabilityTest_NoPlayerIdsProvided() {
 
 		new NonStrictExpectations() {{
