@@ -6,7 +6,8 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
- * The Class PlayerStatusResponse.
+ * The Class PlayerStatusResponse.  Note the differences between the response objects when a single player is
+ * requested vs. multiple.
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class PlayerStatusResponse extends AbstractObject {
@@ -14,11 +15,11 @@ public class PlayerStatusResponse extends AbstractObject {
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = -1311614876244706842L;
 
-	/** The wrapper. */
+	/** The wrapper. This element is present when multiple player statuses are returned.*/
 	@JsonProperty("playerStatuses")
 	private PlayerStatusWrapper wrapper;
 
-	/** The player status. */
+	/** The player status. This is the fundamental element returned when a single player status is returned. */
 	private PlayerAvailabilityStatus playerAvailabilityStatus;
 
 	/** The error. */

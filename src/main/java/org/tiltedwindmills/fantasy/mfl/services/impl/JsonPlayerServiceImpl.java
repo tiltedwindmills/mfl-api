@@ -264,7 +264,7 @@ public final class JsonPlayerServiceImpl extends AbstractJsonServiceImpl impleme
 			LOG.error("Error retrieving {} leauge {} player status data for IDs '{}' : {}",
 					year, leagueId, playerIds, e.getMessage());
 
-			throw new MFLServiceException("Error retrieving player data.", e);
+			throw new MFLServiceException("Error retrieving player availability data.", e);
 		}
 	}
 
@@ -273,7 +273,6 @@ public final class JsonPlayerServiceImpl extends AbstractJsonServiceImpl impleme
 		final Map<Integer, String> playerStatuses = new HashMap<Integer, String>();
 
 		// MFL API only returns a single element for a one-player request, so manage that difference here.
-		// TODO : still necessary?
 		if (isMultiplePlayers) {
 
 			if (response.getWrapper() == null) {
