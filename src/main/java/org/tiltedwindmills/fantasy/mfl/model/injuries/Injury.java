@@ -1,5 +1,6 @@
 package org.tiltedwindmills.fantasy.mfl.model.injuries;
 
+import org.apache.commons.lang3.StringUtils;
 import org.tiltedwindmills.fantasy.mfl.model.AbstractObject;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -76,12 +77,13 @@ public class Injury extends AbstractObject {
 	}
 
 	/**
-	 * Sets the details.
+	 * Sets the details.  Note that this class will trim the input, as MFL puts an endline character after
+	 * the details property in their export.
 	 *
 	 * @param details the new details
 	 */
 	public final void setDetails(final String details) {
-		this.details = details;
+		this.details = StringUtils.trim(details);
 	}
 
 	/**
