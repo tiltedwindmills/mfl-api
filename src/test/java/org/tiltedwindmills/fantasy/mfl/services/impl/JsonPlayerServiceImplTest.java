@@ -24,8 +24,10 @@ import org.tiltedwindmills.fantasy.mfl.JsonDataConverter;
 import org.tiltedwindmills.fantasy.mfl.model.Player;
 import org.tiltedwindmills.fantasy.mfl.model.injuries.InjuriesResponse;
 import org.tiltedwindmills.fantasy.mfl.model.injuries.Injury;
+import org.tiltedwindmills.fantasy.mfl.model.players.PlayerAvailabilityStatus;
 import org.tiltedwindmills.fantasy.mfl.model.players.PlayerResponse;
 import org.tiltedwindmills.fantasy.mfl.model.players.PlayerStatusResponse;
+import org.tiltedwindmills.fantasy.mfl.model.players.PlayerStatusWrapper;
 import org.tiltedwindmills.fantasy.mfl.services.PlayerService;
 import org.tiltedwindmills.fantasy.mfl.services.exception.MFLServiceException;
 
@@ -363,7 +365,7 @@ public class JsonPlayerServiceImplTest {
 	}
 
 	@Test
-	public void getPlayerAvailabilityTest_Single_Player() {
+	public void getPlayerAvailabilityTest_SinglePlayer() {
 
 		new NonStrictExpectations() {{
 			mflPlayerExport.getPlayerStatus(anyInt, anyString, anyInt);
@@ -493,8 +495,24 @@ public class JsonPlayerServiceImplTest {
 		playerService.getPlayerAvailability(RANDOM_LEAGUE_ID, new HashSet<>(Arrays.asList("1234","5678")), "1", 2015);
 	}
 
+	@Test
+	public void getAvailabilityPlayerTest_SinglePlayerNullStatus() {
+
+		new NonStrictExpectations() {{
+			mflPlayerExport.getPlayerStatus(anyInt, anyString, anyInt); returns(new PlayerStatusResponse());
+		}};
+
+		// only send one player ID.
+		PlayerService playerService = new JsonPlayerServiceImpl();
+		Set<String> playerIds = new HashSet<>(Arrays.asList("1234"));
+		Map<Integer, String> playerAvailabilityMap = playerService.getPlayerAvailability(RANDOM_LEAGUE_ID, playerIds, "1", 2015);
+
+		assertThat(playerAvailabilityMap, is(not(nullValue())));
+		assertThat(playerAvailabilityMap.size(), is(0));
+	}
+
 	@Test(expected = MFLServiceException.class)
-	public void getAvailabilityPlayerTest_NullWrapper() {
+	public void getAvailabilityPlayerTest_MultiplePlayersNullWrapper() {
 
 		new NonStrictExpectations() {{
 			mflPlayerExport.getPlayerStatus(anyInt, anyString, anyInt); returns(new PlayerStatusResponse());
@@ -504,6 +522,52 @@ public class JsonPlayerServiceImplTest {
 		PlayerService playerService = new JsonPlayerServiceImpl();
 		playerService.getPlayerAvailability(RANDOM_LEAGUE_ID, new HashSet<>(Arrays.asList("1234","5678")), "1", 2015);
 	}
+
+	@Test
+	public void getAvailabilityPlayerTest_MultiplePlayersNullStatusList() {
+
+		new NonStrictExpectations() {{
+			PlayerStatusResponse playerStatusResponse = new PlayerStatusResponse();
+			playerStatusResponse.setWrapper(new PlayerStatusWrapper());
+			assertThat(playerStatusResponse.getWrapper().getPlayerStatuses(), is(nullValue()));
+			mflPlayerExport.getPlayerStatus(anyInt, anyString, anyInt); returns(playerStatusResponse);
+		}};
+
+		// send multiple player IDs
+		PlayerService playerService = new JsonPlayerServiceImpl();
+		Set<String> playerIds = new HashSet<>(Arrays.asList("1234","5678"));
+		Map<Integer, String> playerAvailabilityMap = playerService.getPlayerAvailability(RANDOM_LEAGUE_ID, playerIds, "1", 2015);
+
+		assertThat(playerAvailabilityMap, is(not(nullValue())));
+		assertThat(playerAvailabilityMap.size(), is(0));
+	}
+
+	@Test
+	public void getAvailabilityPlayerTest_MultiplePlayersNullStatusInList() {
+
+		new NonStrictExpectations() {{
+			PlayerAvailabilityStatus playerAvailabilityStatus = new PlayerAvailabilityStatus();
+			playerAvailabilityStatus.setPlayerId(10695);
+			playerAvailabilityStatus.setStatus("Foo");
+
+			PlayerStatusResponse playerStatusResponse = new PlayerStatusResponse();
+			playerStatusResponse.setWrapper(new PlayerStatusWrapper());
+			playerStatusResponse.getWrapper().setPlayerStatuses(Arrays.asList(null, playerAvailabilityStatus));
+
+			mflPlayerExport.getPlayerStatus(anyInt, anyString, anyInt); returns(playerStatusResponse);
+		}};
+
+		// send multiple player IDs
+		PlayerService playerService = new JsonPlayerServiceImpl();
+		Set<String> playerIds = new HashSet<>(Arrays.asList("1234","5678"));
+		Map<Integer, String> playerAvailabilityMap = playerService.getPlayerAvailability(RANDOM_LEAGUE_ID, playerIds, "1", 2015);
+
+		// make sure the null status didn't screw up the rest of the processing
+		assertThat(playerAvailabilityMap, is(not(nullValue())));
+		assertThat(playerAvailabilityMap.size(), is(1));
+		assertThat(playerAvailabilityMap.get(10695), is("Foo"));
+	}
+
 
 
 
