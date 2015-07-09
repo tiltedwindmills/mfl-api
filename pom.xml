@@ -1,10 +1,22 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
+	<name>MFL API wrapper</name>
+	<description>A library to simplify Java projects using the MFL developer's API.</description>
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.tiltedwindmills.fantasy</groupId>
 	<artifactId>mfl</artifactId>
 	<version>0.0.3</version>
+
+	<organization>
+		<name>Tilted Windmills</name>
+		<url>http://www.tiltedwindmills.org</url>
+	</organization>
+
+	<issueManagement>
+		<system>GitHub</system>
+		<url>https://github.com/tiltedwindmills/mfl-api/issues</url>
+	</issueManagement>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

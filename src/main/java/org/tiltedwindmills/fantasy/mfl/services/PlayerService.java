@@ -37,7 +37,9 @@ public interface PlayerService {
 	List<Player> getAllPlayers();
 
 	/**
-	 * Gets the player scores.
+	 * Gets the weekly scores for a specific player.  This will return all available scores for the provided year.  Bye
+	 * weeks, future weeks, and any other weeks without a score ( e.g. injuries or suspensions ) will not be in the
+	 * returned map.
 	 *
 	 * @param leagueId the league id
 	 * @param playerId the player id
@@ -58,6 +60,7 @@ public interface PlayerService {
 	 * @param currentYear the current year
 	 * @return the multiple players scores
 	 */
+	// TODO : this seems screwy.
 	Map<Integer, Double> getMultiplePlayersScores(int leagueId,
 												List<Integer> playerIds,
 												String week,

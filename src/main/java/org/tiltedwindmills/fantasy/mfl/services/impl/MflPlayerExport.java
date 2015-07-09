@@ -11,6 +11,9 @@ import retrofit.http.Query;
 
 /**
  * Retrofit interface for MFL League API calls.
+ *
+ *
+ * @author John Daniel
  */
 public interface MflPlayerExport {
 
@@ -54,23 +57,27 @@ public interface MflPlayerExport {
 	InjuriesResponse getInjuries(@Query("W") int week, @Path("year") int year);
 
 	/**
-	 * Gets a players scores.
+	 * Gets a player's weekly scores.  week = "YTD" parameter can be used for year-to-date scores, or week = "AVG"
+	 * for weekly average scores.
+	 *
+	 * @see http://football7.myfantasyleague.com/2012/export?TYPE=playerScores&L=35465&PLAYERS=8658,3291&W=YTD
 	 *
 	 * @param league the league
-	 * @param playerId the player id
+	 * @param playerIds the player ids ( comma separated list )
 	 * @param week the week
 	 * @param year the year
 	 * @return the all players since
 	 */
 	@GET("/{year}/export?TYPE=playerScores&JSON=1")
 	PlayerScoresResponse getPlayerScores(@Query("L") int league,
-										@Query("PLAYERS") String playerId,
+										@Query("PLAYERS") String playerIds,
 										@Query("W") String week,
 										@Path("year") int year);
-//	http://football7.myfantasyleague.com/2012/export?TYPE=playerScores&L=35465&PLAYERS=8658,3291&W=YTD
 
 	/**
 	 * Gets the player's league availability status. ( e.g. locked, free agent, rostered, etc. )
+	 *
+	 * @see http://football3.myfantasyleague.com/2013/export?TYPE=playerStatus&L=10779&P=8658,10788,99999
 	 *
 	 * @param league the league
 	 * @param playerIds the player ids ( comma separated list )
@@ -81,5 +88,4 @@ public interface MflPlayerExport {
 	PlayerStatusResponse getPlayerStatus(@Query("L") int league,
 										@Query("P") String playerIds,
 										@Path("year") int year);
-//	http://football3.myfantasyleague.com/2013/export?TYPE=playerStatus&L=10779&P=8658,10788,9999999999
 }
