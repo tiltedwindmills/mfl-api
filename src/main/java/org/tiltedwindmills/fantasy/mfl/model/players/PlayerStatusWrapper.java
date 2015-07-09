@@ -24,6 +24,7 @@ public class PlayerStatusWrapper extends AbstractObject {
 	 * @return the player statuses
 	 */
 	public final List<PlayerAvailabilityStatus> getPlayerStatuses() {
+		// TODO : null safety?
 		return playerStatuses;
 	}
 

@@ -6,6 +6,7 @@ import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
+import static org.tiltedwindmills.fantasy.mfl.RetrofitUtils.getDummyHttpError;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -26,21 +27,24 @@ import org.tiltedwindmills.fantasy.mfl.model.injuries.InjuriesResponse;
 import org.tiltedwindmills.fantasy.mfl.model.injuries.Injury;
 import org.tiltedwindmills.fantasy.mfl.model.players.PlayerAvailabilityStatus;
 import org.tiltedwindmills.fantasy.mfl.model.players.PlayerResponse;
+import org.tiltedwindmills.fantasy.mfl.model.players.PlayerScore;
+import org.tiltedwindmills.fantasy.mfl.model.players.PlayerScoresResponse;
+import org.tiltedwindmills.fantasy.mfl.model.players.PlayerScoresWrapper;
 import org.tiltedwindmills.fantasy.mfl.model.players.PlayerStatusResponse;
 import org.tiltedwindmills.fantasy.mfl.model.players.PlayerStatusWrapper;
 import org.tiltedwindmills.fantasy.mfl.services.PlayerService;
 import org.tiltedwindmills.fantasy.mfl.services.exception.MFLServiceException;
 
 import retrofit.RetrofitError;
-import retrofit.client.Header;
-import retrofit.client.Response;
 
 /**
- * Tests for {@code org.tiltedwindmills.fantasy.mfl.services.impl.JsonPlayerServiceImpl}.
+ * Tests for {@link org.tiltedwindmills.fantasy.mfl.services.impl.JsonPlayerServiceImpl}.
  *
  * @author John Daniel
  */
 public class JsonPlayerServiceImplTest {
+
+	// TODO : need to add parameter tests. e.g. don't think any of these are testing league or server ID validations.
 
 	// constants
 	private static final int RANDOM_LEAGUE_ID = 11111;
@@ -231,6 +235,207 @@ public class JsonPlayerServiceImplTest {
 	}
 
 
+	/*---------------------------------------------- getWeeklyScores ---------------------------------------------*/
+
+	@Test
+	public void getWeeklyScoresTest() {
+
+		new NonStrictExpectations() {{
+			mflPlayerExport.getPlayerScores(anyInt, anyString, anyString, anyInt);
+					returns(JsonDataConverter.playerScores("full-schedule"));
+		}};
+
+		PlayerService playerService = new JsonPlayerServiceImpl();
+		Map<Integer, Double> playerScoresMap = playerService.getWeeklyScores(RANDOM_LEAGUE_ID, 1234, "1", 2015);
+
+		assertThat(playerScoresMap, is(not(nullValue())));
+		assertThat(playerScoresMap.size(), is(16));
+
+		// before bye week
+		assertThat(playerScoresMap.containsKey(1), is(true));
+		assertThat(playerScoresMap.get(1), is(30.7));
+
+		// bye week
+		assertThat(playerScoresMap.containsKey(10), is(false));
+
+		// after bye week
+		assertThat(playerScoresMap.containsKey(11), is(true));
+		assertThat(playerScoresMap.get(11), is(23.62));
+	}
+
+	@Test
+	public void getWeeklyScoresTest_InjuredPlayer() {
+
+		// Arian Foster missed 3 weeks due to injury.  Make sure they don't show in the scoring list.
+
+		new NonStrictExpectations() {{
+			mflPlayerExport.getPlayerScores(anyInt, anyString, anyString, anyInt);
+					returns(JsonDataConverter.playerScores("injured-player"));
+		}};
+
+		PlayerService playerService = new JsonPlayerServiceImpl();
+		Map<Integer, Double> playerScoresMap = playerService.getWeeklyScores(RANDOM_LEAGUE_ID, 1234, "1", 2015);
+
+		assertThat(playerScoresMap, is(not(nullValue())));
+		assertThat(playerScoresMap.size(), is(13));
+
+		// validate injured weeks are missing
+		assertThat(playerScoresMap.containsKey(3), is(false));
+		assertThat(playerScoresMap.containsKey(11), is(false));
+		assertThat(playerScoresMap.containsKey(12), is(false));
+
+		// before injuries
+		assertThat(playerScoresMap.containsKey(1), is(true));
+		assertThat(playerScoresMap.get(1), is(11d));
+
+		// after injuries
+		assertThat(playerScoresMap.containsKey(4), is(true));
+		assertThat(playerScoresMap.get(4), is(9.6));
+	}
+
+	@Test
+	public void getWeeklyScoresTest_ZeroScoreWeek() {
+
+		// Jimmy Graham didn't record a catch weeks 7 or 13.  Make sure these do show up in report.
+
+		new NonStrictExpectations() {{
+			mflPlayerExport.getPlayerScores(anyInt, anyString, anyString, anyInt);
+					returns(JsonDataConverter.playerScores("week-without-scoring"));
+		}};
+
+		PlayerService playerService = new JsonPlayerServiceImpl();
+		Map<Integer, Double> playerScoresMap = playerService.getWeeklyScores(RANDOM_LEAGUE_ID, 1234, "1", 2015);
+
+		assertThat(playerScoresMap, is(not(nullValue())));
+		assertThat(playerScoresMap.size(), is(16));
+
+		// validate injured weeks are present
+		assertThat(playerScoresMap.containsKey(7), is(true));
+		assertThat(playerScoresMap.get(7), is(0d));
+		assertThat(playerScoresMap.containsKey(13), is(true));
+		assertThat(playerScoresMap.get(13), is(0d));
+	}
+
+	@Test(expected = MFLServiceException.class)
+	public void getWeeklyScoresTest_InvalidPlayerId() {
+
+		new NonStrictExpectations() {{
+			mflPlayerExport.getPlayerScores(anyInt, anyString, anyString, anyInt);
+					returns(JsonDataConverter.playerScores("full-schedule"));
+		}};
+
+		PlayerService playerService = new JsonPlayerServiceImpl();
+		playerService.getWeeklyScores(RANDOM_LEAGUE_ID, -1, "1", 2015);
+	}
+
+	@Test(expected = MFLServiceException.class)
+	public void getWeeklyScoresTest_EarlyYear() {
+
+		PlayerService playerService = new JsonPlayerServiceImpl();
+		playerService.getWeeklyScores(RANDOM_LEAGUE_ID, 1234, "1", 1979);
+
+		new Verifications() {{
+			// Verify no calls to the service API occurred
+			mflPlayerExport.getPlayerScores(anyInt, anyString, anyString, anyInt); times = 0;
+		}};
+	}
+
+	@Test(expected = MFLServiceException.class)
+	public void getWeeklyScoresTest_FutureYear() {
+
+		PlayerService playerService = new JsonPlayerServiceImpl();
+		int nextYear = Calendar.getInstance().get(Calendar.YEAR) + 1;
+		playerService.getWeeklyScores(RANDOM_LEAGUE_ID, 1234, "1", nextYear);
+
+		new Verifications() {{
+			// Verify no calls to the service API occurred
+			mflPlayerExport.getPlayerScores(anyInt, anyString, anyString, anyInt); times = 0;
+		}};
+	}
+
+	@Test
+	public void getWeeklyScoresTest_HttpError() {
+
+		new NonStrictExpectations() {{
+			mflPlayerExport.getPlayerScores(anyInt, anyString, anyString, anyInt); result = getDummyHttpError();
+		}};
+
+		try {
+			PlayerService playerService = new JsonPlayerServiceImpl();
+			playerService.getWeeklyScores(RANDOM_LEAGUE_ID, 1234, "1", 2015);
+			fail("should have thrown exception.");
+
+		} catch (MFLServiceException e) {
+			// expected behavior.  Confirm root cause is propagated.
+			assertThat(e.getCause(), instanceOf(RetrofitError.class));
+		}
+	}
+
+	@Test(expected = MFLServiceException.class)
+	public void getWeeklyScoresTest_NullResponse() {
+
+		new NonStrictExpectations() {{
+			mflPlayerExport.getPlayerScores(anyInt, anyString, anyString, anyInt); returns(null);
+		}};
+
+		PlayerService playerService = new JsonPlayerServiceImpl();
+		playerService.getWeeklyScores(RANDOM_LEAGUE_ID, 1234, "1", 2015);
+	}
+
+	@Test(expected = MFLServiceException.class)
+	public void getWeeklyScoresTest_NullWrapper() {
+
+		new NonStrictExpectations() {{
+			mflPlayerExport.getPlayerScores(anyInt, anyString, anyString, anyInt); returns(new PlayerScoresResponse());
+		}};
+
+		PlayerService playerService = new JsonPlayerServiceImpl();
+		playerService.getWeeklyScores(RANDOM_LEAGUE_ID, 1234, "1", 2015);
+	}
+
+	@Test
+	public void getWeeklyScoresTest_UnsetScoresList() {
+
+		new NonStrictExpectations() {{
+
+			PlayerScoresResponse playerScoresResponse = new PlayerScoresResponse();
+			playerScoresResponse.setWrapper(new PlayerScoresWrapper());  // no scores are set
+			mflPlayerExport.getPlayerScores(anyInt, anyString, anyString, anyInt); returns(playerScoresResponse);
+		}};
+
+		PlayerService playerService = new JsonPlayerServiceImpl();
+		Map<Integer, Double> playerScoreMap = playerService.getWeeklyScores(RANDOM_LEAGUE_ID, 1234, "1", 2015);
+
+		assertThat(playerScoreMap, is(not(nullValue())));
+		assertThat(playerScoreMap.size(), is(0));
+	}
+
+	@Test
+	public void getWeeklyScoresTest_NullEntryInScoresList() {
+
+		new NonStrictExpectations() {{
+
+			PlayerScore playerScore = new PlayerScore();
+			playerScore.setPlayerId(10695);
+			playerScore.setScore("12.3");
+			playerScore.setWeek("5");
+
+			PlayerScoresResponse playerScoresResponse = new PlayerScoresResponse();
+			playerScoresResponse.setWrapper(new PlayerScoresWrapper());
+			playerScoresResponse.getWrapper().setPlayerScores(Arrays.asList(null, playerScore));
+			mflPlayerExport.getPlayerScores(anyInt, anyString, anyString, anyInt); returns(playerScoresResponse);
+		}};
+
+		PlayerService playerService = new JsonPlayerServiceImpl();
+		Map<Integer, Double> playerScoreMap = playerService.getWeeklyScores(RANDOM_LEAGUE_ID, 1234, "1", 2015);
+
+		// make sure the null score didn't screw up the rest of the processing
+		assertThat(playerScoreMap, is(not(nullValue())));
+		assertThat(playerScoreMap.size(), is(1));
+		assertThat(playerScoreMap.get(5), is(12.3));
+	}
+
+
 	/*----------------------------------------------- getAllInjuries -----------------------------------------------*/
 
 
@@ -353,7 +558,6 @@ public class JsonPlayerServiceImplTest {
 		Set<String> playerIds = new HashSet<>(Arrays.asList("1234","5678"));
 		Map<Integer, String> playerAvailabilityMap = playerService.getPlayerAvailability(RANDOM_LEAGUE_ID, playerIds, "1", 2015);
 
-
 		assertThat(playerAvailabilityMap, is(not(nullValue())));
 		assertThat(playerAvailabilityMap.size(), is(4));
 		assertThat(playerAvailabilityMap.containsKey(11192), is(true));
@@ -375,7 +579,6 @@ public class JsonPlayerServiceImplTest {
 		PlayerService playerService = new JsonPlayerServiceImpl();
 		Set<String> playerIds = new HashSet<>(Arrays.asList("1234"));
 		Map<Integer, String> playerAvailabilityMap = playerService.getPlayerAvailability(RANDOM_LEAGUE_ID, playerIds, "1", 2015);
-
 
 		assertThat(playerAvailabilityMap, is(not(nullValue())));
 		assertThat(playerAvailabilityMap.size(), is(1));
@@ -566,16 +769,5 @@ public class JsonPlayerServiceImplTest {
 		assertThat(playerAvailabilityMap, is(not(nullValue())));
 		assertThat(playerAvailabilityMap.size(), is(1));
 		assertThat(playerAvailabilityMap.get(10695), is("Foo"));
-	}
-
-
-
-
-
-	/** Retrieves a silly generic error */
-	private RetrofitError getDummyHttpError() {
-		Response response = new Response("some url", 500, "some reason", new ArrayList<Header>(), null);
-		RetrofitError error = RetrofitError.httpError("someUrl", response, null, null);
-		return error;
 	}
 }

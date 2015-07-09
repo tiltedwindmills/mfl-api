@@ -10,6 +10,7 @@ import org.springframework.core.io.Resource;
 import org.tiltedwindmills.fantasy.mfl.model.injuries.InjuriesResponse;
 import org.tiltedwindmills.fantasy.mfl.model.nflschedule.NFLScheduleResponse;
 import org.tiltedwindmills.fantasy.mfl.model.players.PlayerResponse;
+import org.tiltedwindmills.fantasy.mfl.model.players.PlayerScoresResponse;
 import org.tiltedwindmills.fantasy.mfl.model.players.PlayerStatusResponse;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -45,6 +46,22 @@ public class JsonDataConverter {
 		return getResponse(fileName, "players", PlayerResponse.class);
 	}
 
+	/**
+	 * Gets the scoring export from the given file in the "exports/playerScores" directory.
+	 *
+	 * @param fileName the file name
+	 * @return the player scores response
+	 */
+	public static final PlayerScoresResponse playerScores(final String fileName) {
+		return getResponse(fileName, "playerScores", PlayerScoresResponse.class);
+	}
+
+	/**
+	 * Gets the injury report from the given file in the "exports/injuries" directory.
+	 *
+	 * @param fileName the file name
+	 * @return the injuries response
+	 */
 	public static final InjuriesResponse injuries(final String fileName) {
 		return getResponse(fileName, "injuries", InjuriesResponse.class);
 	}

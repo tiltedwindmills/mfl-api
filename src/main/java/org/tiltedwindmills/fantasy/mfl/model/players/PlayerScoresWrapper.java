@@ -24,6 +24,7 @@ public class PlayerScoresWrapper extends AbstractObject {
 	 * @return the player scores
 	 */
 	public final List<PlayerScore> getPlayerScores() {
+		// TODO : need null safety
 		return playerScores;
 	}
 

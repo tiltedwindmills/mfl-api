@@ -16,6 +16,8 @@ public class PlayerScore extends AbstractObject {
 	@JsonProperty("id")
 	private int playerId;
 
+	// TODO : make these numbers or document why they can't be.( then write tests for those cases )
+
 	/** The week. */
 	private String week;
 

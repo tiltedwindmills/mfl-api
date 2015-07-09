@@ -41,11 +41,13 @@ public final class JsonPlayerServiceImpl extends AbstractJsonServiceImpl impleme
 	private static final Logger LOG = LoggerFactory.getLogger(JsonPlayerServiceImpl.class);
 
 	// service names for validation routines
-	private static final String PLAYER_AVAILABILITY_SERVICE = "player availability";
 	private static final String INJURY_SERVICE = "injury";
+	private static final String PLAYER_AVAILABILITY_SERVICE = "player availability";
+	private static final String PLAYER_SCORES_SERVICE = "player scores";
 
 	// no need to be server specific about generic player ops.
 	private static final String SERVER_ID = "";
+
 
 	/*
 	 * (non-Javadoc)
@@ -141,28 +143,57 @@ public final class JsonPlayerServiceImpl extends AbstractJsonServiceImpl impleme
 	public Map<Integer, Double> getWeeklyScores(final int leagueId, final int playerId, final String serverId,
 			final int year) {
 
-		final MflPlayerExport playerExport = getRestAdapter(serverId).create(MflPlayerExport.class);
-		final PlayerScoresResponse playerResponse = playerExport.getPlayerScores(leagueId, Integer.toString(playerId),
-				"", year);
+		validateLeagueId(leagueId, PLAYER_SCORES_SERVICE);
+		validateServerId(serverId, PLAYER_SCORES_SERVICE);
+		validateYear(year, PLAYER_SCORES_SERVICE);
 
-		final List<PlayerScore> apiScores = playerResponse.getWrapper().getPlayerScores();
+		try {
 
-		// fill our map, as we can throw away the player ID element of the returned data.
-		final Map<Integer, Double> playerScores = new TreeMap<Integer, Double>();
-		for (PlayerScore apiScore : apiScores) {
-
-			// will be blank if didn't play. Leave these off the list.
-			if (!StringUtils.isBlank(apiScore.getScore())) {
-
-				// get the values we care about, setting to 0 as default.
-				final Integer week = NumberUtils.toInt(apiScore.getWeek(), 0);
-				final Double score = NumberUtils.toDouble(apiScore.getScore(), 0.0);
-
-				playerScores.put(week, score);
+			if (playerId < 0) {
+				LOG.warn("Player ID {} cannot be used to retrieve player scores.", playerId);
+				throw new MFLServiceException("Cannot retrieve player score information without a valid ID.");
 			}
-		}
 
-		return playerScores;
+			final MflPlayerExport playerExport = getRestAdapter(serverId).create(MflPlayerExport.class);
+			final PlayerScoresResponse playerResponse =
+					playerExport.getPlayerScores(leagueId, Integer.toString(playerId), "", year);
+
+			if (playerResponse == null || playerResponse.getWrapper() == null) {
+				LOG.error("Invalid response retrieving {} player id {} scores.", year, playerId);
+				throw new MFLServiceException("Invalid response retrieving " + year + " player id " + playerId);
+			}
+
+			final List<PlayerScore> apiScores = playerResponse.getWrapper().getPlayerScores();
+
+			// fill our map, as we can throw away the player ID element of the returned data.
+			final Map<Integer, Double> playerScores = new TreeMap<Integer, Double>();
+			if (CollectionUtils.isEmpty(apiScores)) {
+				LOG.warn("Found empty player scores list.  Ignoring.");
+			} else {
+				for (PlayerScore apiScore : apiScores) {
+					if (apiScore == null) {
+						LOG.warn("Found null player score.  Ignoring.");
+					} else {
+
+						// value will be blank if didn't play. Leave these off the list.
+						if (!StringUtils.isBlank(apiScore.getScore())) {
+
+							// get the values we care about, setting to 0 as default.
+							final Integer week = NumberUtils.toInt(apiScore.getWeek(), 0);
+							final Double score = NumberUtils.toDouble(apiScore.getScore(), 0.0);
+
+							playerScores.put(week, score);
+						}
+					}
+				}
+			}
+
+			return playerScores;
+
+		} catch (RetrofitError e) {
+			LOG.error("Error retrieving all player data: {}", e.getMessage());
+			throw new MFLServiceException("Error retrieving all player data", e);
+		}
 	}
 
 	/*
@@ -223,6 +254,8 @@ public final class JsonPlayerServiceImpl extends AbstractJsonServiceImpl impleme
 
 			// set the week element manually, as its returned as an aggregate from MFL.
 			for (Injury injury : injuriesResponse.getWrapper().getInjuries()) {
+
+				// TODO : make sure we have test for this functionality
 				injury.setWeek(injuriesResponse.getWrapper().getWeek());
 			}
 
@@ -295,8 +328,8 @@ public final class JsonPlayerServiceImpl extends AbstractJsonServiceImpl impleme
 			}
 
 			final List<PlayerAvailabilityStatus> apiStatuses = response.getWrapper().getPlayerStatuses();
-			if (apiStatuses == null) {
-				LOG.warn("Found null player status list.  Ignoring.");
+			if (CollectionUtils.isEmpty(apiStatuses)) {
+				LOG.warn("Found empty player status list.  Ignoring.");
 			} else {
 				for (PlayerAvailabilityStatus apiStatus : apiStatuses) {
 					if (apiStatus == null) {

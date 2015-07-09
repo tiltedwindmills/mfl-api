@@ -9,3 +9,8 @@ playerStatus/single-player.json -> http://football16.myfantasyleague.com/2015/ex
 
 injuries/invalid-week.json -> http://football.myfantasyleague.com/2015/export?TYPE=injuries&L=&W=23&JSON=1
 injuries/injuries.json -> http://football.myfantasyleague.com/2015/export?TYPE=injuries&L=&W=&JSON=1
+
+* playerScores/full-schedule.json -> http://football16.myfantasyleague.com/2014/export?TYPE=playerScores&L=71210&PLAYERS=10695&JSON=1
+* playerScores/week-without-scoring.json -> http://football16.myfantasyleague.com/2014/export?TYPE=playerScores&L=71210&PLAYERS=9925&JSON=1 ( poor jimmy didn't register a catch weeks 7, 13 )
+* playerScores/injured-player.json -> http://football16.myfantasyleague.com/2014/export?TYPE=playerScores&L=71210&PLAYERS=9690&JSON=1 ( arian was out weeks 3, 11, 12 )
+* playerScores/suspended-player.json -> http://football16.myfantasyleague.com/2014/export?TYPE=playerScores&L=71210&PLAYERS=10274&JSON=1 ( oh aldon, you bad boy )
