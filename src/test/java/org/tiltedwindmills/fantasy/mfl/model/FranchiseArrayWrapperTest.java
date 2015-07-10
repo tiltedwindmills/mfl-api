@@ -36,7 +36,6 @@ public class FranchiseArrayWrapperTest {
 		FranchiseArrayWrapper wrapper = new FranchiseArrayWrapper();
 		wrapper.setFranchises(Arrays.asList(franchise));
 
-		// set the value null, then immediately confirm its not returned that way.
 		assertThat(wrapper.getFranchises(), is(not(nullValue())));
 		assertThat(wrapper.getFranchises().size(), is(1));
 		assertThat(wrapper.getFranchises().get(0).getName(), is("foo"));

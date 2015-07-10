@@ -9,8 +9,6 @@ import static org.hamcrest.Matchers.emptyCollectionOf;
 import java.util.Arrays;
 
 import org.junit.Test;
-import org.tiltedwindmills.fantasy.mfl.model.Franchise;
-import org.tiltedwindmills.fantasy.mfl.model.FranchiseArrayWrapper;
 
 /**
  * Tests for {@code org.tiltedwindmills.fantasy.mfl.model.players.PlayerStatusWrapper}.  Normally we don't care about

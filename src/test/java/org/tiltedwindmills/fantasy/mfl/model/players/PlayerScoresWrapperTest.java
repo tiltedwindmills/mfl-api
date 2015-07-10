@@ -39,7 +39,6 @@ public class PlayerScoresWrapperTest {
 		PlayerScoresWrapper wrapper = new PlayerScoresWrapper();
 		wrapper.setPlayerScores(Arrays.asList(playerScore));
 
-		// set the value null, then immediately confirm its not returned that way.
 		assertThat(wrapper.getPlayerScores(), is(not(nullValue())));
 		assertThat(wrapper.getPlayerScores().size(), is(1));
 		assertThat(wrapper.getPlayerScores().get(0).getPlayerId(), is(10695));
