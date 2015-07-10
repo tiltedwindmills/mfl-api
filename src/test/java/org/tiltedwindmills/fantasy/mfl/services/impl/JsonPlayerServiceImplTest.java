@@ -400,6 +400,7 @@ public class JsonPlayerServiceImplTest {
 
 			PlayerScoresResponse playerScoresResponse = new PlayerScoresResponse();
 			playerScoresResponse.setWrapper(new PlayerScoresWrapper());  // no scores are set
+			playerScoresResponse.getWrapper().setPlayerScores(null);
 			mflPlayerExport.getPlayerScores(anyInt, anyString, anyString, anyInt); returns(playerScoresResponse);
 		}};
 
@@ -732,7 +733,7 @@ public class JsonPlayerServiceImplTest {
 		new NonStrictExpectations() {{
 			PlayerStatusResponse playerStatusResponse = new PlayerStatusResponse();
 			playerStatusResponse.setWrapper(new PlayerStatusWrapper());
-			assertThat(playerStatusResponse.getWrapper().getPlayerStatuses(), is(nullValue()));
+			playerStatusResponse.getWrapper().setPlayerStatuses(null);
 			mflPlayerExport.getPlayerStatus(anyInt, anyString, anyInt); returns(playerStatusResponse);
 		}};
 
