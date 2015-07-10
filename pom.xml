@@ -13,6 +13,11 @@
 		<url>http://www.tiltedwindmills.org</url>
 	</organization>
 
+	<scm>
+		<url>https://github.com/tiltedwindmills/mfl-api</url>
+		<connection>scm:git:git://github.com/tiltedwindmills/mfl-api.git</connection>
+	</scm>
+
 	<issueManagement>
 		<system>GitHub</system>
 		<url>https://github.com/tiltedwindmills/mfl-api/issues</url>
@@ -212,6 +217,27 @@
 				</configuration>
 			</plugin>
 
+			<!-- Validate dependency convergence and require non-SNAPSHOT dependencies -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-enforcer-plugin</artifactId>
+				<version>1.0.1</version>
+				<executions>
+					<execution>
+						<id>enforce</id>
+						<configuration>
+							<rules>
+								<dependencyConvergence />
+								<requireReleaseDeps />
+							</rules>
+						</configuration>
+						<goals>
+							<goal>enforce</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
 		</plugins>
 	</build>
 
@@ -271,6 +297,18 @@
 				<configuration>
 					<targetJdk>1.7</targetJdk>
 				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>javancss-maven-plugin</artifactId>
+				<version>2.1</version>
+			</plugin>
+
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>jdepend-maven-plugin</artifactId>
+				<version>2.0</version>
 			</plugin>
 
 			<!-- Add JXR to site reports.  Used by PMD. -->
