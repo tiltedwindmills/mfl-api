@@ -44,731 +44,768 @@ import retrofit.RetrofitError;
  */
 public class JsonPlayerServiceImplTest {
 
-	// TODO : need to add parameter tests. e.g. don't think any of these are testing league or server ID validations.
+    // TODO : need to add parameter tests. e.g. don't think any of these are testing league or server ID validations.
 
-	// constants
-	private static final int RANDOM_LEAGUE_ID = 11111;
+    // constants
+    private static final int RANDOM_LEAGUE_ID = 11111;
 
-	// mock any implementers of the Retrofit interface
-	@Capturing private MflPlayerExport mflPlayerExport;
+    // mock any implementers of the Retrofit interface
+    @Capturing private MflPlayerExport mflPlayerExport;
 
-	/*------------------------------------------------ getPlayers ------------------------------------------------*/
+    /*------------------------------------------------ getPlayers ------------------------------------------------*/
 
-	@Test
-	public void getPlayersTest() {
+    @Test
+    public void getPlayersTest() {
 
-		new NonStrictExpectations() {{
-			mflPlayerExport.getPlayers(anyString, anyInt); returns(JsonDataConverter.players("multiple-players"));
-		}};
+        new NonStrictExpectations() {{
+            mflPlayerExport.getPlayers(anyString, anyInt); returns(JsonDataConverter.players("multiple-players"));
+        }};
 
-		PlayerService playerService = new JsonPlayerServiceImpl();
-		List<Player> players = playerService.getPlayers(Arrays.asList("1234","5678"));
+        PlayerService playerService = new JsonPlayerServiceImpl();
+        List<Player> players = playerService.getPlayers(Arrays.asList("1234","5678"));
 
-		assertThat(players, is(not(nullValue())));
-		assertThat(players.size(), is(2));
-		assertThat(players.get(0), is(not(nullValue())));
-		assertThat(players.get(0).getName(), is("Brees, Drew"));
-	}
+        assertThat(players, is(not(nullValue())));
+        assertThat(players.size(), is(2));
+        assertThat(players.get(0), is(not(nullValue())));
+        assertThat(players.get(0).getName(), is("Brees, Drew"));
+    }
 
-	@Test
-	public void getPlayersTest_NoResults() {
+    @Test
+    public void getPlayersTest_NoResults() {
 
-		new NonStrictExpectations() {{
-			mflPlayerExport.getPlayers(anyString, anyInt); returns(JsonDataConverter.players("no-players"));
-		}};
+        new NonStrictExpectations() {{
+            mflPlayerExport.getPlayers(anyString, anyInt); returns(JsonDataConverter.players("no-players"));
+        }};
 
-		PlayerService playerService = new JsonPlayerServiceImpl();
-		List<Player> players = playerService.getPlayers(Arrays.asList("1234","5678"));
+        PlayerService playerService = new JsonPlayerServiceImpl();
+        List<Player> players = playerService.getPlayers(Arrays.asList("1234","5678"));
 
-		assertThat(players, is(not(nullValue())));
-		assertThat(players.size(), is(0));
-	}
+        assertThat(players, is(not(nullValue())));
+        assertThat(players.size(), is(0));
+    }
 
-	@Test
-	public void getPlayersTest_NullPlayerIds() {
+    @Test
+    public void getPlayersTest_NullPlayerIds() {
 
-		try {
-			PlayerService playerService = new JsonPlayerServiceImpl();
-			playerService.getPlayers(null);
+        try {
+            PlayerService playerService = new JsonPlayerServiceImpl();
+            playerService.getPlayers(null);
 
-			fail("should have thrown exception");
+            fail("should have thrown exception");
 
-		} catch (MFLServiceException e) {
-			// expected
-		}
+        } catch (MFLServiceException e) {
+            // expected
+            assertThat(e.getMessage(), is("Cannot retrieve player information without IDs."));
+        }
 
-		new Verifications() {{
-			// Verify no calls to the service API occurred
-			mflPlayerExport.getPlayers(anyString, anyInt); times = 0;
-		}};
-	}
+        new Verifications() {{
+            // Verify no calls to the service API occurred
+            mflPlayerExport.getPlayers(anyString, anyInt); times = 0;
+        }};
+    }
 
-	@Test
-	public void getPlayersTest_EmptyPlayerIds() {
+    @Test
+    public void getPlayersTest_EmptyPlayerIds() {
 
-		try {
-			PlayerService playerService = new JsonPlayerServiceImpl();
-			playerService.getPlayers(new ArrayList<String>());
+        try {
+            PlayerService playerService = new JsonPlayerServiceImpl();
+            playerService.getPlayers(new ArrayList<String>());
 
-			fail("should have thrown exception");
+            fail("should have thrown exception");
 
-		} catch (MFLServiceException e) {
-			// expected
-		}
+        } catch (MFLServiceException e) {
+            // expected
+            assertThat(e.getMessage(), is("Cannot retrieve player information without IDs."));
+        }
 
-		new Verifications() {{
-			// Verify no calls to the service API occurred
-			mflPlayerExport.getPlayers(anyString, anyInt); times = 0;
-		}};
-	}
+        new Verifications() {{
+            // Verify no calls to the service API occurred
+            mflPlayerExport.getPlayers(anyString, anyInt); times = 0;
+        }};
+    }
 
-	@Test
-	public void getPlayersTest_HttpError() {
+    @Test
+    public void getPlayersTest_HttpError() {
 
-		new NonStrictExpectations() {{
-			mflPlayerExport.getPlayers(anyString, anyInt); result = getDummyHttpError();
-		}};
+        new NonStrictExpectations() {{
+            mflPlayerExport.getPlayers(anyString, anyInt); result = getDummyHttpError();
+        }};
 
-		try {
-			PlayerService playerService = new JsonPlayerServiceImpl();
-			playerService.getPlayers(Arrays.asList("1234","5678"));
-			fail("should have thrown exception.");
+        try {
+            PlayerService playerService = new JsonPlayerServiceImpl();
+            playerService.getPlayers(Arrays.asList("1234","5678"));
+            fail("should have thrown exception.");
 
-		} catch (MFLServiceException e) {
-			// expected behavior.  Confirm root cause is propagated.
-			assertThat(e.getCause(), instanceOf(RetrofitError.class));
-		}
-	}
+        } catch (MFLServiceException e) {
+            // expected behavior.  Confirm root cause is propagated.
+            assertThat(e.getCause(), instanceOf(RetrofitError.class));
+            assertThat(e.getMessage(), is("Error retrieving player data."));
+        }
+    }
 
-	@Test(expected = MFLServiceException.class)
-	public void getPlayersTest_NullResponse() {
+    @Test
+    public void getPlayersTest_NullResponse() {
+
+        new NonStrictExpectations() {{
+            mflPlayerExport.getPlayers(anyString, anyInt); returns(null);
+        }};
+
+        try {
+            PlayerService playerService = new JsonPlayerServiceImpl();
+            playerService.getPlayers(Arrays.asList("1234","5678"));
+            fail("should have thrown exception.");
+
+        } catch (MFLServiceException e) {
+            // expected behavior.  Confirm root cause is propagated.
+            assertThat(e.getMessage(), is("Invalid response retrieving players with IDs : [1234, 5678]"));
+        }
+    }
+
+    @Test
+    public void getPlayersTest_NullWrapper() {
+
+        new NonStrictExpectations() {{
+            mflPlayerExport.getPlayers(anyString, anyInt); returns(new PlayerResponse());
+        }};
 
-		new NonStrictExpectations() {{
-			mflPlayerExport.getPlayers(anyString, anyInt); returns(null);
-		}};
+        try {
+            PlayerService playerService = new JsonPlayerServiceImpl();
+            playerService.getPlayers(Arrays.asList("1234","5678"));
+            fail("should have thrown exception.");
 
-		PlayerService playerService = new JsonPlayerServiceImpl();
-		playerService.getPlayers(Arrays.asList("1234","5678"));
-	}
+        } catch (MFLServiceException e) {
+            // expected behavior.  Confirm root cause is propagated.
+            assertThat(e.getMessage(), is("Invalid response retrieving players with IDs : [1234, 5678]"));
+        }
+    }
 
-	@Test(expected = MFLServiceException.class)
-	public void getPlayersTest_NullWrapper() {
+    /*----------------------------------------------- getAllPlayers ----------------------------------------------*/
 
-		new NonStrictExpectations() {{
-			mflPlayerExport.getPlayers(anyString, anyInt); returns(new PlayerResponse());
-		}};
+    @Test
+    public void getAllPlayersTest() {
 
-		PlayerService playerService = new JsonPlayerServiceImpl();
-		playerService.getPlayers(Arrays.asList("1234","5678"));
-	}
+        new NonStrictExpectations() {{
+            mflPlayerExport.getAllPlayers(anyInt); returns(JsonDataConverter.players("multiple-players"));
+        }};
 
-	/*----------------------------------------------- getAllPlayers ----------------------------------------------*/
+        PlayerService playerService = new JsonPlayerServiceImpl();
+        List<Player> players = playerService.getAllPlayers();
 
-	@Test
-	public void getAllPlayersTest() {
+        assertThat(players, is(not(nullValue())));
+        assertThat(players.size(), is(2));
+        assertThat(players.get(0), is(not(nullValue())));
+        assertThat(players.get(0).getName(), is("Brees, Drew"));
+    }
 
-		new NonStrictExpectations() {{
-			mflPlayerExport.getAllPlayers(anyInt); returns(JsonDataConverter.players("multiple-players"));
-		}};
+    @Test
+    public void getAllPlayersTest_NoResults() {
 
-		PlayerService playerService = new JsonPlayerServiceImpl();
-		List<Player> players = playerService.getAllPlayers();
+        new NonStrictExpectations() {{
+            mflPlayerExport.getAllPlayers(anyInt); returns(JsonDataConverter.players("no-players"));
+        }};
 
-		assertThat(players, is(not(nullValue())));
-		assertThat(players.size(), is(2));
-		assertThat(players.get(0), is(not(nullValue())));
-		assertThat(players.get(0).getName(), is("Brees, Drew"));
-	}
+        PlayerService playerService = new JsonPlayerServiceImpl();
+        List<Player> players = playerService.getAllPlayers();
 
-	@Test
-	public void getAllPlayersTest_NoResults() {
+        assertThat(players, is(not(nullValue())));
+        assertThat(players.size(), is(0));
+    }
 
-		new NonStrictExpectations() {{
-			mflPlayerExport.getAllPlayers(anyInt); returns(JsonDataConverter.players("no-players"));
-		}};
+    @Test
+    public void getAllPlayersTest_HttpError() {
 
-		PlayerService playerService = new JsonPlayerServiceImpl();
-		List<Player> players = playerService.getAllPlayers();
+        new NonStrictExpectations() {{
+            mflPlayerExport.getAllPlayers(anyInt); result = getDummyHttpError();
+        }};
 
-		assertThat(players, is(not(nullValue())));
-		assertThat(players.size(), is(0));
-	}
+        try {
+            PlayerService playerService = new JsonPlayerServiceImpl();
+            playerService.getAllPlayers();
+            fail("should have thrown exception.");
 
-	@Test
-	public void getAllPlayersTest_HttpError() {
+        } catch (MFLServiceException e) {
+            // expected behavior.  Confirm root cause is propagated.
+            assertThat(e.getCause(), instanceOf(RetrofitError.class));
+            assertThat(e.getMessage(), is("Error retrieving all player data"));
+        }
+    }
 
-		new NonStrictExpectations() {{
-			mflPlayerExport.getAllPlayers(anyInt); result = getDummyHttpError();
-		}};
+    @Test
+    public void getAllPlayersTest_NullResponse() {
 
-		try {
-			PlayerService playerService = new JsonPlayerServiceImpl();
-			playerService.getAllPlayers();
-			fail("should have thrown exception.");
+        new NonStrictExpectations() {{
+            mflPlayerExport.getAllPlayers(anyInt); returns(null);
+        }};
 
-		} catch (MFLServiceException e) {
-			// expected behavior.  Confirm root cause is propagated.
-			assertThat(e.getCause(), instanceOf(RetrofitError.class));
-		}
-	}
+        try {
+            PlayerService playerService = new JsonPlayerServiceImpl();
+            playerService.getAllPlayers();
+            fail("should have thrown exception.");
 
-	@Test(expected = MFLServiceException.class)
-	public void getAllPlayersTest_NullResponse() {
+        } catch (MFLServiceException e) {
+            assertThat(e.getMessage(), is("Invalid response retrieving all players"));
+        }
+    }
 
-		new NonStrictExpectations() {{
-			mflPlayerExport.getAllPlayers(anyInt); returns(null);
-		}};
+    @Test
+    public void getAllPlayersTest_NullWrapper() {
 
-		PlayerService playerService = new JsonPlayerServiceImpl();
-		playerService.getAllPlayers();
-	}
+        new NonStrictExpectations() {{
+            mflPlayerExport.getAllPlayers(anyInt); returns(new PlayerResponse());
+        }};
 
-	@Test(expected = MFLServiceException.class)
-	public void getAllPlayersTest_NullWrapper() {
+        try {
+            PlayerService playerService = new JsonPlayerServiceImpl();
+            playerService.getAllPlayers();
+            fail("should have thrown exception.");
 
-		new NonStrictExpectations() {{
-			mflPlayerExport.getAllPlayers(anyInt); returns(new PlayerResponse());
-		}};
+        } catch (MFLServiceException e) {
+            assertThat(e.getMessage(), is("Invalid response retrieving all players"));
+        }
+    }
 
-		PlayerService playerService = new JsonPlayerServiceImpl();
-		playerService.getAllPlayers();
-	}
 
+    /*---------------------------------------------- getWeeklyScores ---------------------------------------------*/
 
-	/*---------------------------------------------- getWeeklyScores ---------------------------------------------*/
+    @Test
+    public void getWeeklyScoresTest() {
 
-	@Test
-	public void getWeeklyScoresTest() {
+        new NonStrictExpectations() {{
+            mflPlayerExport.getPlayerScores(anyInt, anyString, anyString, anyInt);
+                    returns(JsonDataConverter.playerScores("full-schedule"));
+        }};
 
-		new NonStrictExpectations() {{
-			mflPlayerExport.getPlayerScores(anyInt, anyString, anyString, anyInt);
-					returns(JsonDataConverter.playerScores("full-schedule"));
-		}};
+        PlayerService playerService = new JsonPlayerServiceImpl();
+        Map<Integer, Double> playerScoresMap = playerService.getWeeklyScores(RANDOM_LEAGUE_ID, 1234, "1", 2015);
 
-		PlayerService playerService = new JsonPlayerServiceImpl();
-		Map<Integer, Double> playerScoresMap = playerService.getWeeklyScores(RANDOM_LEAGUE_ID, 1234, "1", 2015);
+        assertThat(playerScoresMap, is(not(nullValue())));
+        assertThat(playerScoresMap.size(), is(16));
 
-		assertThat(playerScoresMap, is(not(nullValue())));
-		assertThat(playerScoresMap.size(), is(16));
+        // before bye week
+        assertThat(playerScoresMap.containsKey(1), is(true));
+        assertThat(playerScoresMap.get(1), is(30.7));
 
-		// before bye week
-		assertThat(playerScoresMap.containsKey(1), is(true));
-		assertThat(playerScoresMap.get(1), is(30.7));
+        // bye week
+        assertThat(playerScoresMap.containsKey(10), is(false));
 
-		// bye week
-		assertThat(playerScoresMap.containsKey(10), is(false));
+        // after bye week
+        assertThat(playerScoresMap.containsKey(11), is(true));
+        assertThat(playerScoresMap.get(11), is(23.62));
+    }
 
-		// after bye week
-		assertThat(playerScoresMap.containsKey(11), is(true));
-		assertThat(playerScoresMap.get(11), is(23.62));
-	}
+    @Test
+    public void getWeeklyScoresTest_InjuredPlayer() {
 
-	@Test
-	public void getWeeklyScoresTest_InjuredPlayer() {
+        // Arian Foster missed 3 weeks due to injury.  Make sure they don't show in the scoring list.
 
-		// Arian Foster missed 3 weeks due to injury.  Make sure they don't show in the scoring list.
+        new NonStrictExpectations() {{
+            mflPlayerExport.getPlayerScores(anyInt, anyString, anyString, anyInt);
+                    returns(JsonDataConverter.playerScores("injured-player"));
+        }};
 
-		new NonStrictExpectations() {{
-			mflPlayerExport.getPlayerScores(anyInt, anyString, anyString, anyInt);
-					returns(JsonDataConverter.playerScores("injured-player"));
-		}};
+        PlayerService playerService = new JsonPlayerServiceImpl();
+        Map<Integer, Double> playerScoresMap = playerService.getWeeklyScores(RANDOM_LEAGUE_ID, 1234, "1", 2015);
+
+        assertThat(playerScoresMap, is(not(nullValue())));
+        assertThat(playerScoresMap.size(), is(13));
 
-		PlayerService playerService = new JsonPlayerServiceImpl();
-		Map<Integer, Double> playerScoresMap = playerService.getWeeklyScores(RANDOM_LEAGUE_ID, 1234, "1", 2015);
+        // validate injured weeks are missing
+        assertThat(playerScoresMap.containsKey(3), is(false));
+        assertThat(playerScoresMap.containsKey(11), is(false));
+        assertThat(playerScoresMap.containsKey(12), is(false));
+
+        // before injuries
+        assertThat(playerScoresMap.containsKey(1), is(true));
+        assertThat(playerScoresMap.get(1), is(11d));
+
+        // after injuries
+        assertThat(playerScoresMap.containsKey(4), is(true));
+        assertThat(playerScoresMap.get(4), is(9.6));
+    }
 
-		assertThat(playerScoresMap, is(not(nullValue())));
-		assertThat(playerScoresMap.size(), is(13));
+    @Test
+    public void getWeeklyScoresTest_ZeroScoreWeek() {
+
+        // Jimmy Graham didn't record a catch weeks 7 or 13.  Make sure these *do* show up in report.
 
-		// validate injured weeks are missing
-		assertThat(playerScoresMap.containsKey(3), is(false));
-		assertThat(playerScoresMap.containsKey(11), is(false));
-		assertThat(playerScoresMap.containsKey(12), is(false));
+        new NonStrictExpectations() {{
+            mflPlayerExport.getPlayerScores(anyInt, anyString, anyString, anyInt);
+                    returns(JsonDataConverter.playerScores("week-without-scoring"));
+        }};
 
-		// before injuries
-		assertThat(playerScoresMap.containsKey(1), is(true));
-		assertThat(playerScoresMap.get(1), is(11d));
+        PlayerService playerService = new JsonPlayerServiceImpl();
+        Map<Integer, Double> playerScoresMap = playerService.getWeeklyScores(RANDOM_LEAGUE_ID, 1234, "1", 2015);
 
-		// after injuries
-		assertThat(playerScoresMap.containsKey(4), is(true));
-		assertThat(playerScoresMap.get(4), is(9.6));
-	}
+        assertThat(playerScoresMap, is(not(nullValue())));
+        assertThat(playerScoresMap.size(), is(16));
 
-	@Test
-	public void getWeeklyScoresTest_ZeroScoreWeek() {
+        // validate injured weeks are present
+        assertThat(playerScoresMap.containsKey(7), is(true));
+        assertThat(playerScoresMap.get(7), is(0d));
+        assertThat(playerScoresMap.containsKey(13), is(true));
+        assertThat(playerScoresMap.get(13), is(0d));
+    }
 
-		// Jimmy Graham didn't record a catch weeks 7 or 13.  Make sure these do show up in report.
+    @Test
+    public void getWeeklyScoresTest_InvalidPlayerId() {
 
-		new NonStrictExpectations() {{
-			mflPlayerExport.getPlayerScores(anyInt, anyString, anyString, anyInt);
-					returns(JsonDataConverter.playerScores("week-without-scoring"));
-		}};
+        new NonStrictExpectations() {{
+            mflPlayerExport.getPlayerScores(anyInt, anyString, anyString, anyInt);
+                    returns(JsonDataConverter.playerScores("full-schedule"));
+        }};
 
-		PlayerService playerService = new JsonPlayerServiceImpl();
-		Map<Integer, Double> playerScoresMap = playerService.getWeeklyScores(RANDOM_LEAGUE_ID, 1234, "1", 2015);
+        try {
+            PlayerService playerService = new JsonPlayerServiceImpl();
+            playerService.getWeeklyScores(RANDOM_LEAGUE_ID, -1, "1", 2015);
+            fail("should have thrown exception.");
 
-		assertThat(playerScoresMap, is(not(nullValue())));
-		assertThat(playerScoresMap.size(), is(16));
+        } catch (MFLServiceException e) {
+            assertThat(e.getMessage(), is("Cannot retrieve player score information without a valid ID."));
+        }
+    }
 
-		// validate injured weeks are present
-		assertThat(playerScoresMap.containsKey(7), is(true));
-		assertThat(playerScoresMap.get(7), is(0d));
-		assertThat(playerScoresMap.containsKey(13), is(true));
-		assertThat(playerScoresMap.get(13), is(0d));
-	}
+    @Test(expected = MFLServiceException.class)
+    public void getWeeklyScoresTest_EarlyYear() {
 
-	@Test(expected = MFLServiceException.class)
-	public void getWeeklyScoresTest_InvalidPlayerId() {
+        PlayerService playerService = new JsonPlayerServiceImpl();
+        playerService.getWeeklyScores(RANDOM_LEAGUE_ID, 1234, "1", 1979);
 
-		new NonStrictExpectations() {{
-			mflPlayerExport.getPlayerScores(anyInt, anyString, anyString, anyInt);
-					returns(JsonDataConverter.playerScores("full-schedule"));
-		}};
+        new Verifications() {{
+            // Verify no calls to the service API occurred
+            mflPlayerExport.getPlayerScores(anyInt, anyString, anyString, anyInt); times = 0;
+        }};
+    }
 
-		PlayerService playerService = new JsonPlayerServiceImpl();
-		playerService.getWeeklyScores(RANDOM_LEAGUE_ID, -1, "1", 2015);
-	}
+    @Test(expected = MFLServiceException.class)
+    public void getWeeklyScoresTest_FutureYear() {
 
-	@Test(expected = MFLServiceException.class)
-	public void getWeeklyScoresTest_EarlyYear() {
+        PlayerService playerService = new JsonPlayerServiceImpl();
+        int nextYear = Calendar.getInstance().get(Calendar.YEAR) + 1;
+        playerService.getWeeklyScores(RANDOM_LEAGUE_ID, 1234, "1", nextYear);
 
-		PlayerService playerService = new JsonPlayerServiceImpl();
-		playerService.getWeeklyScores(RANDOM_LEAGUE_ID, 1234, "1", 1979);
+        new Verifications() {{
+            // Verify no calls to the service API occurred
+            mflPlayerExport.getPlayerScores(anyInt, anyString, anyString, anyInt); times = 0;
+        }};
+    }
 
-		new Verifications() {{
-			// Verify no calls to the service API occurred
-			mflPlayerExport.getPlayerScores(anyInt, anyString, anyString, anyInt); times = 0;
-		}};
-	}
+    @Test
+    public void getWeeklyScoresTest_HttpError() {
 
-	@Test(expected = MFLServiceException.class)
-	public void getWeeklyScoresTest_FutureYear() {
+        new NonStrictExpectations() {{
+            mflPlayerExport.getPlayerScores(anyInt, anyString, anyString, anyInt); result = getDummyHttpError();
+        }};
 
-		PlayerService playerService = new JsonPlayerServiceImpl();
-		int nextYear = Calendar.getInstance().get(Calendar.YEAR) + 1;
-		playerService.getWeeklyScores(RANDOM_LEAGUE_ID, 1234, "1", nextYear);
+        try {
+            PlayerService playerService = new JsonPlayerServiceImpl();
+            playerService.getWeeklyScores(RANDOM_LEAGUE_ID, 1234, "1", 2015);
+            fail("should have thrown exception.");
 
-		new Verifications() {{
-			// Verify no calls to the service API occurred
-			mflPlayerExport.getPlayerScores(anyInt, anyString, anyString, anyInt); times = 0;
-		}};
-	}
+        } catch (MFLServiceException e) {
+            // expected behavior.  Confirm root cause is propagated.
+            assertThat(e.getCause(), instanceOf(RetrofitError.class));
+            assertThat(e.getMessage(), is("Error retrieving player scoring data."));
+        }
+    }
 
-	@Test
-	public void getWeeklyScoresTest_HttpError() {
+    @Test(expected = MFLServiceException.class)
+    public void getWeeklyScoresTest_NullResponse() {
 
-		new NonStrictExpectations() {{
-			mflPlayerExport.getPlayerScores(anyInt, anyString, anyString, anyInt); result = getDummyHttpError();
-		}};
+        new NonStrictExpectations() {{
+            mflPlayerExport.getPlayerScores(anyInt, anyString, anyString, anyInt); returns(null);
+        }};
 
-		try {
-			PlayerService playerService = new JsonPlayerServiceImpl();
-			playerService.getWeeklyScores(RANDOM_LEAGUE_ID, 1234, "1", 2015);
-			fail("should have thrown exception.");
+        PlayerService playerService = new JsonPlayerServiceImpl();
+        playerService.getWeeklyScores(RANDOM_LEAGUE_ID, 1234, "1", 2015);
+    }
 
-		} catch (MFLServiceException e) {
-			// expected behavior.  Confirm root cause is propagated.
-			assertThat(e.getCause(), instanceOf(RetrofitError.class));
-		}
-	}
+    @Test(expected = MFLServiceException.class)
+    public void getWeeklyScoresTest_NullWrapper() {
 
-	@Test(expected = MFLServiceException.class)
-	public void getWeeklyScoresTest_NullResponse() {
+        new NonStrictExpectations() {{
+            mflPlayerExport.getPlayerScores(anyInt, anyString, anyString, anyInt); returns(new PlayerScoresResponse());
+        }};
 
-		new NonStrictExpectations() {{
-			mflPlayerExport.getPlayerScores(anyInt, anyString, anyString, anyInt); returns(null);
-		}};
+        PlayerService playerService = new JsonPlayerServiceImpl();
+        playerService.getWeeklyScores(RANDOM_LEAGUE_ID, 1234, "1", 2015);
+    }
 
-		PlayerService playerService = new JsonPlayerServiceImpl();
-		playerService.getWeeklyScores(RANDOM_LEAGUE_ID, 1234, "1", 2015);
-	}
+    @Test
+    public void getWeeklyScoresTest_UnsetScoresList() {
 
-	@Test(expected = MFLServiceException.class)
-	public void getWeeklyScoresTest_NullWrapper() {
+        new NonStrictExpectations() {{
 
-		new NonStrictExpectations() {{
-			mflPlayerExport.getPlayerScores(anyInt, anyString, anyString, anyInt); returns(new PlayerScoresResponse());
-		}};
+            PlayerScoresResponse playerScoresResponse = new PlayerScoresResponse();
+            playerScoresResponse.setWrapper(new PlayerScoresWrapper());  // no scores are set
+            playerScoresResponse.getWrapper().setPlayerScores(null);
+            mflPlayerExport.getPlayerScores(anyInt, anyString, anyString, anyInt); returns(playerScoresResponse);
+        }};
 
-		PlayerService playerService = new JsonPlayerServiceImpl();
-		playerService.getWeeklyScores(RANDOM_LEAGUE_ID, 1234, "1", 2015);
-	}
+        PlayerService playerService = new JsonPlayerServiceImpl();
+        Map<Integer, Double> playerScoreMap = playerService.getWeeklyScores(RANDOM_LEAGUE_ID, 1234, "1", 2015);
 
-	@Test
-	public void getWeeklyScoresTest_UnsetScoresList() {
+        assertThat(playerScoreMap, is(not(nullValue())));
+        assertThat(playerScoreMap.size(), is(0));
+    }
 
-		new NonStrictExpectations() {{
+    @Test
+    public void getWeeklyScoresTest_NullEntryInScoresList() {
 
-			PlayerScoresResponse playerScoresResponse = new PlayerScoresResponse();
-			playerScoresResponse.setWrapper(new PlayerScoresWrapper());  // no scores are set
-			playerScoresResponse.getWrapper().setPlayerScores(null);
-			mflPlayerExport.getPlayerScores(anyInt, anyString, anyString, anyInt); returns(playerScoresResponse);
-		}};
+        new NonStrictExpectations() {{
 
-		PlayerService playerService = new JsonPlayerServiceImpl();
-		Map<Integer, Double> playerScoreMap = playerService.getWeeklyScores(RANDOM_LEAGUE_ID, 1234, "1", 2015);
+            PlayerScore playerScore = new PlayerScore();
+            playerScore.setPlayerId(10695);
+            playerScore.setScore("12.3");
+            playerScore.setWeek("5");
 
-		assertThat(playerScoreMap, is(not(nullValue())));
-		assertThat(playerScoreMap.size(), is(0));
-	}
+            PlayerScoresResponse playerScoresResponse = new PlayerScoresResponse();
+            playerScoresResponse.setWrapper(new PlayerScoresWrapper());
+            playerScoresResponse.getWrapper().setPlayerScores(Arrays.asList(null, playerScore));
+            mflPlayerExport.getPlayerScores(anyInt, anyString, anyString, anyInt); returns(playerScoresResponse);
+        }};
 
-	@Test
-	public void getWeeklyScoresTest_NullEntryInScoresList() {
+        PlayerService playerService = new JsonPlayerServiceImpl();
+        Map<Integer, Double> playerScoreMap = playerService.getWeeklyScores(RANDOM_LEAGUE_ID, 1234, "1", 2015);
 
-		new NonStrictExpectations() {{
+        // make sure the null score didn't screw up the rest of the processing
+        assertThat(playerScoreMap, is(not(nullValue())));
+        assertThat(playerScoreMap.size(), is(1));
+        assertThat(playerScoreMap.get(5), is(12.3));
+    }
 
-			PlayerScore playerScore = new PlayerScore();
-			playerScore.setPlayerId(10695);
-			playerScore.setScore("12.3");
-			playerScore.setWeek("5");
 
-			PlayerScoresResponse playerScoresResponse = new PlayerScoresResponse();
-			playerScoresResponse.setWrapper(new PlayerScoresWrapper());
-			playerScoresResponse.getWrapper().setPlayerScores(Arrays.asList(null, playerScore));
-			mflPlayerExport.getPlayerScores(anyInt, anyString, anyString, anyInt); returns(playerScoresResponse);
-		}};
+    /*----------------------------------------------- getAllInjuries -----------------------------------------------*/
 
-		PlayerService playerService = new JsonPlayerServiceImpl();
-		Map<Integer, Double> playerScoreMap = playerService.getWeeklyScores(RANDOM_LEAGUE_ID, 1234, "1", 2015);
 
-		// make sure the null score didn't screw up the rest of the processing
-		assertThat(playerScoreMap, is(not(nullValue())));
-		assertThat(playerScoreMap.size(), is(1));
-		assertThat(playerScoreMap.get(5), is(12.3));
-	}
+    @Test
+    public void getAllInjuriesTest() {
 
+        new NonStrictExpectations() {{
+            mflPlayerExport.getInjuries(anyInt, anyInt); returns(JsonDataConverter.injuries("injuries"));
+        }};
 
-	/*----------------------------------------------- getAllInjuries -----------------------------------------------*/
+        PlayerService playerService = new JsonPlayerServiceImpl();
+        List<Injury> injuries = playerService.getAllInjuries(1, 2015);
 
+        assertThat(injuries, is(not(nullValue())));
+        assertThat(injuries.size(), is(144));
+        assertThat(injuries.get(0), is(not(nullValue())));
+        assertThat(injuries.get(0).getPlayerId(), is(10048));
+        assertThat(injuries.get(0).getStatus(), is("Probable"));
+        assertThat(injuries.get(0).getDetails(), is("Knee"));
+        assertThat(injuries.get(0).getWeek(), is(1));
+    }
 
-	@Test
-	public void getAllInjuriesTest() {
+    @Test
+    public void getAllInjuriesTest_InvalidWeekProvided() {
 
-		new NonStrictExpectations() {{
-			mflPlayerExport.getInjuries(anyInt, anyInt); returns(JsonDataConverter.injuries("injuries"));
-		}};
+        try {
+            PlayerService playerService = new JsonPlayerServiceImpl();
+            playerService.getAllInjuries(24, 2015);
 
-		PlayerService playerService = new JsonPlayerServiceImpl();
-		List<Injury> injuries = playerService.getAllInjuries(1, 2015);
+            fail("should have thrown exception");
 
-		assertThat(injuries, is(not(nullValue())));
-		assertThat(injuries.size(), is(144));
-		assertThat(injuries.get(0), is(not(nullValue())));
-		assertThat(injuries.get(0).getPlayerId(), is(10048));
-		assertThat(injuries.get(0).getStatus(), is("Probable"));
-		assertThat(injuries.get(0).getDetails(), is("Knee"));
-		assertThat(injuries.get(0).getWeek(), is(1));
-	}
+        } catch (MFLServiceException e) {
+            // expected
+        }
 
-	@Test
-	public void getAllInjuriesTest_InvalidWeekProvided() {
+        new Verifications() {{
+            // Verify no calls to the service API occurred
+            mflPlayerExport.getInjuries(anyInt, anyInt); times = 0;
+        }};
+    }
 
-		try {
-			PlayerService playerService = new JsonPlayerServiceImpl();
-			playerService.getAllInjuries(24, 2015);
+    @Test(expected = MFLServiceException.class)
+    public void getAllInjuriesTest_EarlyYear() {
 
-			fail("should have thrown exception");
+        PlayerService playerService = new JsonPlayerServiceImpl();
+        playerService.getAllInjuries(1, 1979);
 
-		} catch (MFLServiceException e) {
-			// expected
-		}
+        new Verifications() {{
+            // Verify no calls to the service API occurred
+            mflPlayerExport.getPlayerStatus(anyInt, anyString, anyInt); times = 0;
+        }};
+    }
 
-		new Verifications() {{
-			// Verify no calls to the service API occurred
-			mflPlayerExport.getInjuries(anyInt, anyInt); times = 0;
-		}};
-	}
+    @Test(expected = MFLServiceException.class)
+    public void getAllInjuriesTest_FutureYear() {
 
-	@Test(expected = MFLServiceException.class)
-	public void getAllInjuriesTest_EarlyYear() {
+        PlayerService playerService = new JsonPlayerServiceImpl();
+        int nextYear = Calendar.getInstance().get(Calendar.YEAR) + 1;
+        playerService.getAllInjuries(1, nextYear);
 
-		PlayerService playerService = new JsonPlayerServiceImpl();
-		playerService.getAllInjuries(1, 1979);
+        new Verifications() {{
+            // Verify no calls to the service API occurred
+            mflPlayerExport.getPlayerStatus(anyInt, anyString, anyInt); times = 0;
+        }};
+    }
 
-		new Verifications() {{
-			// Verify no calls to the service API occurred
-			mflPlayerExport.getPlayerStatus(anyInt, anyString, anyInt); times = 0;
-		}};
-	}
+    @Test
+    public void getAllInjuriesTest_HttpError() {
 
-	@Test(expected = MFLServiceException.class)
-	public void getAllInjuriesTest_FutureYear() {
+        new NonStrictExpectations() {{
+            mflPlayerExport.getInjuries(anyInt, anyInt); result = getDummyHttpError();
+        }};
 
-		PlayerService playerService = new JsonPlayerServiceImpl();
-		int nextYear = Calendar.getInstance().get(Calendar.YEAR) + 1;
-		playerService.getAllInjuries(1, nextYear);
+        try {
+            PlayerService playerService = new JsonPlayerServiceImpl();
+            playerService.getAllInjuries(1, 2015);
+            fail("should have thrown exception.");
 
-		new Verifications() {{
-			// Verify no calls to the service API occurred
-			mflPlayerExport.getPlayerStatus(anyInt, anyString, anyInt); times = 0;
-		}};
-	}
+        } catch (MFLServiceException e) {
+            // expected behavior.  Confirm root cause is propagated.
+            assertThat(e.getCause(), instanceOf(RetrofitError.class));
+        }
+    }
 
-	@Test
-	public void getAllInjuriesTest_HttpError() {
+    @Test(expected = MFLServiceException.class)
+    public void getAllInjuriesTest_NullResponse() {
 
-		new NonStrictExpectations() {{
-			mflPlayerExport.getInjuries(anyInt, anyInt); result = getDummyHttpError();
-		}};
+        new NonStrictExpectations() {{
+            mflPlayerExport.getInjuries(anyInt, anyInt); returns(null);
+        }};
 
-		try {
-			PlayerService playerService = new JsonPlayerServiceImpl();
-			playerService.getAllInjuries(1, 2015);
-			fail("should have thrown exception.");
+        PlayerService playerService = new JsonPlayerServiceImpl();
+        playerService.getAllInjuries(1, 2015);
+    }
 
-		} catch (MFLServiceException e) {
-			// expected behavior.  Confirm root cause is propagated.
-			assertThat(e.getCause(), instanceOf(RetrofitError.class));
-		}
-	}
+    @Test(expected = MFLServiceException.class)
+    public void getAllInjuriesTest_NullWrapper() {
 
-	@Test(expected = MFLServiceException.class)
-	public void getAllInjuriesTest_NullResponse() {
+        new NonStrictExpectations() {{
+            mflPlayerExport.getInjuries(anyInt, anyInt); returns(new InjuriesResponse());
+        }};
 
-		new NonStrictExpectations() {{
-			mflPlayerExport.getInjuries(anyInt, anyInt); returns(null);
-		}};
+        // must send multiple player IDs to get the wrapper.
+        PlayerService playerService = new JsonPlayerServiceImpl();
+        playerService.getAllInjuries(1, 2015);
+    }
 
-		PlayerService playerService = new JsonPlayerServiceImpl();
-		playerService.getAllInjuries(1, 2015);
-	}
 
-	@Test(expected = MFLServiceException.class)
-	public void getAllInjuriesTest_NullWrapper() {
+    /*-------------------------------------------- getPlayerAvailability -------------------------------------------*/
 
-		new NonStrictExpectations() {{
-			mflPlayerExport.getInjuries(anyInt, anyInt); returns(new InjuriesResponse());
-		}};
+    @Test
+    public void getPlayerAvailabilityTest() {
 
-		// must send multiple player IDs to get the wrapper.
-		PlayerService playerService = new JsonPlayerServiceImpl();
-		playerService.getAllInjuries(1, 2015);
-	}
+        new NonStrictExpectations() {{
+            mflPlayerExport.getPlayerStatus(anyInt, anyString, anyInt);
+                        returns(JsonDataConverter.playerStatus("multiple-players"));
+        }};
 
+        PlayerService playerService = new JsonPlayerServiceImpl();
+        Set<String> playerIds = new HashSet<>(Arrays.asList("1234","5678"));
+        Map<Integer, String> playerAvailabilityMap = playerService.getPlayerAvailability(RANDOM_LEAGUE_ID, playerIds, "1", 2015);
 
-	/*-------------------------------------------- getPlayerAvailability -------------------------------------------*/
+        assertThat(playerAvailabilityMap, is(not(nullValue())));
+        assertThat(playerAvailabilityMap.size(), is(4));
+        assertThat(playerAvailabilityMap.containsKey(11192), is(true));
+        assertThat(playerAvailabilityMap.get(11192), is("New Orleans Saints - NS"));
+        assertThat(playerAvailabilityMap.containsKey(10998), is(true));
+        assertThat(playerAvailabilityMap.get(10998), is("Free Agent"));
+        assertThat(playerAvailabilityMap.containsKey(10998), is(true));
+        assertThat(playerAvailabilityMap.get(99999), is("League Does Not Use This Position"));
+    }
 
-	@Test
-	public void getPlayerAvailabilityTest() {
+    @Test
+    public void getPlayerAvailabilityTest_SinglePlayer() {
 
-		new NonStrictExpectations() {{
-			mflPlayerExport.getPlayerStatus(anyInt, anyString, anyInt);
-						returns(JsonDataConverter.playerStatus("multiple-players"));
-		}};
+        new NonStrictExpectations() {{
+            mflPlayerExport.getPlayerStatus(anyInt, anyString, anyInt);
+                        returns(JsonDataConverter.playerStatus("single-player"));
+        }};
 
-		PlayerService playerService = new JsonPlayerServiceImpl();
-		Set<String> playerIds = new HashSet<>(Arrays.asList("1234","5678"));
-		Map<Integer, String> playerAvailabilityMap = playerService.getPlayerAvailability(RANDOM_LEAGUE_ID, playerIds, "1", 2015);
+        PlayerService playerService = new JsonPlayerServiceImpl();
+        Set<String> playerIds = new HashSet<>(Arrays.asList("1234"));
+        Map<Integer, String> playerAvailabilityMap = playerService.getPlayerAvailability(RANDOM_LEAGUE_ID, playerIds, "1", 2015);
 
-		assertThat(playerAvailabilityMap, is(not(nullValue())));
-		assertThat(playerAvailabilityMap.size(), is(4));
-		assertThat(playerAvailabilityMap.containsKey(11192), is(true));
-		assertThat(playerAvailabilityMap.get(11192), is("New Orleans Saints - NS"));
-		assertThat(playerAvailabilityMap.containsKey(10998), is(true));
-		assertThat(playerAvailabilityMap.get(10998), is("Free Agent"));
-		assertThat(playerAvailabilityMap.containsKey(10998), is(true));
-		assertThat(playerAvailabilityMap.get(99999), is("League Does Not Use This Position"));
-	}
+        assertThat(playerAvailabilityMap, is(not(nullValue())));
+        assertThat(playerAvailabilityMap.size(), is(1));
+        assertThat(playerAvailabilityMap.containsKey(11192), is(true));
+        assertThat(playerAvailabilityMap.get(11192), is("New Orleans Saints - NS"));
+    }
 
-	@Test
-	public void getPlayerAvailabilityTest_SinglePlayer() {
+    @Test
+    public void getPlayerAvailabilityTest_NoPlayerIdsProvided() {
 
-		new NonStrictExpectations() {{
-			mflPlayerExport.getPlayerStatus(anyInt, anyString, anyInt);
-						returns(JsonDataConverter.playerStatus("single-player"));
-		}};
+        new NonStrictExpectations() {{
+            mflPlayerExport.getPlayerStatus(anyInt, anyString, anyInt);
+                        returns(JsonDataConverter.playerStatus("invalid-request"));
+        }};
 
-		PlayerService playerService = new JsonPlayerServiceImpl();
-		Set<String> playerIds = new HashSet<>(Arrays.asList("1234"));
-		Map<Integer, String> playerAvailabilityMap = playerService.getPlayerAvailability(RANDOM_LEAGUE_ID, playerIds, "1", 2015);
+        PlayerService playerService = new JsonPlayerServiceImpl();
 
-		assertThat(playerAvailabilityMap, is(not(nullValue())));
-		assertThat(playerAvailabilityMap.size(), is(1));
-		assertThat(playerAvailabilityMap.containsKey(11192), is(true));
-		assertThat(playerAvailabilityMap.get(11192), is("New Orleans Saints - NS"));
-	}
+        try {
+            playerService.getPlayerAvailability(RANDOM_LEAGUE_ID, new HashSet<>(Arrays.asList("1234","5678")), "1", 2015);
+            fail("should have thrown exception");
 
-	@Test
-	public void getPlayerAvailabilityTest_NoPlayerIdsProvided() {
+        } catch (MFLServiceException e) {
+            assertThat(e.getMessage(), is("Error retrieving player status : Error - No Valid Player IDs!"));
+        }
+    }
 
-		new NonStrictExpectations() {{
-			mflPlayerExport.getPlayerStatus(anyInt, anyString, anyInt);
-						returns(JsonDataConverter.playerStatus("invalid-request"));
-		}};
+    @Test
+    public void getPlayerAvailabilityTest_NullPlayerIds() {
 
-		PlayerService playerService = new JsonPlayerServiceImpl();
+        try {
+            PlayerService playerService = new JsonPlayerServiceImpl();
+            playerService.getPlayerAvailability(RANDOM_LEAGUE_ID, null, "1", 2015);
 
-		try {
-			playerService.getPlayerAvailability(RANDOM_LEAGUE_ID, new HashSet<>(Arrays.asList("1234","5678")), "1", 2015);
-			fail("should have thrown exception");
+            fail("should have thrown exception");
 
-		} catch (MFLServiceException e) {
-			assertThat(e.getMessage(), is("Error retrieving player status : Error - No Valid Player IDs!"));
-		}
-	}
+        } catch (MFLServiceException e) {
+            // expected
+        }
 
-	@Test
-	public void getPlayerAvailabilityTest_NullPlayerIds() {
+        new Verifications() {{
+            // Verify no calls to the service API occurred
+            mflPlayerExport.getPlayerStatus(anyInt, anyString, anyInt); times = 0;
+        }};
+    }
 
-		try {
-			PlayerService playerService = new JsonPlayerServiceImpl();
-			playerService.getPlayerAvailability(RANDOM_LEAGUE_ID, null, "1", 2015);
+    @Test
+    public void getPlayerAvailabilityTest_EmptyPlayerIds() {
 
-			fail("should have thrown exception");
+        try {
+            PlayerService playerService = new JsonPlayerServiceImpl();
+            playerService.getPlayerAvailability(RANDOM_LEAGUE_ID, new HashSet<String>(), "1", 2015);
 
-		} catch (MFLServiceException e) {
-			// expected
-		}
+            fail("should have thrown exception");
 
-		new Verifications() {{
-			// Verify no calls to the service API occurred
-			mflPlayerExport.getPlayerStatus(anyInt, anyString, anyInt); times = 0;
-		}};
-	}
+        } catch (MFLServiceException e) {
+            // expected
+        }
 
-	@Test
-	public void getPlayerAvailabilityTest_EmptyPlayerIds() {
+        new Verifications() {{
+            // Verify no calls to the service API occurred
+            mflPlayerExport.getPlayerStatus(anyInt, anyString, anyInt); times = 0;
+        }};
+    }
 
-		try {
-			PlayerService playerService = new JsonPlayerServiceImpl();
-			playerService.getPlayerAvailability(RANDOM_LEAGUE_ID, new HashSet<String>(), "1", 2015);
+    @Test(expected = MFLServiceException.class)
+    public void getAvailabilityPlayerTest_EarlyYear() {
 
-			fail("should have thrown exception");
+        PlayerService playerService = new JsonPlayerServiceImpl();
+        playerService.getPlayerAvailability(RANDOM_LEAGUE_ID, new HashSet<>(Arrays.asList("1234","5678")), "1", 1979);
 
-		} catch (MFLServiceException e) {
-			// expected
-		}
+        new Verifications() {{
+            // Verify no calls to the service API occurred
+            mflPlayerExport.getPlayerStatus(anyInt, anyString, anyInt); times = 0;
+        }};
+    }
 
-		new Verifications() {{
-			// Verify no calls to the service API occurred
-			mflPlayerExport.getPlayerStatus(anyInt, anyString, anyInt); times = 0;
-		}};
-	}
 
-	@Test(expected = MFLServiceException.class)
-	public void getAvailabilityPlayerTest_EarlyYear() {
+    @Test(expected = MFLServiceException.class)
+    public void getAvailabilityPlayerTest_FutureYear() {
 
-		PlayerService playerService = new JsonPlayerServiceImpl();
-		playerService.getPlayerAvailability(RANDOM_LEAGUE_ID, new HashSet<>(Arrays.asList("1234","5678")), "1", 1979);
+        PlayerService playerService = new JsonPlayerServiceImpl();
+        int nextYear = Calendar.getInstance().get(Calendar.YEAR) + 1;
+        playerService.getPlayerAvailability(RANDOM_LEAGUE_ID, new HashSet<>(Arrays.asList("1234","5678")), "1", nextYear);
 
-		new Verifications() {{
-			// Verify no calls to the service API occurred
-			mflPlayerExport.getPlayerStatus(anyInt, anyString, anyInt); times = 0;
-		}};
-	}
+        new Verifications() {{
+            // Verify no calls to the service API occurred
+            mflPlayerExport.getPlayerStatus(anyInt, anyString, anyInt); times = 0;
+        }};
+    }
 
+    @Test
+    public void getPlayerAvailabilityTest_HttpError() {
 
-	@Test(expected = MFLServiceException.class)
-	public void getAvailabilityPlayerTest_FutureYear() {
+        new NonStrictExpectations() {{
+            mflPlayerExport.getPlayerStatus(anyInt, anyString, anyInt); result = getDummyHttpError();
+        }};
 
-		PlayerService playerService = new JsonPlayerServiceImpl();
-		int nextYear = Calendar.getInstance().get(Calendar.YEAR) + 1;
-		playerService.getPlayerAvailability(RANDOM_LEAGUE_ID, new HashSet<>(Arrays.asList("1234","5678")), "1", nextYear);
+        try {
+            PlayerService playerService = new JsonPlayerServiceImpl();
+            playerService.getPlayerAvailability(RANDOM_LEAGUE_ID, new HashSet<>(Arrays.asList("1234","5678")), "1", 2015);
+            fail("should have thrown exception.");
 
-		new Verifications() {{
-			// Verify no calls to the service API occurred
-			mflPlayerExport.getPlayerStatus(anyInt, anyString, anyInt); times = 0;
-		}};
-	}
+        } catch (MFLServiceException e) {
+            // expected behavior.  Confirm root cause is propagated.
+            assertThat(e.getCause(), instanceOf(RetrofitError.class));
+        }
+    }
 
-	@Test
-	public void getPlayerAvailabilityTest_HttpError() {
+    @Test(expected = MFLServiceException.class)
+    public void getPlayerAvailabilityTest_NullResponse() {
 
-		new NonStrictExpectations() {{
-			mflPlayerExport.getPlayerStatus(anyInt, anyString, anyInt); result = getDummyHttpError();
-		}};
+        new NonStrictExpectations() {{
+            mflPlayerExport.getPlayerStatus(anyInt, anyString, anyInt); returns(null);
+        }};
 
-		try {
-			PlayerService playerService = new JsonPlayerServiceImpl();
-			playerService.getPlayerAvailability(RANDOM_LEAGUE_ID, new HashSet<>(Arrays.asList("1234","5678")), "1", 2015);
-			fail("should have thrown exception.");
+        PlayerService playerService = new JsonPlayerServiceImpl();
+        playerService.getPlayerAvailability(RANDOM_LEAGUE_ID, new HashSet<>(Arrays.asList("1234","5678")), "1", 2015);
+    }
 
-		} catch (MFLServiceException e) {
-			// expected behavior.  Confirm root cause is propagated.
-			assertThat(e.getCause(), instanceOf(RetrofitError.class));
-		}
-	}
+    @Test
+    public void getAvailabilityPlayerTest_SinglePlayerNullStatus() {
 
-	@Test(expected = MFLServiceException.class)
-	public void getPlayerAvailabilityTest_NullResponse() {
+        new NonStrictExpectations() {{
+            mflPlayerExport.getPlayerStatus(anyInt, anyString, anyInt); returns(new PlayerStatusResponse());
+        }};
 
-		new NonStrictExpectations() {{
-			mflPlayerExport.getPlayerStatus(anyInt, anyString, anyInt); returns(null);
-		}};
+        // only send one player ID.
+        PlayerService playerService = new JsonPlayerServiceImpl();
+        Set<String> playerIds = new HashSet<>(Arrays.asList("1234"));
+        Map<Integer, String> playerAvailabilityMap = playerService.getPlayerAvailability(RANDOM_LEAGUE_ID, playerIds, "1", 2015);
 
-		PlayerService playerService = new JsonPlayerServiceImpl();
-		playerService.getPlayerAvailability(RANDOM_LEAGUE_ID, new HashSet<>(Arrays.asList("1234","5678")), "1", 2015);
-	}
+        assertThat(playerAvailabilityMap, is(not(nullValue())));
+        assertThat(playerAvailabilityMap.size(), is(0));
+    }
 
-	@Test
-	public void getAvailabilityPlayerTest_SinglePlayerNullStatus() {
+    @Test(expected = MFLServiceException.class)
+    public void getAvailabilityPlayerTest_MultiplePlayersNullWrapper() {
 
-		new NonStrictExpectations() {{
-			mflPlayerExport.getPlayerStatus(anyInt, anyString, anyInt); returns(new PlayerStatusResponse());
-		}};
+        new NonStrictExpectations() {{
+            mflPlayerExport.getPlayerStatus(anyInt, anyString, anyInt); returns(new PlayerStatusResponse());
+        }};
 
-		// only send one player ID.
-		PlayerService playerService = new JsonPlayerServiceImpl();
-		Set<String> playerIds = new HashSet<>(Arrays.asList("1234"));
-		Map<Integer, String> playerAvailabilityMap = playerService.getPlayerAvailability(RANDOM_LEAGUE_ID, playerIds, "1", 2015);
+        // must send multiple player IDs to get the wrapper.
+        PlayerService playerService = new JsonPlayerServiceImpl();
+        playerService.getPlayerAvailability(RANDOM_LEAGUE_ID, new HashSet<>(Arrays.asList("1234","5678")), "1", 2015);
+    }
 
-		assertThat(playerAvailabilityMap, is(not(nullValue())));
-		assertThat(playerAvailabilityMap.size(), is(0));
-	}
+    @Test
+    public void getAvailabilityPlayerTest_MultiplePlayersNullStatusList() {
 
-	@Test(expected = MFLServiceException.class)
-	public void getAvailabilityPlayerTest_MultiplePlayersNullWrapper() {
+        new NonStrictExpectations() {{
+            PlayerStatusResponse playerStatusResponse = new PlayerStatusResponse();
+            playerStatusResponse.setWrapper(new PlayerStatusWrapper());
+            playerStatusResponse.getWrapper().setPlayerStatuses(null);
+            mflPlayerExport.getPlayerStatus(anyInt, anyString, anyInt); returns(playerStatusResponse);
+        }};
 
-		new NonStrictExpectations() {{
-			mflPlayerExport.getPlayerStatus(anyInt, anyString, anyInt); returns(new PlayerStatusResponse());
-		}};
+        // send multiple player IDs
+        PlayerService playerService = new JsonPlayerServiceImpl();
+        Set<String> playerIds = new HashSet<>(Arrays.asList("1234","5678"));
+        Map<Integer, String> playerAvailabilityMap = playerService.getPlayerAvailability(RANDOM_LEAGUE_ID, playerIds, "1", 2015);
 
-		// must send multiple player IDs to get the wrapper.
-		PlayerService playerService = new JsonPlayerServiceImpl();
-		playerService.getPlayerAvailability(RANDOM_LEAGUE_ID, new HashSet<>(Arrays.asList("1234","5678")), "1", 2015);
-	}
+        assertThat(playerAvailabilityMap, is(not(nullValue())));
+        assertThat(playerAvailabilityMap.size(), is(0));
+    }
 
-	@Test
-	public void getAvailabilityPlayerTest_MultiplePlayersNullStatusList() {
+    @Test
+    public void getAvailabilityPlayerTest_MultiplePlayersNullStatusInList() {
 
-		new NonStrictExpectations() {{
-			PlayerStatusResponse playerStatusResponse = new PlayerStatusResponse();
-			playerStatusResponse.setWrapper(new PlayerStatusWrapper());
-			playerStatusResponse.getWrapper().setPlayerStatuses(null);
-			mflPlayerExport.getPlayerStatus(anyInt, anyString, anyInt); returns(playerStatusResponse);
-		}};
+        new NonStrictExpectations() {{
+            PlayerAvailabilityStatus playerAvailabilityStatus = new PlayerAvailabilityStatus();
+            playerAvailabilityStatus.setPlayerId(10695);
+            playerAvailabilityStatus.setStatus("Foo");
 
-		// send multiple player IDs
-		PlayerService playerService = new JsonPlayerServiceImpl();
-		Set<String> playerIds = new HashSet<>(Arrays.asList("1234","5678"));
-		Map<Integer, String> playerAvailabilityMap = playerService.getPlayerAvailability(RANDOM_LEAGUE_ID, playerIds, "1", 2015);
+            PlayerStatusResponse playerStatusResponse = new PlayerStatusResponse();
+            playerStatusResponse.setWrapper(new PlayerStatusWrapper());
+            playerStatusResponse.getWrapper().setPlayerStatuses(Arrays.asList(null, playerAvailabilityStatus));
 
-		assertThat(playerAvailabilityMap, is(not(nullValue())));
-		assertThat(playerAvailabilityMap.size(), is(0));
-	}
+            mflPlayerExport.getPlayerStatus(anyInt, anyString, anyInt); returns(playerStatusResponse);
+        }};
 
-	@Test
-	public void getAvailabilityPlayerTest_MultiplePlayersNullStatusInList() {
+        // send multiple player IDs
+        PlayerService playerService = new JsonPlayerServiceImpl();
+        Set<String> playerIds = new HashSet<>(Arrays.asList("1234","5678"));
+        Map<Integer, String> playerAvailabilityMap = playerService.getPlayerAvailability(RANDOM_LEAGUE_ID, playerIds, "1", 2015);
 
-		new NonStrictExpectations() {{
-			PlayerAvailabilityStatus playerAvailabilityStatus = new PlayerAvailabilityStatus();
-			playerAvailabilityStatus.setPlayerId(10695);
-			playerAvailabilityStatus.setStatus("Foo");
-
-			PlayerStatusResponse playerStatusResponse = new PlayerStatusResponse();
-			playerStatusResponse.setWrapper(new PlayerStatusWrapper());
-			playerStatusResponse.getWrapper().setPlayerStatuses(Arrays.asList(null, playerAvailabilityStatus));
-
-			mflPlayerExport.getPlayerStatus(anyInt, anyString, anyInt); returns(playerStatusResponse);
-		}};
-
-		// send multiple player IDs
-		PlayerService playerService = new JsonPlayerServiceImpl();
-		Set<String> playerIds = new HashSet<>(Arrays.asList("1234","5678"));
-		Map<Integer, String> playerAvailabilityMap = playerService.getPlayerAvailability(RANDOM_LEAGUE_ID, playerIds, "1", 2015);
-
-		// make sure the null status didn't screw up the rest of the processing
-		assertThat(playerAvailabilityMap, is(not(nullValue())));
-		assertThat(playerAvailabilityMap.size(), is(1));
-		assertThat(playerAvailabilityMap.get(10695), is("Foo"));
-	}
+        // make sure the null status didn't screw up the rest of the processing
+        assertThat(playerAvailabilityMap, is(not(nullValue())));
+        assertThat(playerAvailabilityMap.size(), is(1));
+        assertThat(playerAvailabilityMap.get(10695), is("Foo"));
+    }
 }
