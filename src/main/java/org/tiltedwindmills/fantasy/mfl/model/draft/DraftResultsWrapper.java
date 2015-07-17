@@ -10,19 +10,31 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class DraftResultsWrapper extends AbstractObject {
 
-	@JsonProperty("draftUnit")
-	private List<Draft> drafts;
+    private static final long serialVersionUID = 1093761562824992783L;
 
-	public final List<Draft> getDrafts() {
+    @JsonProperty("draftUnit")
+    private List<Draft> drafts;
 
-		if (drafts == null) {
-			drafts = new ArrayList<Draft>();
-		}
+    /**
+     * Gets the drafts.
+     *
+     * @return the drafts
+     */
+    public final List<Draft> getDrafts() {
 
-		return drafts;
-	}
+        if (drafts == null) {
+            drafts = new ArrayList<Draft>();
+        }
 
-	public final void setDrafts(final List<Draft> drafts) {
-		this.drafts = drafts;
-	}
+        return drafts;
+    }
+
+    /**
+     * Sets the drafts.
+     *
+     * @param drafts the new drafts
+     */
+    public final void setDrafts(final List<Draft> drafts) {
+        this.drafts = drafts;
+    }
 }
