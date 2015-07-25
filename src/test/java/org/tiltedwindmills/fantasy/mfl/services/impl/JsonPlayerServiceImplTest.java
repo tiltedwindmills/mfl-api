@@ -503,12 +503,56 @@ public class JsonPlayerServiceImplTest {
         assertThat(playerScoresMap.get(11192), is(20.937));
     }
 
+
+    @Test
+    public void getAveragePlayerScoresTest_BeforeSeason() {
+
+        new NonStrictExpectations() {{
+            mflPlayerExport.getPlayerScores(anyInt, anyString, anyString, anyInt);
+                    returns(JsonDataConverter.playerScores("multi-player-average-before-season-starts"));
+        }};
+
+        PlayerService playerService = new JsonPlayerServiceImpl();
+        Set<Integer> playerIds = ImmutableSet.<Integer> of(1234);
+        Map<Integer, Double> playerScoresMap = playerService.getAveragePlayerScores(RANDOM_LEAGUE_ID, playerIds, RANDOM_SERVER_ID, 2015);
+
+        assertThat(playerScoresMap, is(not(nullValue())));
+        assertThat(playerScoresMap.size(), is(2));
+
+        // andrew luck
+        assertThat(playerScoresMap.containsKey(10695), is(true));
+        assertThat(playerScoresMap.get(10695), is(0.0));
+
+        // lev bell
+        assertThat(playerScoresMap.containsKey(11192), is(true));
+        assertThat(playerScoresMap.get(11192), is(0.0));
+    }
+
     @Test
     public void getAveragePlayerScoresTest_InvalidPlayerId() {
 
         try {
             PlayerService playerService = new JsonPlayerServiceImpl();
             Set<Integer> playerIds = ImmutableSet.<Integer> of(1234, -1, 5678);
+            playerService.getAveragePlayerScores(RANDOM_LEAGUE_ID, playerIds, RANDOM_SERVER_ID, 2015);
+            fail("should have thrown exception.");
+
+        } catch (MFLServiceException e) {
+            assertThat(e.getMessage(), is("Cannot retrieve player score information without a valid ID."));
+        }
+
+        new Verifications() {{
+            // Verify no calls to the service API occurred
+            mflPlayerExport.getPlayerScores(anyInt, anyString, anyString, anyInt); times = 0;
+        }};
+    }
+
+    @Test
+    public void getAveragePlayerScoresTest_NullPlayerId() {
+
+        try {
+            PlayerService playerService = new JsonPlayerServiceImpl();
+            Set<Integer> playerIds = new HashSet<Integer>(Arrays.asList(1234, null, 5678));
             playerService.getAveragePlayerScores(RANDOM_LEAGUE_ID, playerIds, RANDOM_SERVER_ID, 2015);
             fail("should have thrown exception.");
 
@@ -666,11 +710,54 @@ public class JsonPlayerServiceImplTest {
     }
 
     @Test
+    public void getYearToDatePlayerScoresTest_BeforeSeason() {
+
+        new NonStrictExpectations() {{
+            mflPlayerExport.getPlayerScores(anyInt, anyString, anyString, anyInt);
+                    returns(JsonDataConverter.playerScores("multi-player-year-to-date-before-season-starts"));
+        }};
+
+        PlayerService playerService = new JsonPlayerServiceImpl();
+        Set<Integer> playerIds = ImmutableSet.<Integer> of(1234);
+        Map<Integer, Double> playerScoresMap = playerService.getYearToDatePlayerScores(RANDOM_LEAGUE_ID, playerIds, RANDOM_SERVER_ID, 2015);
+
+        assertThat(playerScoresMap, is(not(nullValue())));
+        assertThat(playerScoresMap.size(), is(2));
+
+        // andrew luck
+        assertThat(playerScoresMap.containsKey(10695), is(true));
+        assertThat(playerScoresMap.get(10695), is(0.0));
+
+        // lev bell
+        assertThat(playerScoresMap.containsKey(11192), is(true));
+        assertThat(playerScoresMap.get(11192), is(0.0));
+    }
+
+    @Test
     public void getYearToDatePlayerScoresTest_InvalidPlayerId() {
 
         try {
             PlayerService playerService = new JsonPlayerServiceImpl();
             Set<Integer> playerIds = ImmutableSet.<Integer> of(1234, -1, 5678);
+            playerService.getYearToDatePlayerScores(RANDOM_LEAGUE_ID, playerIds, RANDOM_SERVER_ID, 2015);
+            fail("should have thrown exception.");
+
+        } catch (MFLServiceException e) {
+            assertThat(e.getMessage(), is("Cannot retrieve player score information without a valid ID."));
+        }
+
+        new Verifications() {{
+            // Verify no calls to the service API occurred
+            mflPlayerExport.getPlayerScores(anyInt, anyString, anyString, anyInt); times = 0;
+        }};
+    }
+
+    @Test
+    public void getYearToDatePlayerScoresTest_NullPlayerId() {
+
+        try {
+            PlayerService playerService = new JsonPlayerServiceImpl();
+            Set<Integer> playerIds = new HashSet<Integer>(Arrays.asList(1234, null, 5678));
             playerService.getYearToDatePlayerScores(RANDOM_LEAGUE_ID, playerIds, RANDOM_SERVER_ID, 2015);
             fail("should have thrown exception.");
 
@@ -973,7 +1060,7 @@ public class JsonPlayerServiceImplTest {
     }
 
     @Test
-    public void getPlayerAvailabilityTest_NullPlayerIds() {
+    public void getPlayerAvailabilityTest_NullPlayerIdSet() {
 
         try {
             PlayerService playerService = new JsonPlayerServiceImpl();
@@ -992,12 +1079,11 @@ public class JsonPlayerServiceImplTest {
     }
 
     @Test
-    public void getPlayerAvailabilityTest_EmptyPlayerIds() {
+    public void getPlayerAvailabilityTest_EmptyPlayerIdSet() {
 
         try {
             PlayerService playerService = new JsonPlayerServiceImpl();
             playerService.getPlayerAvailability(RANDOM_LEAGUE_ID, new HashSet<Integer>(), "1", 2015);
-
             fail("should have thrown exception");
 
         } catch (MFLServiceException e) {
@@ -1010,8 +1096,28 @@ public class JsonPlayerServiceImplTest {
         }};
     }
 
+    @Test
+    public void getPlayerAvailabilityTest_NullPlayerIdInSet() {
+
+        try {
+            PlayerService playerService = new JsonPlayerServiceImpl();
+            Set<Integer> playerIds = new HashSet<Integer>(Arrays.asList(1234, null, 5678));
+            playerService.getPlayerAvailability(RANDOM_LEAGUE_ID, playerIds, "1", 2015);
+            fail("should have thrown exception");
+
+        } catch (MFLServiceException e) {
+            // expected
+        }
+
+        new Verifications() {{
+            // Verify no calls to the service API occurred
+            mflPlayerExport.getPlayerStatus(anyInt, anyString, anyInt); times = 0;
+        }};
+    }
+
+
     @Test(expected = MFLServiceException.class)
-    public void getAvailabilityPlayerTest_EarlyYear() {
+    public void getPlayerAvailabilityTest_EarlyYear() {
 
         PlayerService playerService = new JsonPlayerServiceImpl();
         Set<Integer> playerIds = ImmutableSet.<Integer> of(1234, 5678);
@@ -1025,7 +1131,7 @@ public class JsonPlayerServiceImplTest {
 
 
     @Test(expected = MFLServiceException.class)
-    public void getAvailabilityPlayerTest_FutureYear() {
+    public void getPlayerAvailabilityTest_FutureYear() {
 
         PlayerService playerService = new JsonPlayerServiceImpl();
         int nextYear = Calendar.getInstance().get(Calendar.YEAR) + 1;
@@ -1070,7 +1176,7 @@ public class JsonPlayerServiceImplTest {
     }
 
     @Test
-    public void getAvailabilityPlayerTest_SinglePlayerNullStatus() {
+    public void getPlayerAvailabilityTest_SinglePlayerNullStatus() {
 
         new NonStrictExpectations() {{
             mflPlayerExport.getPlayerStatus(anyInt, anyString, anyInt); returns(new PlayerStatusResponse());
@@ -1086,7 +1192,7 @@ public class JsonPlayerServiceImplTest {
     }
 
     @Test(expected = MFLServiceException.class)
-    public void getAvailabilityPlayerTest_MultiplePlayersNullWrapper() {
+    public void getPlayerAvailabilityTest_MultiplePlayersNullWrapper() {
 
         new NonStrictExpectations() {{
             mflPlayerExport.getPlayerStatus(anyInt, anyString, anyInt); returns(new PlayerStatusResponse());
@@ -1099,7 +1205,7 @@ public class JsonPlayerServiceImplTest {
     }
 
     @Test
-    public void getAvailabilityPlayerTest_MultiplePlayersNullStatusList() {
+    public void getPlayerAvailabilityTest_MultiplePlayersNullStatusList() {
 
         new NonStrictExpectations() {{
             PlayerStatusResponse playerStatusResponse = new PlayerStatusResponse();
@@ -1118,7 +1224,7 @@ public class JsonPlayerServiceImplTest {
     }
 
     @Test
-    public void getAvailabilityPlayerTest_MultiplePlayersNullStatusInList() {
+    public void getPlayerAvailabilityTest_MultiplePlayersNullStatusInList() {
 
         new NonStrictExpectations() {{
             PlayerAvailabilityStatus playerAvailabilityStatus = new PlayerAvailabilityStatus();

@@ -219,10 +219,9 @@ public final class JsonPlayerServiceImpl extends AbstractJsonServiceImpl impleme
                     LOG.warn("Found null player score in aggregate listing.  Ignoring.");
                 } else {
 
-                    // value will be blank if didn't play. Leave these off the list.
-                    if (!StringUtils.isBlank(apiScore.getScore())) {
-                        playerScores.put(apiScore.getPlayerId(), NumberUtils.toDouble(apiScore.getScore(), 0.0));
-                    }
+                    // ok to just take default value here.  Score can be blank if season hasn't started yet,
+                    // but ok to return 0 in that case.
+                    playerScores.put(apiScore.getPlayerId(), NumberUtils.toDouble(apiScore.getScore(), 0.0));
                 }
             }
         }
@@ -400,7 +399,7 @@ public final class JsonPlayerServiceImpl extends AbstractJsonServiceImpl impleme
         final Predicate<Integer> isNegative = new Predicate<Integer>() {
             @Override
             public boolean apply(final Integer playerId) {
-                return playerId != null && playerId <= 0;
+                return playerId == null || playerId <= 0;
             }
         };
 
