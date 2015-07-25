@@ -1,5 +1,6 @@
 package org.tiltedwindmills.fantasy.mfl.model.players;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.tiltedwindmills.fantasy.mfl.model.AbstractObject;
@@ -16,14 +17,17 @@ public class PlayerStatusWrapper extends AbstractObject {
 
 	/** The player statuses. */
 	@JsonProperty("playerStatus")
-	private List<PlayerStatus> playerStatuses;
+	private List<PlayerAvailabilityStatus> playerStatuses;
 
 	/**
 	 * Gets the player statuses.
 	 *
 	 * @return the player statuses
 	 */
-	public final List<PlayerStatus> getPlayerStatuses() {
+	public final List<PlayerAvailabilityStatus> getPlayerStatuses() {
+		if (playerStatuses == null) {
+			playerStatuses = new ArrayList<>();
+		}
 		return playerStatuses;
 	}
 
@@ -32,7 +36,7 @@ public class PlayerStatusWrapper extends AbstractObject {
 	 *
 	 * @param playerStatuses the new player statuses
 	 */
-	public final void setPlayerStatuses(final List<PlayerStatus> playerStatuses) {
+	public final void setPlayerStatuses(final List<PlayerAvailabilityStatus> playerStatuses) {
 		this.playerStatuses = playerStatuses;
 	}
 }

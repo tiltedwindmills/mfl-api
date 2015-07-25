@@ -1,11 +1,9 @@
 package org.tiltedwindmills.fantasy.mfl.services.impl;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Locale;
-
 import org.apache.commons.lang3.StringUtils;
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,13 +13,14 @@ import org.slf4j.LoggerFactory;
  */
 public final class ServiceUtils {
 
-    private static final Logger LOG = LoggerFactory.getLogger(ServiceUtils.class);
+	private static final Logger LOG = LoggerFactory.getLogger(ServiceUtils.class);
 
-	/** The Constant DATE_FORMAT. */
-	private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
+	/** DateFormat - "yyyy-MM-dd H:mm:ss" */
+	private static final DateTimeFormatter DATE_FORMAT = DateTimeFormat.forPattern("yyyy-MM-dd H:mm:ss");
 
-	/** utility classes should not have public or default constructor */
-	private ServiceUtils() { }
+	private ServiceUtils() {
+		// utility classes should not have public or default constructor.
+	}
 
 	/**
 	 * make sure we've got a legit server ID.  Otherwise return empty so the the redirect will happen.
@@ -35,7 +34,7 @@ public final class ServiceUtils {
 		String translatedServer = serverId;
 		if (serverId == null || "0".equals(serverId)) {
 
-			LOG.warn("Found invalid server id string {}", serverId);
+			LOG.warn("Found invalid server id string '{}'", serverId);
 			translatedServer = "";
 		}
 
@@ -51,7 +50,7 @@ public final class ServiceUtils {
 	public static String safeServerId(final int serverId) {
 
 		// hack-y, again
-		if (serverId == 0) {
+		if (serverId <= 0) {
 
 			LOG.warn("Found invalid server id {}", serverId);
 			return "";
@@ -66,38 +65,36 @@ public final class ServiceUtils {
 	 * @return the now
 	 */
 	public static String getNow() {
-		return getStringForCalendar(Calendar.getInstance());
+		return getStringForCalendar(DateTime.now());
 	}
 
 	/**
 	 * Gets a string representation of the given calendar.
 	 *
-	 * @param calendar the calendar
+	 * @param dateTime the date & time to parse.
 	 * @return the now
 	 */
-	public static String getStringForCalendar(final Calendar calendar) {
-		return DATE_FORMAT.format(calendar.getTime());
+	public static String getStringForCalendar(final DateTime dateTime) {
+		return DATE_FORMAT.print(dateTime);
 	}
 
 	/**
-	 * Gets a {@code java.util.Calendar} representation of the given String.
+	 * Gets a {@code org.joda.time.DateTime} representation of the given String.
 	 *
 	 * @param input the input
 	 * @return the now
 	 */
-	public static Calendar getCalendarForString(final String input) {
+	public static DateTime getCalendarForString(final String input) {
 
 		if (StringUtils.isNotBlank(input)) {
 			try {
 
-				final Calendar calendar = Calendar.getInstance();
-				calendar.setTime(DATE_FORMAT.parse(input));
-				return calendar;
+				return DATE_FORMAT.parseDateTime(input);
 
-			} catch (ParseException e) {
+			} catch (IllegalArgumentException e) {
 
 				// log it and return null.
-				LOG.error("Could not parse input string '{}' into a date", input, e);
+				LOG.error("Could not parse input string '{}' into a date: {}", input, e.getMessage());
 			}
 		}
 

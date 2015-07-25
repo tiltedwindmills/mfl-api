@@ -24,6 +24,12 @@ target/
 .springBeans
 .checkstyle
 
+# IntelliJ files
+.idea
+*.iml
+*.iws
+*.ipr
+
 
 # OS files
 .DS_Store
@@ -46,3 +52,7 @@ node_modules/
 # Bower
 bower_components/
 
+
+# Project Specific
+sonar-project.properties
+update-sonar.sh

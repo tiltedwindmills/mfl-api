@@ -7,8 +7,11 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * The Class StandingsTValue.
+ *
+ * @deprecated MFL has deprecated the "standings" report in favor of "leagueStandings".
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
+@Deprecated
 public class StandingsTValue extends AbstractObject {
 
 	/** serial version UID. */

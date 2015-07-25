@@ -1,5 +1,6 @@
 package org.tiltedwindmills.fantasy.mfl.model.players;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.tiltedwindmills.fantasy.mfl.model.AbstractObject;
@@ -24,6 +25,9 @@ public class PlayerScoresWrapper extends AbstractObject {
 	 * @return the player scores
 	 */
 	public final List<PlayerScore> getPlayerScores() {
+		if (playerScores == null) {
+			playerScores = new ArrayList<>();
+		}
 		return playerScores;
 	}
 

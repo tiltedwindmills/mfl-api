@@ -1,6 +1,7 @@
 package org.tiltedwindmills.fantasy.mfl.model.livescoring;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.tiltedwindmills.fantasy.mfl.model.AbstractObject;
 
@@ -19,11 +20,11 @@ public class LiveScoringWrapper extends AbstractObject {
 
 	/** The matchups. */
 	@JsonProperty("matchup")
-	private ArrayList<Matchup> matchups;
+	private List<Matchup> matchups;
 
 	/** The franchises that aren't in matchups this week. */
 	@JsonProperty("franchise")
-	private ArrayList<TeamScoringDetails> teamsWithoutMatchup;
+	private List<TeamScoringDetails> teamsWithoutMatchup;
 
 
 	/**
@@ -31,7 +32,7 @@ public class LiveScoringWrapper extends AbstractObject {
 	 *
 	 * @return the matchups
 	 */
-	public final ArrayList<Matchup> getMatchups() {
+	public final List<Matchup> getMatchups() {
 
 		if (matchups == null) {
 			matchups = new ArrayList<Matchup>();
@@ -44,7 +45,7 @@ public class LiveScoringWrapper extends AbstractObject {
 	 *
 	 * @param matchups the new matchups
 	 */
-	public final void setMatchups(final ArrayList<Matchup> matchups) {
+	public final void setMatchups(final List<Matchup> matchups) {
 
 		this.matchups = matchups;
 	}
@@ -74,7 +75,7 @@ public class LiveScoringWrapper extends AbstractObject {
 	 *
 	 * @return the teams without matchup
 	 */
-	public final ArrayList<TeamScoringDetails> getTeamsWithoutMatchup() {
+	public final List<TeamScoringDetails> getTeamsWithoutMatchup() {
 
 		if (teamsWithoutMatchup == null) {
 			teamsWithoutMatchup = new ArrayList<TeamScoringDetails>();
@@ -87,7 +88,7 @@ public class LiveScoringWrapper extends AbstractObject {
 	 *
 	 * @param teamsWithoutMatchup the new teams without matchup
 	 */
-	public final void setTeamsWithoutMatchup(final ArrayList<TeamScoringDetails> teamsWithoutMatchup) {
+	public final void setTeamsWithoutMatchup(final List<TeamScoringDetails> teamsWithoutMatchup) {
 
 		this.teamsWithoutMatchup = teamsWithoutMatchup;
 	}

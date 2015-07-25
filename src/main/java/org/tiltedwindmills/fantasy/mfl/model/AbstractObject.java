@@ -2,6 +2,8 @@ package org.tiltedwindmills.fantasy.mfl.model;
 
 import java.io.Serializable;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
 /**
@@ -17,17 +19,43 @@ public abstract class AbstractObject implements Serializable, Cloneable {
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = -4599533423915343386L;
 
-	// This method is not final on purpose, it is a default implementation used most commonly
-	// in generated transfer objects.  Checkstyle complains that this isn't final, but this is by design.
-	//CHECKSTYLE:OFF
+	// NOTE:  These method are not final on purpose, they are default implementations used most commonly in transfer
+	// objects.  Checkstyle complains about the methods not being final, but that is by design.  However, care should
+	// be taken as turning off checkstyle as is done below can lead to missed findings.
+
 	/*
 	 * (non-Javadoc)
 	 *
 	 * @see java.lang.Object#toString()
 	 */
+	//CHECKSTYLE:OFF
 	@Override
 	public String toString() {
 	//CHECKSTYLE:ON
 		return ToStringBuilder.reflectionToString(this);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 *
+	 * @see java.lang.Object#hashCode()
+	 */
+	//CHECKSTYLE:OFF
+	@Override
+	public int hashCode() {
+	//CHECKSTYLE:ON
+		return HashCodeBuilder.reflectionHashCode(this);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 *
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	//CHECKSTYLE:OFF
+	@Override
+	public boolean equals(Object obj) {
+	//CHECKSTYLE:ON
+		return EqualsBuilder.reflectionEquals(this, obj);
 	}
 }

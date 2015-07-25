@@ -40,8 +40,12 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * Undocumented:
  * streak_type
  * streak_len
+ *
+ *
+ * @deprecated MFL has deprecated the "standings" report in favor of "leagueStandings".
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
+@Deprecated
 public class Standings extends AbstractObject {
 
 	/** serial version UID. */

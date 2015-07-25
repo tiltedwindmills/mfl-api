@@ -1,4 +1,4 @@
-package org.tiltedwindmills.fantasy.mfl.model.nflSchedule;
+package org.tiltedwindmills.fantasy.mfl.model.nflschedule;
 
 import java.util.ArrayList;
 import java.util.List;

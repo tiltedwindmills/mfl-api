@@ -6,19 +6,15 @@ import org.tiltedwindmills.fantasy.mfl.model.AbstractObject;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-/**
- * The Class PlayerScoresWrapper.
- */
+// TODO : should be called "FranchiseRoster" ?
 public class RosterFranchise extends AbstractObject {
 
 	/** The Constant serialVersionUID. */
-	private static final long serialVersionUID = 7341463896504773382L;
+	private static final long serialVersionUID = 6842083917847011225L;
 
 	/** The franchise id. */
 	private String id;
 
-
-	/** The player scores. */
 	@JsonProperty("player")
 	private List<RosterPlayer> players;
 

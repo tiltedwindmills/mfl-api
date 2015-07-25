@@ -78,7 +78,9 @@ public class Player extends AbstractObject {
 	/**
 	 * Instantiates a new player with all default attributes.
 	 */
-	public Player() {  }
+	public Player() {
+		// no-op constructor
+	}
 
 
 	/**
@@ -107,9 +109,9 @@ public class Player extends AbstractObject {
 			return 0;
 		}
 
-		// jd - magic numbers related to specific conversion.
+		// jd - magic numbers related to specific conversion.  // TODO : use property value for kickoff date?
 		// CHECKSTYLE:OFF
-		final DateTime nflKickoff = new DateTime(2015,9,10,0,0); // TODO : property value?
+		final DateTime nflKickoff = new DateTime(2015,9,10,0,0);
 		return Years.yearsBetween(new DateTime(birthday * 1000), nflKickoff).getYears();
 		// CHECKSTYLE:ON
 	}
@@ -449,6 +451,19 @@ public class Player extends AbstractObject {
 	 */
 	@Override
 	public final int hashCode(){
-	    return Objects.hashCode(id);
+		// hash code of a player is really just that of his ID.  Everything else is noise.
+		return Objects.hashCode(id);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 *
+	 * @see org.tiltedwindmills.fantasy.mfl.model.AbstractObject#equals(java.lang.Object)
+	 */
+	@Override
+	public final boolean equals(final Object obj) {
+
+		// could probably do just the ID here as well, but I'm being lazy.
+		return super.equals(obj);
 	}
 }
