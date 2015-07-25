@@ -1,7 +1,6 @@
 package org.tiltedwindmills.fantasy.mfl.services.impl;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -10,6 +9,7 @@ import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
+import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -88,27 +88,51 @@ public final class JsonPlayerServiceImpl extends AbstractJsonServiceImpl impleme
     /*
      * (non-Javadoc)
      *
-     * @see org.tiltedwindmills.fantasy.mfl.services.PlayerService#getPlayersSinceDate(java.util.Calendar)
+     * @see org.tiltedwindmills.fantasy.mfl.services.PlayerService#getPlayersSinceDate(org.joda.time.DateTime)
      */
     @Override
-    public List<Player> getPlayersSinceDate(final Calendar calendar) {
+    public List<Player> getPlayersSinceDate(final DateTime date) {
+
+        if (date == null || date.isAfterNow()) {
+            LOG.error("'{}' is an invalid date for MFL player service requests", date);
+            throw new MFLServiceException(date + " is an invalid date for MFL player requests");
+        }
 
         // jd - milliseconds calc
         // CHECKSTYLE:OFF
-        long unixTime = calendar.getTimeInMillis() / 1000;
+        long unixTime = date.getMillis() / 1000;
         // CHECKSTYLE:ON
 
-        final MflPlayerExport playerExport = getRestAdapter(SERVER_ID).create(MflPlayerExport.class);
-        final PlayerResponse playerResponse = playerExport.getAllPlayersSince(Long.toString(unixTime), CURRENT_YEAR);
+        try {
 
-        // could be as simple as "no updates since requested date". Nothing to die over.
-        if (playerResponse.getError() != null) {
-            LOG.warn("No players were retrieved: {} ", playerResponse.getError().getMessage());
-            return new ArrayList<Player>();
+            final MflPlayerExport playerExport = getRestAdapter(SERVER_ID).create(MflPlayerExport.class);
+            final PlayerResponse response = playerExport.getAllPlayersSince(Long.toString(unixTime), CURRENT_YEAR);
+
+            final String invalidResponseLogMessage = "Invalid response retrieving player updates after date '{}'.";
+            final String invalidResponseExceptionMessage = "Invalid response retrieving player update after : ";
+
+            if (response == null) {
+                LOG.error(invalidResponseLogMessage, date);
+                throw new MFLServiceException(invalidResponseExceptionMessage + date);
+            }
+
+            // could be as simple as "no updates since requested date". Nothing to die over.
+            if (response.getError() != null) {
+                LOG.warn("No players were retrieved: {} ", response.getError().getMessage());
+                return new ArrayList<Player>();
+            }
+
+            if (response.getWrapper() == null) {
+                LOG.error(invalidResponseLogMessage, date);
+                throw new MFLServiceException(invalidResponseExceptionMessage + date);
+            }
+
+            return response.getWrapper().getPlayers();
+
+        } catch (RetrofitError e) {
+            LOG.error("Error retrieving player updates after date '{}' : {}", date, e.getMessage());
+            throw new MFLServiceException("Error retrieving player updates after " + date, e);
         }
-
-        // hunky dory. Shoot the list back.
-        return playerResponse.getWrapper().getPlayers();
     }
 
     /*
@@ -391,7 +415,7 @@ public final class JsonPlayerServiceImpl extends AbstractJsonServiceImpl impleme
         // we know an empty list is bogus, so get rid of that immediately.
         if (CollectionUtils.isEmpty(playerIds)) {
             final String msg = "Empty player ID list cannot be used to retrieve player scores.";
-            LOG.warn(msg);
+            LOG.error(msg);
             throw new MFLServiceException(msg);
         }
 

@@ -1,10 +1,10 @@
 package org.tiltedwindmills.fantasy.mfl.services;
 
-import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.joda.time.DateTime;
 import org.tiltedwindmills.fantasy.mfl.model.Player;
 import org.tiltedwindmills.fantasy.mfl.model.injuries.Injury;
 
@@ -22,12 +22,12 @@ public interface PlayerService {
     List<Player> getPlayers(List<String> playerIds);
 
     /**
-     * Gets the players since date.
+     * Gets the player updates since a given date.
      *
-     * @param calendar the calendar
-     * @return the players since date
+     * @param date the date after which the MFL player updates will be reported
+     * @return the players updated in MF since the provided date
      */
-    List<Player> getPlayersSinceDate(Calendar calendar);
+    List<Player> getPlayersSinceDate(DateTime date);
 
     /**
      * Gets the all players.

@@ -1,10 +1,11 @@
 package org.tiltedwindmills.fantasy.mfl.services.impl;
 
+import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.nullValue;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.fail;
 import static org.tiltedwindmills.fantasy.mfl.RetrofitUtils.getDummyHttpError;
 
@@ -20,6 +21,7 @@ import mockit.Capturing;
 import mockit.NonStrictExpectations;
 import mockit.Verifications;
 
+import org.joda.time.DateTime;
 import org.junit.Test;
 import org.tiltedwindmills.fantasy.mfl.JsonDataConverter;
 import org.tiltedwindmills.fantasy.mfl.model.Player;
@@ -35,9 +37,9 @@ import org.tiltedwindmills.fantasy.mfl.model.players.PlayerStatusWrapper;
 import org.tiltedwindmills.fantasy.mfl.services.PlayerService;
 import org.tiltedwindmills.fantasy.mfl.services.exception.MFLServiceException;
 
-import com.google.common.collect.ImmutableSet;
-
 import retrofit.RetrofitError;
+
+import com.google.common.collect.ImmutableSet;
 
 /**
  * Tests for {@link org.tiltedwindmills.fantasy.mfl.services.impl.JsonPlayerServiceImpl}.
@@ -51,6 +53,7 @@ public class JsonPlayerServiceImplTest {
     // constants
     private static final int RANDOM_LEAGUE_ID = 11111;
     private static final String RANDOM_SERVER_ID = "1";
+    private static final DateTime MOCK_DATE_PARAM = DateTime.now();
 
     // mock any implementers of the Retrofit interface
     @Capturing private MflPlayerExport mflPlayerExport;
@@ -181,6 +184,135 @@ public class JsonPlayerServiceImplTest {
             assertThat(e.getMessage(), is("Invalid response retrieving players with IDs : [1234, 5678]"));
         }
     }
+
+    /*------------------------------------------- getPlayersSinceDate --------------------------------------------*/
+
+    @Test
+    public void getPlayersSinceDateTest() {
+
+        new NonStrictExpectations() {{
+            mflPlayerExport.getAllPlayersSince(anyString, anyInt);
+                    returns(JsonDataConverter.players("player-updates-with-timestamp"));
+        }};
+
+        PlayerService playerService = new JsonPlayerServiceImpl();
+        List<Player> players = playerService.getPlayersSinceDate(MOCK_DATE_PARAM);
+
+        assertThat(players, is(not(nullValue())));
+        assertThat(players.size(), is(4));
+        assertThat(players.get(0), is(not(nullValue())));
+        assertThat(players.get(0).getName(), is("Johnson, Chris"));
+        assertThat(players.get(0).getTeam(), is("FA*"));
+    }
+
+    @Test
+    public void getPlayersSinceDateTest_NoResults() {
+
+        new NonStrictExpectations() {{
+            mflPlayerExport.getAllPlayersSince(anyString, anyInt);
+                    returns(JsonDataConverter.players("player-updates-with-timestamp-error"));
+        }};
+
+        PlayerService playerService = new JsonPlayerServiceImpl();
+        List<Player> players = playerService.getPlayersSinceDate(MOCK_DATE_PARAM);
+
+        assertThat(players, is(not(nullValue())));
+        assertThat(players.size(), is(0));
+    }
+
+    @Test
+    public void getPlayersSinceDateTest_NullDate() {
+
+        try {
+            PlayerService playerService = new JsonPlayerServiceImpl();
+            playerService.getPlayersSinceDate(null);
+            fail("should have thrown exception");
+
+        } catch (MFLServiceException e) {
+            // expected
+            assertThat(e.getMessage(), is("null is an invalid date for MFL player requests"));
+        }
+
+        new Verifications() {{
+            // Verify no calls to the service API occurred
+            mflPlayerExport.getAllPlayersSince(anyString, anyInt); times = 0;
+        }};
+    }
+
+    @Test
+    public void getPlayersSinceDateTest_FutureDate() {
+
+        try {
+            PlayerService playerService = new JsonPlayerServiceImpl();
+            playerService.getPlayersSinceDate(MOCK_DATE_PARAM.plusMinutes(1));
+            fail("should have thrown exception");
+
+        } catch (MFLServiceException e) {
+            // expected
+            assertThat(e.getMessage(), containsString(" is an invalid date for MFL player requests"));
+        }
+
+        new Verifications() {{
+            // Verify no calls to the service API occurred
+            mflPlayerExport.getAllPlayersSince(anyString, anyInt); times = 0;
+        }};
+    }
+
+    @Test
+    public void getPlayersSinceDateTest_HttpError() {
+
+        new NonStrictExpectations() {{
+            mflPlayerExport.getAllPlayersSince(anyString, anyInt); result = getDummyHttpError();
+        }};
+
+        try {
+            PlayerService playerService = new JsonPlayerServiceImpl();
+            playerService.getPlayersSinceDate(MOCK_DATE_PARAM);
+            fail("should have thrown exception.");
+
+        } catch (MFLServiceException e) {
+            // expected behavior.  Confirm root cause is propagated.
+            assertThat(e.getCause(), instanceOf(RetrofitError.class));
+            assertThat(e.getMessage(), containsString("Error retrieving player updates after "));
+        }
+    }
+
+    @Test
+    public void getPlayersSinceDateTest_NullResponse() {
+
+        new NonStrictExpectations() {{
+            mflPlayerExport.getAllPlayersSince(anyString, anyInt); returns(null);
+        }};
+
+        try {
+            PlayerService playerService = new JsonPlayerServiceImpl();
+            playerService.getPlayersSinceDate(MOCK_DATE_PARAM);
+            fail("should have thrown exception.");
+
+        } catch (MFLServiceException e) {
+            // expected behavior.  Confirm root cause is propagated.
+            assertThat(e.getMessage(), containsString("Invalid response retrieving player update after : "));
+        }
+    }
+
+    @Test
+    public void getPlayersSinceDateTest_NullWrapper() {
+
+        new NonStrictExpectations() {{
+            mflPlayerExport.getAllPlayersSince(anyString, anyInt); returns(new PlayerResponse());
+        }};
+
+        try {
+            PlayerService playerService = new JsonPlayerServiceImpl();
+            playerService.getPlayersSinceDate(MOCK_DATE_PARAM);
+            fail("should have thrown exception.");
+
+        } catch (MFLServiceException e) {
+            // expected behavior.  Confirm root cause is propagated.
+            assertThat(e.getMessage(), containsString("Invalid response retrieving player update after : "));
+        }
+    }
+
 
     /*----------------------------------------------- getAllPlayers ----------------------------------------------*/
 

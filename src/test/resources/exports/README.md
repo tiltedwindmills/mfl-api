@@ -18,4 +18,7 @@ injuries/injuries.json -> http://football.myfantasyleague.com/2015/export?TYPE=i
 * playerScores/multi-player-average.json -> http://football16.myfantasyleague.com/2014/export?TYPE=playerScores&L=71210&PLAYERS=10695,11192&W=AVG&JSON=1
 * playerScores/multi-player-year-to-date.json -> http://football16.myfantasyleague.com/2014/export?TYPE=playerScores&L=71210&PLAYERS=10695,11192&W=YTD&JSON=1
 * playerScores/multi-player-average-before-season-starts.json - http://football7.myfantasyleague.com/2015/export?TYPE=playerScores&L=71210&PLAYERS=10695,11192&W=AVG&JSON=1
-* playerScores/multi-player-year-to-date-before-season-starts.json - http://football7.myfantasyleague.com/2015/export?TYPE=playerScores&L=71210&PLAYERS=10695,11192&W=YTD&JSON=1
+* playerScores/multi-player-year-to-date-before-season-starts.json - http://football7.myfantasyleague.com/201**5**/export?TYPE=playerScores&L=71210&PLAYERS=10695,11192&W=YTD&JSON=1
+
+* players/player-updates-with-timestamp.json -> http://football.myfantasyleague.com/2015/export?TYPE=players&SINCE=1437000000&JSON=1  ( export taken 7/25/2015 )
+* players/player-updates-with-timestamp-error.json -> http://football.myfantasyleague.com/2015/export?TYPE=players&SINCE=3489000000&JSON=1
