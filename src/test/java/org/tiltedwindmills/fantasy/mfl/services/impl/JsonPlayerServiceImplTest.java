@@ -279,7 +279,7 @@ public class JsonPlayerServiceImplTest {
         }};
 
         PlayerService playerService = new JsonPlayerServiceImpl();
-        Map<Integer, Double> playerScoresMap = playerService.getWeeklyScores(RANDOM_LEAGUE_ID, 1234, "1", 2015);
+        Map<Integer, Double> playerScoresMap = playerService.getWeeklyScores(RANDOM_LEAGUE_ID, 1234, RANDOM_SERVER_ID, 2015);
 
         assertThat(playerScoresMap, is(not(nullValue())));
         assertThat(playerScoresMap.size(), is(16));
@@ -307,7 +307,7 @@ public class JsonPlayerServiceImplTest {
         }};
 
         PlayerService playerService = new JsonPlayerServiceImpl();
-        Map<Integer, Double> playerScoresMap = playerService.getWeeklyScores(RANDOM_LEAGUE_ID, 1234, "1", 2015);
+        Map<Integer, Double> playerScoresMap = playerService.getWeeklyScores(RANDOM_LEAGUE_ID, 1234, RANDOM_SERVER_ID, 2015);
 
         assertThat(playerScoresMap, is(not(nullValue())));
         assertThat(playerScoresMap.size(), is(13));
@@ -337,7 +337,7 @@ public class JsonPlayerServiceImplTest {
         }};
 
         PlayerService playerService = new JsonPlayerServiceImpl();
-        Map<Integer, Double> playerScoresMap = playerService.getWeeklyScores(RANDOM_LEAGUE_ID, 1234, "1", 2015);
+        Map<Integer, Double> playerScoresMap = playerService.getWeeklyScores(RANDOM_LEAGUE_ID, 1234, RANDOM_SERVER_ID, 2015);
 
         assertThat(playerScoresMap, is(not(nullValue())));
         assertThat(playerScoresMap.size(), is(16));
@@ -354,7 +354,7 @@ public class JsonPlayerServiceImplTest {
 
         try {
             PlayerService playerService = new JsonPlayerServiceImpl();
-            playerService.getWeeklyScores(RANDOM_LEAGUE_ID, -1, "1", 2015);
+            playerService.getWeeklyScores(RANDOM_LEAGUE_ID, -1, RANDOM_SERVER_ID, 2015);
             fail("should have thrown exception.");
 
         } catch (MFLServiceException e) {
@@ -371,7 +371,7 @@ public class JsonPlayerServiceImplTest {
     public void getWeeklyScoresTest_EarlyYear() {
 
         PlayerService playerService = new JsonPlayerServiceImpl();
-        playerService.getWeeklyScores(RANDOM_LEAGUE_ID, 1234, "1", 1979);
+        playerService.getWeeklyScores(RANDOM_LEAGUE_ID, 1234, RANDOM_SERVER_ID, 1979);
 
         new Verifications() {{
             // Verify no calls to the service API occurred
@@ -384,7 +384,7 @@ public class JsonPlayerServiceImplTest {
 
         PlayerService playerService = new JsonPlayerServiceImpl();
         int nextYear = Calendar.getInstance().get(Calendar.YEAR) + 1;
-        playerService.getWeeklyScores(RANDOM_LEAGUE_ID, 1234, "1", nextYear);
+        playerService.getWeeklyScores(RANDOM_LEAGUE_ID, 1234, RANDOM_SERVER_ID, nextYear);
 
         new Verifications() {{
             // Verify no calls to the service API occurred
@@ -401,7 +401,7 @@ public class JsonPlayerServiceImplTest {
 
         try {
             PlayerService playerService = new JsonPlayerServiceImpl();
-            playerService.getWeeklyScores(RANDOM_LEAGUE_ID, 1234, "1", 2015);
+            playerService.getWeeklyScores(RANDOM_LEAGUE_ID, 1234, RANDOM_SERVER_ID, 2015);
             fail("should have thrown exception.");
 
         } catch (MFLServiceException e) {
@@ -419,7 +419,7 @@ public class JsonPlayerServiceImplTest {
         }};
 
         PlayerService playerService = new JsonPlayerServiceImpl();
-        playerService.getWeeklyScores(RANDOM_LEAGUE_ID, 1234, "1", 2015);
+        playerService.getWeeklyScores(RANDOM_LEAGUE_ID, 1234, RANDOM_SERVER_ID, 2015);
     }
 
     @Test(expected = MFLServiceException.class)
@@ -430,7 +430,7 @@ public class JsonPlayerServiceImplTest {
         }};
 
         PlayerService playerService = new JsonPlayerServiceImpl();
-        playerService.getWeeklyScores(RANDOM_LEAGUE_ID, 1234, "1", 2015);
+        playerService.getWeeklyScores(RANDOM_LEAGUE_ID, 1234, RANDOM_SERVER_ID, 2015);
     }
 
     @Test
@@ -445,7 +445,7 @@ public class JsonPlayerServiceImplTest {
         }};
 
         PlayerService playerService = new JsonPlayerServiceImpl();
-        Map<Integer, Double> playerScoreMap = playerService.getWeeklyScores(RANDOM_LEAGUE_ID, 1234, "1", 2015);
+        Map<Integer, Double> playerScoreMap = playerService.getWeeklyScores(RANDOM_LEAGUE_ID, 1234, RANDOM_SERVER_ID, 2015);
 
         assertThat(playerScoreMap, is(not(nullValue())));
         assertThat(playerScoreMap.size(), is(0));
@@ -468,7 +468,7 @@ public class JsonPlayerServiceImplTest {
         }};
 
         PlayerService playerService = new JsonPlayerServiceImpl();
-        Map<Integer, Double> playerScoreMap = playerService.getWeeklyScores(RANDOM_LEAGUE_ID, 1234, "1", 2015);
+        Map<Integer, Double> playerScoreMap = playerService.getWeeklyScores(RANDOM_LEAGUE_ID, 1234, RANDOM_SERVER_ID, 2015);
 
         // make sure the null score didn't screw up the rest of the processing
         assertThat(playerScoreMap, is(not(nullValue())));
@@ -1009,7 +1009,7 @@ public class JsonPlayerServiceImplTest {
 
         PlayerService playerService = new JsonPlayerServiceImpl();
         Set<Integer> playerIds = ImmutableSet.<Integer> of(1234, 5678);
-        Map<Integer, String> playerAvailabilityMap = playerService.getPlayerAvailability(RANDOM_LEAGUE_ID, playerIds, "1", 2015);
+        Map<Integer, String> playerAvailabilityMap = playerService.getPlayerAvailability(RANDOM_LEAGUE_ID, playerIds, RANDOM_SERVER_ID, 2015);
 
         assertThat(playerAvailabilityMap, is(not(nullValue())));
         assertThat(playerAvailabilityMap.size(), is(4));
@@ -1031,7 +1031,7 @@ public class JsonPlayerServiceImplTest {
 
         PlayerService playerService = new JsonPlayerServiceImpl();
         Set<Integer> playerIds = ImmutableSet.<Integer> of(1234);
-        Map<Integer, String> playerAvailabilityMap = playerService.getPlayerAvailability(RANDOM_LEAGUE_ID, playerIds, "1", 2015);
+        Map<Integer, String> playerAvailabilityMap = playerService.getPlayerAvailability(RANDOM_LEAGUE_ID, playerIds, RANDOM_SERVER_ID, 2015);
 
         assertThat(playerAvailabilityMap, is(not(nullValue())));
         assertThat(playerAvailabilityMap.size(), is(1));
@@ -1051,7 +1051,7 @@ public class JsonPlayerServiceImplTest {
 
         try {
             Set<Integer> playerIds = ImmutableSet.<Integer> of(1234, 5678);
-            playerService.getPlayerAvailability(RANDOM_LEAGUE_ID, playerIds, "1", 2015);
+            playerService.getPlayerAvailability(RANDOM_LEAGUE_ID, playerIds, RANDOM_SERVER_ID, 2015);
             fail("should have thrown exception");
 
         } catch (MFLServiceException e) {
@@ -1064,7 +1064,7 @@ public class JsonPlayerServiceImplTest {
 
         try {
             PlayerService playerService = new JsonPlayerServiceImpl();
-            playerService.getPlayerAvailability(RANDOM_LEAGUE_ID, null, "1", 2015);
+            playerService.getPlayerAvailability(RANDOM_LEAGUE_ID, null, RANDOM_SERVER_ID, 2015);
 
             fail("should have thrown exception");
 
@@ -1083,7 +1083,7 @@ public class JsonPlayerServiceImplTest {
 
         try {
             PlayerService playerService = new JsonPlayerServiceImpl();
-            playerService.getPlayerAvailability(RANDOM_LEAGUE_ID, new HashSet<Integer>(), "1", 2015);
+            playerService.getPlayerAvailability(RANDOM_LEAGUE_ID, new HashSet<Integer>(), RANDOM_SERVER_ID, 2015);
             fail("should have thrown exception");
 
         } catch (MFLServiceException e) {
@@ -1102,7 +1102,7 @@ public class JsonPlayerServiceImplTest {
         try {
             PlayerService playerService = new JsonPlayerServiceImpl();
             Set<Integer> playerIds = new HashSet<Integer>(Arrays.asList(1234, null, 5678));
-            playerService.getPlayerAvailability(RANDOM_LEAGUE_ID, playerIds, "1", 2015);
+            playerService.getPlayerAvailability(RANDOM_LEAGUE_ID, playerIds, RANDOM_SERVER_ID, 2015);
             fail("should have thrown exception");
 
         } catch (MFLServiceException e) {
@@ -1121,7 +1121,7 @@ public class JsonPlayerServiceImplTest {
 
         PlayerService playerService = new JsonPlayerServiceImpl();
         Set<Integer> playerIds = ImmutableSet.<Integer> of(1234, 5678);
-        playerService.getPlayerAvailability(RANDOM_LEAGUE_ID, playerIds, "1", 1979);
+        playerService.getPlayerAvailability(RANDOM_LEAGUE_ID, playerIds, RANDOM_SERVER_ID, 1979);
 
         new Verifications() {{
             // Verify no calls to the service API occurred
@@ -1136,7 +1136,7 @@ public class JsonPlayerServiceImplTest {
         PlayerService playerService = new JsonPlayerServiceImpl();
         int nextYear = Calendar.getInstance().get(Calendar.YEAR) + 1;
         Set<Integer> playerIds = ImmutableSet.<Integer> of(1234, 5678);
-        playerService.getPlayerAvailability(RANDOM_LEAGUE_ID, playerIds, "1", nextYear);
+        playerService.getPlayerAvailability(RANDOM_LEAGUE_ID, playerIds, RANDOM_SERVER_ID, nextYear);
 
         new Verifications() {{
             // Verify no calls to the service API occurred
@@ -1154,7 +1154,7 @@ public class JsonPlayerServiceImplTest {
         try {
             PlayerService playerService = new JsonPlayerServiceImpl();
             Set<Integer> playerIds = ImmutableSet.<Integer> of(1234, 5678);
-            playerService.getPlayerAvailability(RANDOM_LEAGUE_ID, playerIds, "1", 2015);
+            playerService.getPlayerAvailability(RANDOM_LEAGUE_ID, playerIds, RANDOM_SERVER_ID, 2015);
             fail("should have thrown exception.");
 
         } catch (MFLServiceException e) {
@@ -1172,7 +1172,7 @@ public class JsonPlayerServiceImplTest {
 
         PlayerService playerService = new JsonPlayerServiceImpl();
         Set<Integer> playerIds = ImmutableSet.<Integer> of(1234, 5678);
-        playerService.getPlayerAvailability(RANDOM_LEAGUE_ID, playerIds, "1", 2015);
+        playerService.getPlayerAvailability(RANDOM_LEAGUE_ID, playerIds, RANDOM_SERVER_ID, 2015);
     }
 
     @Test
@@ -1185,7 +1185,7 @@ public class JsonPlayerServiceImplTest {
         // only send one player ID.
         PlayerService playerService = new JsonPlayerServiceImpl();
         Set<Integer> playerIds = ImmutableSet.<Integer> of(1234);
-        Map<Integer, String> playerAvailabilityMap = playerService.getPlayerAvailability(RANDOM_LEAGUE_ID, playerIds, "1", 2015);
+        Map<Integer, String> playerAvailabilityMap = playerService.getPlayerAvailability(RANDOM_LEAGUE_ID, playerIds, RANDOM_SERVER_ID, 2015);
 
         assertThat(playerAvailabilityMap, is(not(nullValue())));
         assertThat(playerAvailabilityMap.size(), is(0));
@@ -1201,7 +1201,7 @@ public class JsonPlayerServiceImplTest {
         // must send multiple player IDs to get the wrapper.
         PlayerService playerService = new JsonPlayerServiceImpl();
         Set<Integer> playerIds = ImmutableSet.<Integer> of(1234, 5678);
-        playerService.getPlayerAvailability(RANDOM_LEAGUE_ID, playerIds, "1", 2015);
+        playerService.getPlayerAvailability(RANDOM_LEAGUE_ID, playerIds, RANDOM_SERVER_ID, 2015);
     }
 
     @Test
@@ -1217,7 +1217,7 @@ public class JsonPlayerServiceImplTest {
         // send multiple player IDs
         PlayerService playerService = new JsonPlayerServiceImpl();
         Set<Integer> playerIds = ImmutableSet.<Integer> of(1234, 5678);
-        Map<Integer, String> playerAvailabilityMap = playerService.getPlayerAvailability(RANDOM_LEAGUE_ID, playerIds, "1", 2015);
+        Map<Integer, String> playerAvailabilityMap = playerService.getPlayerAvailability(RANDOM_LEAGUE_ID, playerIds, RANDOM_SERVER_ID, 2015);
 
         assertThat(playerAvailabilityMap, is(not(nullValue())));
         assertThat(playerAvailabilityMap.size(), is(0));
@@ -1241,7 +1241,7 @@ public class JsonPlayerServiceImplTest {
         // send multiple player IDs
         PlayerService playerService = new JsonPlayerServiceImpl();
         Set<Integer> playerIds = ImmutableSet.<Integer> of(1234, 5678);
-        Map<Integer, String> playerAvailabilityMap = playerService.getPlayerAvailability(RANDOM_LEAGUE_ID, playerIds, "1", 2015);
+        Map<Integer, String> playerAvailabilityMap = playerService.getPlayerAvailability(RANDOM_LEAGUE_ID, playerIds, RANDOM_SERVER_ID, 2015);
 
         // make sure the null status didn't screw up the rest of the processing
         assertThat(playerAvailabilityMap, is(not(nullValue())));
