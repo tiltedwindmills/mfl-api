@@ -92,5 +92,5 @@ public interface PlayerService {
      * @param year the MFL league year of the site being requested
      * @return the mapping of player ID to league availability status.
      */
-    Map<Integer, String> getPlayerAvailability(int leagueId, Set<String> playerIds, String serverId, int year);
+    Map<Integer, String> getPlayerAvailability(int leagueId, Set<Integer> playerIds, String serverId, int year);
 }

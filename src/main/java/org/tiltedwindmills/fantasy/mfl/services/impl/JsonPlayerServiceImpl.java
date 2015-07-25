@@ -299,26 +299,20 @@ public final class JsonPlayerServiceImpl extends AbstractJsonServiceImpl impleme
     /*
      * (non-Javadoc)
      *
-     * @see org.tiltedwindmills.fantasy.mfl.services.PlayerService#getPlayerStatus(int, java.util.List,
+     * @see org.tiltedwindmills.fantasy.mfl.services.PlayerService#getPlayerAvailability(int, java.util.Set,
      * java.lang.String, int)
      */
     @Override
-    public Map<Integer, String> getPlayerAvailability(final int leagueId, final Set<String> playerIds,
+    public Map<Integer, String> getPlayerAvailability(final int leagueId, final Set<Integer> playerIds,
             final String serverId, final int year) {
 
-        // TODO refactor to use validatePlayerIds() method and take a Set<Integer> for consistency
-
         validateLeagueId(leagueId, PLAYER_AVAILABILITY_SERVICE);
+        validatePlayerIds(playerIds);
         validateServerId(serverId, PLAYER_AVAILABILITY_SERVICE);
         validateYear(year, PLAYER_AVAILABILITY_SERVICE);
 
         // turn our list of player IDs into a comma separated string.
         final String playerIdsParameter = getPlayerIdParameterFromList(playerIds);
-
-        if (StringUtils.isBlank(playerIdsParameter)) {
-            LOG.warn("Invalid parameters for retrieving player status.  Found '{}' list.", playerIds);
-            throw new MFLServiceException("Cannot retrieve player status information without IDs.");
-        }
 
         try {
             final MflPlayerExport playerExport = getRestAdapter(serverId).create(MflPlayerExport.class);
