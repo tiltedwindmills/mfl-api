@@ -44,34 +44,39 @@ public interface PlayerService {
      * @param leagueId the league id
      * @param playerId the player id
      * @param serverId the server id
-     * @param currentYear the current year
+     * @param year the MFL league year of the site being requested
      * @return the player scores
      */
-    Map<Integer, Double> getWeeklyScores(int leagueId, int playerId, String serverId, int currentYear);
+    Map<Integer, Double> getWeeklyScores(int leagueId, int playerId, String serverId, int year);
 
 
     /**
-     * Gets multiple players scores.
+     * Retrieves a mapping of player IDs to their average scores.
      *
      * @param leagueId the league id
-     * @param playerIds the player ids
-     * @param week the week
+     * @param playerIds the IDs for the scoring players.
      * @param serverId the server id
-     * @param currentYear the current year
-     * @return the multiple players scores
+     * @param year the MFL league year of the site being requested
+     * @return the mapping of player IDs to their average scores
      */
-    // TODO : this seems screwy.
-    Map<Integer, Double> getMultiplePlayersScores(int leagueId,
-                                                List<Integer> playerIds,
-                                                String week,
-                                                String serverId,
-                                                int currentYear);
+    Map<Integer, Double> getAveragePlayerScores(int leagueId, Set<Integer> playerIds, String serverId, int year);
+
+    /**
+     * Retrieves a mapping of player IDs to their year to date scores.
+     *
+     * @param leagueId the league id
+     * @param playerIds the IDs for the scoring players.
+     * @param serverId the server id
+     * @param year the MFL league year of the site being requested
+     * @return the mapping of player IDs to their year to date scores
+     */
+    Map<Integer, Double> getYearToDatePlayerScores(int leagueId, Set<Integer> playerIds, String serverId, int year);
 
     /**
      * Gets the all injuries.
      *
      * @param week the week
-     * @param year the year
+     * @param year the MFL league year of the site being requested
      * @return the all injuries
      */
     List<Injury> getAllInjuries(int week, int year);

@@ -35,6 +35,8 @@ import org.tiltedwindmills.fantasy.mfl.model.players.PlayerStatusWrapper;
 import org.tiltedwindmills.fantasy.mfl.services.PlayerService;
 import org.tiltedwindmills.fantasy.mfl.services.exception.MFLServiceException;
 
+import com.google.common.collect.ImmutableSet;
+
 import retrofit.RetrofitError;
 
 /**
@@ -48,6 +50,7 @@ public class JsonPlayerServiceImplTest {
 
     // constants
     private static final int RANDOM_LEAGUE_ID = 11111;
+    private static final String RANDOM_SERVER_ID = "1";
 
     // mock any implementers of the Retrofit interface
     @Capturing private MflPlayerExport mflPlayerExport;
@@ -349,11 +352,6 @@ public class JsonPlayerServiceImplTest {
     @Test
     public void getWeeklyScoresTest_InvalidPlayerId() {
 
-        new NonStrictExpectations() {{
-            mflPlayerExport.getPlayerScores(anyInt, anyString, anyString, anyInt);
-                    returns(JsonDataConverter.playerScores("full-schedule"));
-        }};
-
         try {
             PlayerService playerService = new JsonPlayerServiceImpl();
             playerService.getWeeklyScores(RANDOM_LEAGUE_ID, -1, "1", 2015);
@@ -362,6 +360,11 @@ public class JsonPlayerServiceImplTest {
         } catch (MFLServiceException e) {
             assertThat(e.getMessage(), is("Cannot retrieve player score information without a valid ID."));
         }
+
+        new Verifications() {{
+            // Verify no calls to the service API occurred
+            mflPlayerExport.getPlayerScores(anyInt, anyString, anyString, anyInt); times = 0;
+        }};
     }
 
     @Test(expected = MFLServiceException.class)
@@ -471,6 +474,331 @@ public class JsonPlayerServiceImplTest {
         assertThat(playerScoreMap, is(not(nullValue())));
         assertThat(playerScoreMap.size(), is(1));
         assertThat(playerScoreMap.get(5), is(12.3));
+    }
+
+
+    /*------------------------------------------ getAveragePlayerScores ------------------------------------------*/
+
+    @Test
+    public void getAveragePlayerScoresTest() {
+
+        new NonStrictExpectations() {{
+            mflPlayerExport.getPlayerScores(anyInt, anyString, anyString, anyInt);
+                    returns(JsonDataConverter.playerScores("multi-player-average"));
+        }};
+
+        PlayerService playerService = new JsonPlayerServiceImpl();
+        Set<Integer> playerIds = ImmutableSet.<Integer> of(1234);
+        Map<Integer, Double> playerScoresMap = playerService.getAveragePlayerScores(RANDOM_LEAGUE_ID, playerIds, RANDOM_SERVER_ID, 2015);
+
+        assertThat(playerScoresMap, is(not(nullValue())));
+        assertThat(playerScoresMap.size(), is(2));
+
+        // andrew luck
+        assertThat(playerScoresMap.containsKey(10695), is(true));
+        assertThat(playerScoresMap.get(10695), is(27.109));
+
+        // lev bell
+        assertThat(playerScoresMap.containsKey(11192), is(true));
+        assertThat(playerScoresMap.get(11192), is(20.937));
+    }
+
+    @Test
+    public void getAveragePlayerScoresTest_InvalidPlayerId() {
+
+        try {
+            PlayerService playerService = new JsonPlayerServiceImpl();
+            Set<Integer> playerIds = ImmutableSet.<Integer> of(1234, -1, 5678);
+            playerService.getAveragePlayerScores(RANDOM_LEAGUE_ID, playerIds, RANDOM_SERVER_ID, 2015);
+            fail("should have thrown exception.");
+
+        } catch (MFLServiceException e) {
+            assertThat(e.getMessage(), is("Cannot retrieve player score information without a valid ID."));
+        }
+
+        new Verifications() {{
+            // Verify no calls to the service API occurred
+            mflPlayerExport.getPlayerScores(anyInt, anyString, anyString, anyInt); times = 0;
+        }};
+    }
+
+    @Test(expected = MFLServiceException.class)
+    public void getAveragePlayerScoresTest_EarlyYear() {
+
+        PlayerService playerService = new JsonPlayerServiceImpl();
+        Set<Integer> playerIds = ImmutableSet.<Integer> of(1234, 5678);
+        playerService.getAveragePlayerScores(RANDOM_LEAGUE_ID, playerIds, RANDOM_SERVER_ID, 1979);
+
+        new Verifications() {{
+            // Verify no calls to the service API occurred
+            mflPlayerExport.getPlayerScores(anyInt, anyString, anyString, anyInt); times = 0;
+        }};
+    }
+
+    public void getAveragePlayerScoresTest_FutureYear() {
+
+        PlayerService playerService = new JsonPlayerServiceImpl();
+        Set<Integer> playerIds = ImmutableSet.<Integer> of(1234, 5678);
+        int nextYear = Calendar.getInstance().get(Calendar.YEAR) + 1;
+        playerService.getAveragePlayerScores(RANDOM_LEAGUE_ID, playerIds, RANDOM_SERVER_ID, nextYear);
+
+        new Verifications() {{
+            // Verify no calls to the service API occurred
+            mflPlayerExport.getPlayerScores(anyInt, anyString, anyString, anyInt); times = 0;
+        }};
+    }
+
+    @Test
+    public void getAveragePlayerScoresTest_HttpError() {
+
+        new NonStrictExpectations() {{
+            mflPlayerExport.getPlayerScores(anyInt, anyString, anyString, anyInt); result = getDummyHttpError();
+        }};
+
+        try {
+            PlayerService playerService = new JsonPlayerServiceImpl();
+            Set<Integer> playerIds = ImmutableSet.<Integer> of(1234, 5678);
+            playerService.getAveragePlayerScores(RANDOM_LEAGUE_ID, playerIds, RANDOM_SERVER_ID, 2015);
+            fail("should have thrown exception.");
+
+        } catch (MFLServiceException e) {
+            // expected behavior.  Confirm root cause is propagated.
+            assertThat(e.getCause(), instanceOf(RetrofitError.class));
+            assertThat(e.getMessage(), is("Error retrieving player scoring data."));
+        }
+    }
+
+    @Test(expected = MFLServiceException.class)
+    public void getAveragePlayerScoresTest_NullResponse() {
+
+        new NonStrictExpectations() {{
+            mflPlayerExport.getPlayerScores(anyInt, anyString, anyString, anyInt); returns(null);
+        }};
+
+        PlayerService playerService = new JsonPlayerServiceImpl();
+        Set<Integer> playerIds = ImmutableSet.<Integer> of(1234, 5678);
+        playerService.getAveragePlayerScores(RANDOM_LEAGUE_ID, playerIds, RANDOM_SERVER_ID, 2015);
+    }
+
+    @Test(expected = MFLServiceException.class)
+    public void getAveragePlayerScoresTest_NullWrapper() {
+
+        new NonStrictExpectations() {{
+            mflPlayerExport.getPlayerScores(anyInt, anyString, anyString, anyInt); returns(new PlayerScoresResponse());
+        }};
+
+        PlayerService playerService = new JsonPlayerServiceImpl();
+        Set<Integer> playerIds = ImmutableSet.<Integer> of(1234, 5678);
+        playerService.getAveragePlayerScores(RANDOM_LEAGUE_ID, playerIds, RANDOM_SERVER_ID, 2015);
+    }
+
+    @Test
+    public void getAveragePlayerScoresTest_UnsetScoresList() {
+
+        new NonStrictExpectations() {{
+
+            PlayerScoresResponse playerScoresResponse = new PlayerScoresResponse();
+            playerScoresResponse.setWrapper(new PlayerScoresWrapper());  // no scores are set
+            playerScoresResponse.getWrapper().setPlayerScores(null);
+            mflPlayerExport.getPlayerScores(anyInt, anyString, anyString, anyInt); returns(playerScoresResponse);
+        }};
+
+        PlayerService playerService = new JsonPlayerServiceImpl();
+        Set<Integer> playerIds = ImmutableSet.<Integer> of(1234, 5678);
+        Map<Integer, Double> playerScoreMap =
+                playerService.getAveragePlayerScores(RANDOM_LEAGUE_ID, playerIds, RANDOM_SERVER_ID, 2015);
+
+        assertThat(playerScoreMap, is(not(nullValue())));
+        assertThat(playerScoreMap.size(), is(0));
+    }
+
+    @Test
+    public void getAveragePlayerScoresTest_NullEntryInScoresList() {
+
+        new NonStrictExpectations() {{
+
+            PlayerScore playerScore = new PlayerScore();
+            playerScore.setPlayerId(10695);
+            playerScore.setScore("12.3");
+            playerScore.setWeek("YTD");
+
+            PlayerScoresResponse playerScoresResponse = new PlayerScoresResponse();
+            playerScoresResponse.setWrapper(new PlayerScoresWrapper());
+            playerScoresResponse.getWrapper().setPlayerScores(Arrays.asList(null, playerScore));
+            mflPlayerExport.getPlayerScores(anyInt, anyString, anyString, anyInt); returns(playerScoresResponse);
+        }};
+
+        PlayerService playerService = new JsonPlayerServiceImpl();
+        Set<Integer> playerIds = ImmutableSet.<Integer> of(1234, 5678);
+        Map<Integer, Double> playerScoreMap =
+                playerService.getAveragePlayerScores(RANDOM_LEAGUE_ID, playerIds, RANDOM_SERVER_ID, 2015);
+
+        // make sure the null score didn't screw up the rest of the processing
+        assertThat(playerScoreMap, is(not(nullValue())));
+        assertThat(playerScoreMap.size(), is(1));
+        assertThat(playerScoreMap.get(10695), is(12.3));
+    }
+
+    /*---------------------------------------- getYearToDatePlayerScores ------------------------------------------*/
+
+    @Test
+    public void getYearToDatePlayerScoresTest() {
+
+        new NonStrictExpectations() {{
+            mflPlayerExport.getPlayerScores(anyInt, anyString, anyString, anyInt);
+                    returns(JsonDataConverter.playerScores("multi-player-year-to-date"));
+        }};
+
+        PlayerService playerService = new JsonPlayerServiceImpl();
+        Set<Integer> playerIds = ImmutableSet.<Integer> of(1234);
+        Map<Integer, Double> playerScoresMap = playerService.getYearToDatePlayerScores(RANDOM_LEAGUE_ID, playerIds, RANDOM_SERVER_ID, 2015);
+
+        assertThat(playerScoresMap, is(not(nullValue())));
+        assertThat(playerScoresMap.size(), is(2));
+
+        // andrew luck
+        assertThat(playerScoresMap.containsKey(10695), is(true));
+        assertThat(playerScoresMap.get(10695), is(433.74));
+
+        // lev bell
+        assertThat(playerScoresMap.containsKey(11192), is(true));
+        assertThat(playerScoresMap.get(11192), is(335.0));
+    }
+
+    @Test
+    public void getYearToDatePlayerScoresTest_InvalidPlayerId() {
+
+        try {
+            PlayerService playerService = new JsonPlayerServiceImpl();
+            Set<Integer> playerIds = ImmutableSet.<Integer> of(1234, -1, 5678);
+            playerService.getYearToDatePlayerScores(RANDOM_LEAGUE_ID, playerIds, RANDOM_SERVER_ID, 2015);
+            fail("should have thrown exception.");
+
+        } catch (MFLServiceException e) {
+            assertThat(e.getMessage(), is("Cannot retrieve player score information without a valid ID."));
+        }
+
+        new Verifications() {{
+            // Verify no calls to the service API occurred
+            mflPlayerExport.getPlayerScores(anyInt, anyString, anyString, anyInt); times = 0;
+        }};
+    }
+
+    @Test(expected = MFLServiceException.class)
+    public void getYearToDatePlayerScoresTest_EarlyYear() {
+
+        PlayerService playerService = new JsonPlayerServiceImpl();
+        Set<Integer> playerIds = ImmutableSet.<Integer> of(1234, 5678);
+        playerService.getYearToDatePlayerScores(RANDOM_LEAGUE_ID, playerIds, RANDOM_SERVER_ID, 1979);
+
+        new Verifications() {{
+            // Verify no calls to the service API occurred
+            mflPlayerExport.getPlayerScores(anyInt, anyString, anyString, anyInt); times = 0;
+        }};
+    }
+
+    public void getYearToDatePlayerScores_FutureYear() {
+
+        PlayerService playerService = new JsonPlayerServiceImpl();
+        Set<Integer> playerIds = ImmutableSet.<Integer> of(1234, 5678);
+        int nextYear = Calendar.getInstance().get(Calendar.YEAR) + 1;
+        playerService.getYearToDatePlayerScores(RANDOM_LEAGUE_ID, playerIds, RANDOM_SERVER_ID, nextYear);
+
+        new Verifications() {{
+            // Verify no calls to the service API occurred
+            mflPlayerExport.getPlayerScores(anyInt, anyString, anyString, anyInt); times = 0;
+        }};
+    }
+
+    @Test
+    public void getYearToDatePlayerScoresTest_HttpError() {
+
+        new NonStrictExpectations() {{
+            mflPlayerExport.getPlayerScores(anyInt, anyString, anyString, anyInt); result = getDummyHttpError();
+        }};
+
+        try {
+            PlayerService playerService = new JsonPlayerServiceImpl();
+            Set<Integer> playerIds = ImmutableSet.<Integer> of(1234, 5678);
+            playerService.getYearToDatePlayerScores(RANDOM_LEAGUE_ID, playerIds, RANDOM_SERVER_ID, 2015);
+            fail("should have thrown exception.");
+
+        } catch (MFLServiceException e) {
+            // expected behavior.  Confirm root cause is propagated.
+            assertThat(e.getCause(), instanceOf(RetrofitError.class));
+            assertThat(e.getMessage(), is("Error retrieving player scoring data."));
+        }
+    }
+
+    @Test(expected = MFLServiceException.class)
+    public void getYearToDatePlayerScoresTest_NullResponse() {
+
+        new NonStrictExpectations() {{
+            mflPlayerExport.getPlayerScores(anyInt, anyString, anyString, anyInt); returns(null);
+        }};
+
+        PlayerService playerService = new JsonPlayerServiceImpl();
+        Set<Integer> playerIds = ImmutableSet.<Integer> of(1234, 5678);
+        playerService.getYearToDatePlayerScores(RANDOM_LEAGUE_ID, playerIds, RANDOM_SERVER_ID, 2015);
+    }
+
+    @Test(expected = MFLServiceException.class)
+    public void getYearToDatePlayerScoresTest_NullWrapper() {
+
+        new NonStrictExpectations() {{
+            mflPlayerExport.getPlayerScores(anyInt, anyString, anyString, anyInt); returns(new PlayerScoresResponse());
+        }};
+
+        PlayerService playerService = new JsonPlayerServiceImpl();
+        Set<Integer> playerIds = ImmutableSet.<Integer> of(1234, 5678);
+        playerService.getYearToDatePlayerScores(RANDOM_LEAGUE_ID, playerIds, RANDOM_SERVER_ID, 2015);
+    }
+
+    @Test
+    public void getYearToDatePlayerScoresTest_UnsetScoresList() {
+
+        new NonStrictExpectations() {{
+
+            PlayerScoresResponse playerScoresResponse = new PlayerScoresResponse();
+            playerScoresResponse.setWrapper(new PlayerScoresWrapper());  // no scores are set
+            playerScoresResponse.getWrapper().setPlayerScores(null);
+            mflPlayerExport.getPlayerScores(anyInt, anyString, anyString, anyInt); returns(playerScoresResponse);
+        }};
+
+        PlayerService playerService = new JsonPlayerServiceImpl();
+        Set<Integer> playerIds = ImmutableSet.<Integer> of(1234, 5678);
+        Map<Integer, Double> playerScoreMap =
+                playerService.getYearToDatePlayerScores(RANDOM_LEAGUE_ID, playerIds, RANDOM_SERVER_ID, 2015);
+
+        assertThat(playerScoreMap, is(not(nullValue())));
+        assertThat(playerScoreMap.size(), is(0));
+    }
+
+    @Test
+    public void getYearToDatePlayerScoresTest_NullEntryInScoresList() {
+
+        new NonStrictExpectations() {{
+
+            PlayerScore playerScore = new PlayerScore();
+            playerScore.setPlayerId(10695);
+            playerScore.setScore("12.3");
+            playerScore.setWeek("YTD");
+
+            PlayerScoresResponse playerScoresResponse = new PlayerScoresResponse();
+            playerScoresResponse.setWrapper(new PlayerScoresWrapper());
+            playerScoresResponse.getWrapper().setPlayerScores(Arrays.asList(null, playerScore));
+            mflPlayerExport.getPlayerScores(anyInt, anyString, anyString, anyInt); returns(playerScoresResponse);
+        }};
+
+        PlayerService playerService = new JsonPlayerServiceImpl();
+        Set<Integer> playerIds = ImmutableSet.<Integer> of(1234, 5678);
+        Map<Integer, Double> playerScoreMap =
+                playerService.getYearToDatePlayerScores(RANDOM_LEAGUE_ID, playerIds, RANDOM_SERVER_ID, 2015);
+
+        // make sure the null score didn't screw up the rest of the processing
+        assertThat(playerScoreMap, is(not(nullValue())));
+        assertThat(playerScoreMap.size(), is(1));
+        assertThat(playerScoreMap.get(10695), is(12.3));
     }
 
 
