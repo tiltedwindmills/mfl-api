@@ -6,7 +6,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.tiltedwindmills.fantasy</groupId>
     <artifactId>mfl</artifactId>
-    <version>0.0.3</version>
+    <version>0.0.4-SNAPSHOT</version>
 
     <organization>
         <name>Tilted Windmills</name>
@@ -22,6 +22,24 @@
         <system>GitHub</system>
         <url>https://github.com/tiltedwindmills/mfl-api/issues</url>
     </issueManagement>
+
+    <distributionManagement>
+        <snapshotRepository>
+            <id>repo.tiltedwindmills.org</id>
+            <url>s3://repo.tiltedwindmills.org/snapshot</url>
+        </snapshotRepository>
+        <repository>
+            <id>repo.tiltedwindmills.org</id>
+            <url>s3://repo.tiltedwindmills.org/release</url>
+        </repository>
+    </distributionManagement>
+
+    <repositories>
+        <repository>
+            <id>repo.tiltedwindmills.org</id>
+            <url>s3://repo.tiltedwindmills.org/release</url>
+        </repository>
+    </repositories>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -295,6 +313,15 @@
             -->
 
         </plugins>
+
+        <extensions>
+            <extension>
+                <groupId>org.kuali.maven.wagons</groupId>
+                <artifactId>maven-s3-wagon</artifactId>
+                <version>1.2.1</version>
+            </extension>
+        </extensions>
+
     </build>
 
     <reporting>
