@@ -16,39 +16,39 @@ import retrofit.RetrofitError;
 @Service
 public final class JsonNFLServiceImpl extends AbstractJsonServiceImpl implements NFLService {
 
-	private static final Logger LOG = LoggerFactory.getLogger(JsonNFLServiceImpl.class);
+    private static final Logger LOG = LoggerFactory.getLogger(JsonNFLServiceImpl.class);
 
-	/** no need to be server specific about NFL schedule ops. */
-	private static final String SERVER_ID = "";
+    /** no need to be server specific about NFL schedule ops. */
+    private static final String SERVER_ID = "";
 
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see com.jwdaniel.services.NFLService#getNFLSchedule(int, int)
-	 */
-	@Override
-	public NFLSchedule getNFLSchedule(final int week, final int year) {
+    /*
+     * (non-Javadoc)
+     *
+     * @see com.jwdaniel.services.NFLService#getNFLSchedule(int, int)
+     */
+    @Override
+    public NFLSchedule getNFLSchedule(final int week, final int year) {
 
-		if (week <= 0 || year < FIRST_MFL_SUPPORTED_YEAR) {
-			throw new MFLServiceException("Invalid parameters for NFL Schedule request");
-		}
+        if (week <= 0 || year < FIRST_MFL_SUPPORTED_YEAR) {
+            throw new MFLServiceException("Invalid parameters for NFL Schedule request");
+        }
 
-		try {
+        try {
 
-			final MflNflExport nflExport = getRestAdapter(SERVER_ID).create(MflNflExport.class);
-			final NFLScheduleResponse nflScheduleResponse = nflExport.getNFLSchedule(week, year);
+            final MflNflExport nflExport = getRestAdapter(SERVER_ID).create(MflNflExport.class);
+            final NFLScheduleResponse nflScheduleResponse = nflExport.getNFLSchedule(week, year);
 
-			if (nflScheduleResponse == null) {
-				LOG.error("Invalid response retrieving NFL schedule for week {} & year {}.", week, year);
-				throw new MFLServiceException("Invalid response retrieving NFL schedule.");
+            if (nflScheduleResponse == null) {
+                LOG.error("Invalid response retrieving NFL schedule for week {} & year {}.", week, year);
+                throw new MFLServiceException("Invalid response retrieving NFL schedule.");
 
-			} else {
-				return nflScheduleResponse.getNflSchedule();
-			}
+            } else {
+                return nflScheduleResponse.getNflSchedule();
+            }
 
-		} catch (RetrofitError e) {
-			LOG.error("Error retrieving NFL schedule data: {}", e.getMessage());
-			throw new MFLServiceException("Error retrieving NFL schedule data", e);
-		}
-	}
+        } catch (RetrofitError e) {
+            LOG.error("Error retrieving NFL schedule data: {}", e.getMessage());
+            throw new MFLServiceException("Error retrieving NFL schedule data", e);
+        }
+    }
 }
