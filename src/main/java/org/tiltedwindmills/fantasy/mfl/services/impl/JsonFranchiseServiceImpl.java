@@ -3,7 +3,7 @@ package org.tiltedwindmills.fantasy.mfl.services.impl;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
-import org.tiltedwindmills.fantasy.mfl.model.rosters.RosterFranchise;
+import org.tiltedwindmills.fantasy.mfl.model.rosters.FranchiseRoster;
 import org.tiltedwindmills.fantasy.mfl.model.rosters.RostersResponse;
 import org.tiltedwindmills.fantasy.mfl.services.FranchiseService;
 
@@ -19,7 +19,7 @@ public final class JsonFranchiseServiceImpl extends AbstractJsonServiceImpl impl
      * @see com.jwdaniel.services.FranchiseService#getAllRosters(int, java.lang.String, int)
      */
     @Override
-    public List<RosterFranchise> getAllRosters(final int mflLeagueId, final String serverId, final int year) {
+    public List<FranchiseRoster> getAllRosters(final int mflLeagueId, final String serverId, final int year) {
 
         final MflFranchiseExport franchiseExport = getRestAdapter(serverId).create(MflFranchiseExport.class);
         final RostersResponse rostersResponse = franchiseExport.getRoster(mflLeagueId, null, year);
@@ -37,7 +37,7 @@ public final class JsonFranchiseServiceImpl extends AbstractJsonServiceImpl impl
      * @see com.jwdaniel.services.FranchiseService#getFranchiseRoster(java.lang.String, int, java.lang.String, int)
      */
     @Override
-    public RosterFranchise getFranchiseRoster(final String franchise,
+    public FranchiseRoster getFranchiseRoster(final String franchise,
                                             final int mflLeagueId,
                                             final String serverId,
                                             final int year) {

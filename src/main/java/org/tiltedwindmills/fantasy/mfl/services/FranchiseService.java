@@ -2,7 +2,7 @@ package org.tiltedwindmills.fantasy.mfl.services;
 
 import java.util.List;
 
-import org.tiltedwindmills.fantasy.mfl.model.rosters.RosterFranchise;
+import org.tiltedwindmills.fantasy.mfl.model.rosters.FranchiseRoster;
 
 /**
  * Interface defining operations required for working with MFL Franchise entities.
@@ -17,7 +17,7 @@ public interface FranchiseService {
 	 * @param year the year
 	 * @return the all rosters
 	 */
-	List<RosterFranchise> getAllRosters(int mflLeagueId, String serverId, int year);
+	List<FranchiseRoster> getAllRosters(int mflLeagueId, String serverId, int year);
 
 
 	/**
@@ -29,5 +29,5 @@ public interface FranchiseService {
 	 * @param year the year
 	 * @return the franchise roster
 	 */
-	RosterFranchise getFranchiseRoster(String franchise, int mflLeagueId, String serverId, int year);
+	FranchiseRoster getFranchiseRoster(String franchise, int mflLeagueId, String serverId, int year);
 }

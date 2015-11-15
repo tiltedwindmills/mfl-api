@@ -18,18 +18,18 @@ public class RostersWrapper extends AbstractObject {
 
 	/** The franchise list. */
 	@JsonProperty("franchise")
-	private List<RosterFranchise> franchiseList;
+	private List<FranchiseRoster> franchiseList;
 
 	/**
 	 * Gets the franchise list.
 	 *
 	 * @return the franchise list
 	 */
-	public final List<RosterFranchise> getFranchiseList() {
+	public final List<FranchiseRoster> getFranchiseList() {
 		return franchiseList;
 	}
 
-	public final void setFranchiseList(final List<RosterFranchise> franchiseList) {
+	public final void setFranchiseList(final List<FranchiseRoster> franchiseList) {
 		this.franchiseList = franchiseList;
 	}
 }
