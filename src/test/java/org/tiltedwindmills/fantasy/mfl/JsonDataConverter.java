@@ -12,6 +12,7 @@ import org.tiltedwindmills.fantasy.mfl.model.nflschedule.NFLScheduleResponse;
 import org.tiltedwindmills.fantasy.mfl.model.players.PlayerResponse;
 import org.tiltedwindmills.fantasy.mfl.model.players.PlayerScoresResponse;
 import org.tiltedwindmills.fantasy.mfl.model.players.PlayerStatusResponse;
+import org.tiltedwindmills.fantasy.mfl.model.weeklyresults.WeeklyResultsResponse;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -25,81 +26,91 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  */
 public class JsonDataConverter {
 
-	private static final Logger LOG = LoggerFactory.getLogger(JsonDataConverter.class);
+    private static final Logger LOG = LoggerFactory.getLogger(JsonDataConverter.class);
 
-	// our Jackson object mapper.
-	private static final ObjectMapper objectMapper = new ObjectMapper();
+    // our Jackson object mapper.
+    private static final ObjectMapper objectMapper = new ObjectMapper();
 
-	// initialize this as is done in Retrofit RestAdapter setup.
-	static {
-		objectMapper.enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY);
-		objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
-	}
+    // initialize this as is done in Retrofit RestAdapter setup.
+    static {
+        objectMapper.enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY);
+        objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+    }
 
-	/**
-	 * Gets the players from the given file in the "exports/players" directory.
-	 *
-	 * @param fileName the file name, without the ".json" extension
-	 * @return the player response
-	 */
-	public static final PlayerResponse players(final String fileName) {
-		return getResponse(fileName, "players", PlayerResponse.class);
-	}
+    /**
+     * Gets the players from the given file in the "exports/players" directory.
+     *
+     * @param fileName the file name, without the ".json" extension
+     * @return the player response
+     */
+    public static final PlayerResponse players(final String fileName) {
+        return getResponse(fileName, "players", PlayerResponse.class);
+    }
 
-	/**
-	 * Gets the scoring export from the given file in the "exports/playerScores" directory.
-	 *
-	 * @param fileName the file name
-	 * @return the player scores response
-	 */
-	public static final PlayerScoresResponse playerScores(final String fileName) {
-		return getResponse(fileName, "playerScores", PlayerScoresResponse.class);
-	}
+    /**
+     * Gets the scoring export from the given file in the "exports/playerScores" directory.
+     *
+     * @param fileName the file name
+     * @return the player scores response
+     */
+    public static final PlayerScoresResponse playerScores(final String fileName) {
+        return getResponse(fileName, "playerScores", PlayerScoresResponse.class);
+    }
 
-	/**
-	 * Gets the injury report from the given file in the "exports/injuries" directory.
-	 *
-	 * @param fileName the file name
-	 * @return the injuries response
-	 */
-	public static final InjuriesResponse injuries(final String fileName) {
-		return getResponse(fileName, "injuries", InjuriesResponse.class);
-	}
+    /**
+     * Gets the injury report from the given file in the "exports/injuries" directory.
+     *
+     * @param fileName the file name
+     * @return the injuries response
+     */
+    public static final InjuriesResponse injuries(final String fileName) {
+        return getResponse(fileName, "injuries", InjuriesResponse.class);
+    }
 
-	/**
-	 * Gets the players stat-uses/-i from the given file in the "exports/playerStatus" directory.
-	 *
-	 * @param fileName the file name
-	 * @return the player status response
-	 */
-	public static final PlayerStatusResponse playerStatus(final String fileName) {
-		return getResponse(fileName, "playerStatus", PlayerStatusResponse.class);
-	}
+    /**
+     * Gets the players stat-uses/-i from the given file in the "exports/playerStatus" directory.
+     *
+     * @param fileName the file name
+     * @return the player status response
+     */
+    public static final PlayerStatusResponse playerStatus(final String fileName) {
+        return getResponse(fileName, "playerStatus", PlayerStatusResponse.class);
+    }
 
-	/**
-	 * Gets the NFL schedule from the given file in the "exports/nflSchedule" directory.
-	 *
-	 * @param fileName the file name, without the ".json" extension
-	 * @return the NFL schedule response
-	 */
-	public static final NFLScheduleResponse nflSchedule(final String fileName) {
-		return getResponse(fileName, "nflSchedule", NFLScheduleResponse.class);
-	}
+    /**
+     * Gets the NFL schedule from the given file in the "exports/nflSchedule" directory.
+     *
+     * @param fileName the file name, without the ".json" extension
+     * @return the NFL schedule response
+     */
+    public static final NFLScheduleResponse nflSchedule(final String fileName) {
+        return getResponse(fileName, "nflSchedule", NFLScheduleResponse.class);
+    }
 
-	/** heavy lifting.  Read the appropriate file and return a response of the expected type */
-	private static <T> T getResponse(final String fileName, final String directory, final Class<T> returnType) {
+    /**
+     * Gets the final results from the given file in the "exports/weeklyResults" directory.
+     *
+     * @param fileName the file name, without the ".json" extension
+     * @return the weekly results response
+     */
+    public static final WeeklyResultsResponse weeklyResults(final String fileName) {
+        return getResponse(fileName, "weeklyResults", WeeklyResultsResponse.class);
+    }
 
-		try {
+    /** heavy lifting.  Read the appropriate file and return a response of the expected type */
+    private static <T> T getResponse(final String fileName, final String directory, final Class<T> returnType) {
 
-			final Resource resource = new ClassPathResource("exports/" + directory + "/" + fileName + ".json");
-			final InputStream resourceInputStream = resource.getInputStream();
+        try {
 
-			return objectMapper.readValue(resourceInputStream, returnType);
+            final Resource resource = new ClassPathResource("exports/" + directory + "/" + fileName + ".json");
+            final InputStream resourceInputStream = resource.getInputStream();
 
-		} catch (IOException e) {
-			LOG.error("Could not load data from 'exports/{}/{}.json: {}", directory, fileName, e.getMessage(), e);
-		}
+            return objectMapper.readValue(resourceInputStream, returnType);
 
-		return null;
-	}
+        } catch (IOException e) {
+            LOG.error("Could not load data from 'exports/{}/{}.json: {}", directory, fileName, e.getMessage(), e);
+        }
+
+        return null;
+    }
 }
