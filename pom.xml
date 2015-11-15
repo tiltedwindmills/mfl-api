@@ -6,7 +6,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.tiltedwindmills.fantasy</groupId>
     <artifactId>mfl</artifactId>
-    <version>0.0.3</version>
+    <version>0.0.4</version>
 
     <organization>
         <name>Tilted Windmills</name>
@@ -22,6 +22,17 @@
         <system>GitHub</system>
         <url>https://github.com/tiltedwindmills/mfl-api/issues</url>
     </issueManagement>
+
+    <distributionManagement>
+        <snapshotRepository>
+            <id>repo.tiltedwindmills.org</id>
+            <url>s3://repo.tiltedwindmills.org/snapshot</url>
+        </snapshotRepository>
+        <repository>
+            <id>repo.tiltedwindmills.org</id>
+            <url>s3://repo.tiltedwindmills.org/release</url>
+        </repository>
+    </distributionManagement>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -259,6 +270,7 @@
                 </executions>
             </plugin>
 
+
             <!-- Checkstyle configuration for 'mvn checkstyle:checkstyle' -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -294,7 +306,61 @@
             </plugin>
             -->
 
+            <!-- Create the source JAR -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <phase>deploy</phase>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <phase>deploy</phase>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                        <configuration>
+                            <quiet>true</quiet>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>deploy</id>
+                        <phase>deploy</phase>
+                        <goals>
+                            <goal>deploy</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
         </plugins>
+
+        <extensions>
+            <extension>
+                <groupId>org.springframework.build</groupId>
+                <artifactId>aws-maven</artifactId>
+                <version>5.0.0.RELEASE</version>
+            </extension>
+        </extensions>
+
     </build>
 
     <reporting>
@@ -388,7 +454,6 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
-                <version>2.10.3</version>
                 <configuration>
                     <quiet>true</quiet>
                 </configuration>

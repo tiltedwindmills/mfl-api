@@ -7,6 +7,7 @@ import org.tiltedwindmills.fantasy.mfl.model.draft.DraftPick;
 import org.tiltedwindmills.fantasy.mfl.model.leaguesearch.LeagueSearchResult;
 import org.tiltedwindmills.fantasy.mfl.model.livescoring.LiveScoringWrapper;
 import org.tiltedwindmills.fantasy.mfl.model.standings.Standings;
+import org.tiltedwindmills.fantasy.mfl.model.weeklyresults.WeeklyResultsWrapper;
 
 /**
  * Interface defining operations required for working with MFL League entities.
@@ -51,6 +52,10 @@ public interface LeagueService {
      * @return the live scoring
      */
     LiveScoringWrapper getLiveScoring(int mflLeagueId, int week, String serverId);
+
+
+
+    WeeklyResultsWrapper getWeeklyResults(int mflLeagueId, int week, String serverId, int year);
 
     /**
      * Gets the standings.
