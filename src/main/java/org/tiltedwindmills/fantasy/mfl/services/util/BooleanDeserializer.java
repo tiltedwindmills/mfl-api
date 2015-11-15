@@ -50,6 +50,7 @@ public final class BooleanDeserializer extends JsonDeserializer<Boolean> {
 
                 case "1":
                 case "W":
+                case "Yes":
                     return true;
 
                 default:
