@@ -22,3 +22,5 @@ injuries/injuries.json -> http://football.myfantasyleague.com/2015/export?TYPE=i
 
 * players/player-updates-with-timestamp.json -> http://football.myfantasyleague.com/2015/export?TYPE=players&SINCE=1437000000&JSON=1  ( export taken 7/25/2015 )
 * players/player-updates-with-timestamp-error.json -> http://football.myfantasyleague.com/2015/export?TYPE=players&SINCE=3489000000&JSON=1
+
+*league/league-with-franchise-password-provided.json -> view-source:http://football3.myfantasyleague.com/2015/export?TYPE=league&L=20428&W=&JSON=1&PASSWORD=?????&FRANCHISE=0001
