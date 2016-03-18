@@ -23,7 +23,7 @@ public abstract class AbstractJsonServiceImpl {
     private static final String SERVICE_REQUESTS = "' service requests";
 
     // TODO : fixme
-    protected static final int CURRENT_YEAR = 2015;
+    protected static final int CURRENT_YEAR = 2016;
     protected static final int FIRST_MFL_SUPPORTED_YEAR = 1980;
 
     /* TODO : make this spring bean? */
@@ -40,7 +40,7 @@ public abstract class AbstractJsonServiceImpl {
         objectMapper.enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY);
         objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
 
-        final String server = "http://football" + ServiceUtils.safeServerId(serverId) + ".myfantasyleague.com";
+        final String server = "http://www" + ServiceUtils.safeServerId(serverId) + ".myfantasyleague.com";
 
         // Note:  Setting LogLevel.FULL rather than BASIC will give response body.
         return new RestAdapter.Builder()
