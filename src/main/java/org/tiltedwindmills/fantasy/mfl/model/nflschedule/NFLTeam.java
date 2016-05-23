@@ -5,8 +5,8 @@ import org.tiltedwindmills.fantasy.mfl.model.AbstractObject;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
- * <team id="NOS" isHome="0" score="" rushDefenseRank="18" passDefenseRank="2" rushOffenseRank="24" passOffenseRank="2"
- * hasPossession="0" inRedZone="0" spread="2.5"/>
+ * {@code <team id="NOS" isHome="0" score="" rushDefenseRank="18" passDefenseRank="2" rushOffenseRank="24" passOffenseRank="2"
+ * hasPossession="0" inRedZone="0" spread="2.5"/> }
  */
 public class NFLTeam extends AbstractObject {
 

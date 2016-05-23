@@ -5,7 +5,7 @@ import org.tiltedwindmills.fantasy.mfl.model.AbstractObject;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
- * <player id="9448" score="21.80" gameSecondsRemaining="0" status="starter" updatedStats=""/>
+ * {@code <player id="9448" score="21.80" gameSecondsRemaining="0" status="starter" updatedStats=""/>}
  */
 public class PlayerScoringDetails extends AbstractObject {
 
