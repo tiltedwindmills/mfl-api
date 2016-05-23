@@ -18,7 +18,7 @@ public class DraftPick extends AbstractObject {
 
 	/** The player ID. */
 	@JsonProperty("player")
-	private int playerId;
+	private String playerId;
 
 	/** The round. */
 	private String round;
@@ -40,7 +40,7 @@ public class DraftPick extends AbstractObject {
 	 *
 	 * @return the player id
 	 */
-	public final int getPlayerId() {
+	public final String getPlayerId() {
 		return playerId;
 	}
 
@@ -49,7 +49,7 @@ public class DraftPick extends AbstractObject {
 	 *
 	 * @param playerId the new player id
 	 */
-	public final void setPlayerId(final int playerId) {
+	public final void setPlayerId(final String playerId) {
 		this.playerId = playerId;
 	}
 
