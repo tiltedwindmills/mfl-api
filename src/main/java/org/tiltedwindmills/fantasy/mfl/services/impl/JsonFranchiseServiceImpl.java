@@ -13,42 +13,44 @@ import org.tiltedwindmills.fantasy.mfl.services.FranchiseService;
 @Service
 public final class JsonFranchiseServiceImpl extends AbstractJsonServiceImpl implements FranchiseService {
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.jwdaniel.services.FranchiseService#getAllRosters(int, java.lang.String, int)
-     */
-    @Override
-    public List<FranchiseRoster> getAllRosters(final int mflLeagueId, final String serverId, final int year) {
+	/*
+	 * (non-Javadoc)
+	 *
+	 * @see com.jwdaniel.services.FranchiseService#getAllRosters(int, java.lang.String, int)
+	 */
+	@Override
+	public List<FranchiseRoster> getAllRosters(final int mflLeagueId, final String serverId, final int year) {
 
-        final MflFranchiseExport franchiseExport = getRestAdapter(serverId).create(MflFranchiseExport.class);
-        final RostersResponse rostersResponse = franchiseExport.getRoster(mflLeagueId, null, year);
+		final MflFranchiseExport franchiseExport = getRestAdapter(serverId).create(MflFranchiseExport.class);
+		final RostersResponse rostersResponse = franchiseExport.getRoster(mflLeagueId, null, year);
 
-        if (rostersResponse != null && rostersResponse.getWrapper() != null) {
-            return rostersResponse.getWrapper().getFranchiseList();
-        }
+		if (rostersResponse != null && rostersResponse.getWrapper() != null) {
+			return rostersResponse.getWrapper().getFranchiseList();
+		}
 
-        return null;
-    }
+		return null;
+	}
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.jwdaniel.services.FranchiseService#getFranchiseRoster(java.lang.String, int, java.lang.String, int)
-     */
-    @Override
-    public FranchiseRoster getFranchiseRoster(final String franchise,
-                                            final int mflLeagueId,
-                                            final String serverId,
-                                            final int year) {
+	/*
+	 * (non-Javadoc)
+	 *
+	 * @see com.jwdaniel.services.FranchiseService#getFranchiseRoster(java.lang.String, int, java.lang.String, int)
+	 */
+	@Override
+	public FranchiseRoster getFranchiseRoster(final String franchise,
+											final int mflLeagueId,
+											final String serverId,
+											final int year) {
 
-        final MflFranchiseExport franchiseExport = getRestAdapter(serverId).create(MflFranchiseExport.class);
-        final RostersResponse rostersResponse = franchiseExport.getRoster(mflLeagueId, franchise, year);
+		final MflFranchiseExport franchiseExport = getRestAdapter(serverId).create(MflFranchiseExport.class);
+		final RostersResponse rostersResponse = franchiseExport.getRoster(mflLeagueId, franchise, year);
 
-        if (rostersResponse != null && rostersResponse.getWrapper() != null) {
-            return rostersResponse.getWrapper().getFranchiseList().get(0);
-        }
+		if (rostersResponse != null && rostersResponse.getWrapper() != null) {
+			final FranchiseRoster franchiseRoster = rostersResponse.getWrapper().getFranchiseList().get(0);
+			franchiseRoster.setLeagueId(mflLeagueId);
+			return franchiseRoster;
+		}
 
-        return null;
-    }
+		return null;
+	}
 }

@@ -13,48 +13,69 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  */
 public class FranchiseRoster extends AbstractObject {
 
-    /** The Constant serialVersionUID. */
-    private static final long serialVersionUID = 6842083917847011225L;
+	/** The Constant serialVersionUID. */
+	private static final long serialVersionUID = 6842083917847011225L;
 
-    /** The franchise id. */
-    private String id;
+	/** The franchise id. */
+	private String id;
 
-    @JsonProperty("player")
-    private List<RosterPlayer> players;
+	/** The league id. */
+	private int leagueId;
 
-    /**
-     * Gets the franchise id.
-     *
-     * @return the franchise id
-     */
-    public final String getId() {
-        return id;
-    }
+	@JsonProperty("player")
+	private List<RosterPlayer> players;
 
-    /**
-     * Sets the franchise id.
-     *
-     * @param id the new franchise id
-     */
-    public final void setId(final String id) {
-        this.id = id;
-    }
+	/**
+	 * Gets the franchise id.
+	 *
+	 * @return the franchise id
+	 */
+	public final String getId() {
+		return id;
+	}
 
-    /**
-     * Gets the players.
-     *
-     * @return the players
-     */
-    public final List<RosterPlayer> getPlayers() {
-        return players;
-    }
+	/**
+	 * Sets the franchise id.
+	 *
+	 * @param id the new franchise id
+	 */
+	public final void setId(final String id) {
+		this.id = id;
+	}
 
-    /**
-     * Sets the players.
-     *
-     * @param players the new players
-     */
-    public final void setPlayers(final List<RosterPlayer> players) {
-        this.players = players;
-    }
+	/**
+	 * Gets the league id.
+	 *
+	 * @return the league id
+	 */
+	public int getLeagueId() {
+		return leagueId;
+	}
+
+	/**
+	 * Sets the league id.
+	 *
+	 * @param leagueId the new league id
+	 */
+	public void setLeagueId(int leagueId) {
+		this.leagueId = leagueId;
+	}
+
+	/**
+	 * Gets the players.
+	 *
+	 * @return the players
+	 */
+	public final List<RosterPlayer> getPlayers() {
+		return players;
+	}
+
+	/**
+	 * Sets the players.
+	 *
+	 * @param players the new players
+	 */
+	public final void setPlayers(final List<RosterPlayer> players) {
+		this.players = players;
+	}
 }
