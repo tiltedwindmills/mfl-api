@@ -24,7 +24,7 @@ public class Player extends AbstractObject {
 	private String name;
 
 	/** The id. */
-	private int id;
+	private String id;
 
 	/** The team. */
 	private String team;
@@ -91,7 +91,7 @@ public class Player extends AbstractObject {
 	 * @param team the team
 	 * @param position the position
 	 */
-	public Player(final String name, final int id, final String team, final Position position) {
+	public Player(final String name, final String id, final String team, final Position position) {
 
 		this.name = name;
 		this.id = id;
@@ -111,7 +111,7 @@ public class Player extends AbstractObject {
 
 		// jd - magic numbers related to specific conversion.  // TODO : use property value for kickoff date?
 		// CHECKSTYLE:OFF
-		final DateTime nflKickoff = new DateTime(2015,9,10,0,0);
+		final DateTime nflKickoff = new DateTime(2016,9,8,0,0);
 		return Years.yearsBetween(new DateTime(birthday * 1000), nflKickoff).getYears();
 		// CHECKSTYLE:ON
 	}
@@ -139,7 +139,7 @@ public class Player extends AbstractObject {
 	 *
 	 * @return the id
 	 */
-	public final int getId() {
+	public final String getId() {
 		return id;
 	}
 
@@ -148,7 +148,7 @@ public class Player extends AbstractObject {
 	 *
 	 * @param id the new id
 	 */
-	public final void setId(final int id) {
+	public final void setId(final String id) {
 		this.id = id;
 	}
 

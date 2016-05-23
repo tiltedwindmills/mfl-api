@@ -31,7 +31,7 @@ public class DraftTest {
 	public void getPicksTest_NoOverwrite() {
 
 		DraftPick pick = new DraftPick();
-		pick.setPlayerId(10695);
+		pick.setPlayerId("10695");
 
 		Draft draft = new Draft();
 		draft.setPicks(Arrays.asList(pick));
@@ -40,6 +40,6 @@ public class DraftTest {
 		assertThat(draft.getPicks(), is(not(nullValue())));
 		assertThat(draft.getPicks().size(), is(1));
 		assertThat(draft.getPicks().get(0), is(not(nullValue())));
-		assertThat(draft.getPicks().get(0).getPlayerId(), is(10695));
+		assertThat(draft.getPicks().get(0).getPlayerId(), is("10695"));
 	}
 }

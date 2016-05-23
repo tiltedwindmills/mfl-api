@@ -3,14 +3,17 @@ package org.tiltedwindmills.fantasy.mfl.model;
 import org.tiltedwindmills.fantasy.mfl.model.league.ConferenceArrayWrapper;
 import org.tiltedwindmills.fantasy.mfl.model.league.DivisionArrayWrapper;
 import org.tiltedwindmills.fantasy.mfl.model.league.LineupRequirement;
+import org.tiltedwindmills.fantasy.mfl.services.util.BooleanDeserializer;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class League.
+ *
+ * @author John Daniel
  */
 @JsonIgnoreProperties(ignoreUnknown=true)
 public class League extends AbstractObject {
@@ -33,7 +36,15 @@ public class League extends AbstractObject {
 	private String name;
 
 	/** The roster size. */
-	private String rosterSize;
+	private int rosterSize;
+
+	/** The injured reserve size. */
+	@JsonProperty("injuredReserve")
+	private int injuredReserveSize;
+
+	/** The taxi squad size. */
+	@JsonProperty("taxiSquad")
+	private int taxiSquadSize;
 
 	/** The head to head type. */
 	@JsonProperty("h2h")
@@ -61,6 +72,11 @@ public class League extends AbstractObject {
 	/** The end week. */
 	private int endWeek;
 
+	/** The lockout on. */
+	@JsonProperty("isHome")  // TODO : huh?
+	@JsonDeserialize(using = BooleanDeserializer.class)
+	private boolean lockoutOn;
+
 	/**
 	 * Gets the name.
 	 *
@@ -77,6 +93,42 @@ public class League extends AbstractObject {
 	 */
 	public final void setName(final String name) {
 		this.name = name;
+	}
+
+	/**
+	 * Gets the injured reserve size.
+	 *
+	 * @return the injured reserve size
+	 */
+	public final int getInjuredReserveSize() {
+		return injuredReserveSize;
+	}
+
+	/**
+	 * Sets the injured reserve size.
+	 *
+	 * @param injuredReserveSize the new injured reserve size
+	 */
+	public final void setInjuredReserveSize(final int injuredReserveSize) {
+		this.injuredReserveSize = injuredReserveSize;
+	}
+
+	/**
+	 * Gets the taxi squad size.
+	 *
+	 * @return the taxi squad size
+	 */
+	public final int getTaxiSquadSize() {
+		return taxiSquadSize;
+	}
+
+	/**
+	 * Sets the taxi squad size.
+	 *
+	 * @param taxiSquadSize the new taxi squad size
+	 */
+	public final void setTaxiSquadSize(final int taxiSquadSize) {
+		this.taxiSquadSize = taxiSquadSize;
 	}
 
 	/**
@@ -102,7 +154,7 @@ public class League extends AbstractObject {
 	 *
 	 * @return the roster size
 	 */
-	public final String getRosterSize() {
+	public final int getRosterSize() {
 		return rosterSize;
 	}
 
@@ -111,7 +163,7 @@ public class League extends AbstractObject {
 	 *
 	 * @param rosterSize the new roster size
 	 */
-	public final void setRosterSize(final String rosterSize) {
+	public final void setRosterSize(final int rosterSize) {
 		this.rosterSize = rosterSize;
 	}
 

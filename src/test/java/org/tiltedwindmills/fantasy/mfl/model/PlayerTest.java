@@ -19,10 +19,10 @@ public class PlayerTest {
 	@Test
 	public void parameterizedConstructorTest() {
 
-		Player player = new Player("a name", 9, "NOS", Position.QUARTERBACK);
+		Player player = new Player("a name", "9", "NOS", Position.QUARTERBACK);
 
 		assertThat(player.getName(), is("a name"));
-		assertThat(player.getId(), is(9));
+		assertThat(player.getId(), is("9"));
 		assertThat(player.getTeam(), is("NOS"));
 		assertThat(player.getPosition(), is(Position.QUARTERBACK));
 	}
@@ -39,15 +39,15 @@ public class PlayerTest {
 	@Test
 	public void hashCodeTest() {
 
-		Player player = new Player("a name", 9, "NOS", Position.QUARTERBACK);
+		Player player = new Player("a name", "9", "NOS", Position.QUARTERBACK);
 		assertThat(player.hashCode(), is(Objects.hashCode(9)));
 	}
 
 	@Test
 	public void equalsTest() {
 
-		Player player1 = new Player("a name", 9, "NOS", Position.QUARTERBACK);
-		Player player2 = new Player("a name", 9, "NOS", Position.QUARTERBACK);
+		Player player1 = new Player("a name", "9", "NOS", Position.QUARTERBACK);
+		Player player2 = new Player("a name", "9", "NOS", Position.QUARTERBACK);
 
 		assert(player1.equals(player2));
 	}
@@ -55,7 +55,7 @@ public class PlayerTest {
 	@Test
 	public void toStringTest() {
 
-		Player player = new Player("a name", 9, "NOS", Position.QUARTERBACK);
+		Player player = new Player("a name", "9", "NOS", Position.QUARTERBACK);
 		assertThat(player.toString(), is("QB a name, NOS"));
 	}
 
@@ -64,7 +64,7 @@ public class PlayerTest {
 
 		Player player = new Player();
 		player.setName("a name");
-		player.setId(9);
+		player.setId("9");
 		player.setTeam("NOS");
 
 		assertThat(player.getPosition(), is(nullValue()));
