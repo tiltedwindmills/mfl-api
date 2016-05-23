@@ -6,7 +6,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.tiltedwindmills.fantasy</groupId>
 	<artifactId>mfl</artifactId>
-	<version>0.0.5-SNAPSHOT</version>
+	<version>0.0.5</version>
 
 	<organization>
 		<name>Tilted Windmills</name>
@@ -34,20 +34,20 @@
 		</repository>
 	</distributionManagement>
 
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <jackson.version>2.7.4</jackson.version>
-        <slf4j.version>1.7.21</slf4j.version>
-        <spring.version>4.2.6.RELEASE</spring.version>
-        <retrofit.version>1.9.0</retrofit.version>
-        <guava.version>19.0</guava.version>
-        <junit.version>4.12</junit.version>
-        <jmockit.version>1.22</jmockit.version>
-        <checkstyle.version>2.15</checkstyle.version>
-        <checkstyle.configLocation>src/main/resources/checkstyle.xml</checkstyle.configLocation>
-        <checkstyle.suppressionsLocation>src/main/resources/checkstyle-suppression.xml</checkstyle.suppressionsLocation>
-        <!--<jacoco.version>0.7.4.201502262128</jacoco.version>-->
-    </properties>
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<jackson.version>2.7.4</jackson.version>
+		<slf4j.version>1.7.21</slf4j.version>
+		<spring.version>4.2.6.RELEASE</spring.version>
+		<retrofit.version>1.9.0</retrofit.version>
+		<guava.version>19.0</guava.version>
+		<junit.version>4.12</junit.version>
+		<jmockit.version>1.22</jmockit.version>
+		<checkstyle.version>2.15</checkstyle.version>
+		<checkstyle.configLocation>src/main/resources/checkstyle.xml</checkstyle.configLocation>
+		<checkstyle.suppressionsLocation>src/main/resources/checkstyle-suppression.xml</checkstyle.suppressionsLocation>
+		<!--<jacoco.version>0.7.4.201502262128</jacoco.version>-->
+	</properties>
 
 	<dependencies>
 
@@ -78,7 +78,7 @@
 		<dependency>
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava</artifactId>
-            <version>${guava.version}</version>
+			<version>${guava.version}</version>
 		</dependency>
 
 		<dependency>
@@ -153,7 +153,7 @@
 		<dependency>
 			<groupId>org.jmockit</groupId>
 			<artifactId>jmockit</artifactId>
-            <version>${jmockit.version}</version>
+			<version>${jmockit.version}</version>
 			<scope>test</scope>
 		</dependency>
 
@@ -242,7 +242,7 @@
 				<version>2.16</version>
 				<configuration>
 					<!-- $argLine param needed to let JaCoCo function with surefire.  Left here for when JaCoCo &
-						 code quality tools get their shit together. -->
+						code quality tools get their shit together. -->
 					<!-- <argLine>${argLine} -Dlog4j.configuration=log4j.properties</argLine> -->
 					<argLine>-Dlog4j.configuration=log4j.properties</argLine>
 					<systemPropertyVariables>
