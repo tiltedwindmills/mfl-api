@@ -18,314 +18,314 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 @JsonIgnoreProperties(ignoreUnknown=true)
 public class League extends AbstractObject {
 
-    /** The Constant serialVersionUID. */
-    private static final long serialVersionUID = -7991024525559402505L;
+	/** The Constant serialVersionUID. */
+	private static final long serialVersionUID = -7991024525559402505L;
 
-    /** The id. */
-    private int id;
+	/** The id. */
+	private int id;
 
-    /** The server id. */
-    @JsonIgnore
-    private int serverId;
+	/** The server id. */
+	@JsonIgnore
+	private int serverId;
 
-    /** The franchise id. */
-    @JsonIgnore
-    private String franchiseId;
+	/** The franchise id. */
+	@JsonIgnore
+	private String franchiseId;
 
-    /** The name. */
-    private String name;
+	/** The name. */
+	private String name;
 
-    /** The roster size. */
-    private int rosterSize;
+	/** The roster size. */
+	private int rosterSize;
 
-    /** The injured reserve size. */
-    @JsonProperty("injuredReserve")
-    private int injuredReserveSize;
+	/** The injured reserve size. */
+	@JsonProperty("injuredReserve")
+	private int injuredReserveSize;
 
-    /** The taxi squad size. */
-    @JsonProperty("taxiSquad")
-    private int taxiSquadSize;
+	/** The taxi squad size. */
+	@JsonProperty("taxiSquad")
+	private int taxiSquadSize;
 
-    /** The head to head type. */
-    @JsonProperty("h2h")
-    private H2HType headToHeadType;
+	/** The head to head type. */
+	@JsonProperty("h2h")
+	private H2HType headToHeadType;
 
-    /** The franchise list. */
-    @JsonProperty("franchises")
-    private FranchiseArrayWrapper franchiseList;
+	/** The franchise list. */
+	@JsonProperty("franchises")
+	private FranchiseArrayWrapper franchiseList;
 
-    /** The divisions list. */
-    @JsonProperty("divisions")
-    private DivisionArrayWrapper divisionList;
+	/** The divisions list. */
+	@JsonProperty("divisions")
+	private DivisionArrayWrapper divisionList;
 
-    /** The conference list. */
-    @JsonProperty("conferences")
-    private ConferenceArrayWrapper conferenceList;
+	/** The conference list. */
+	@JsonProperty("conferences")
+	private ConferenceArrayWrapper conferenceList;
 
-    /** The starting lineup requirements. */
-    @JsonProperty("starters")
-    private LineupRequirement lineupRequirements;
+	/** The starting lineup requirements. */
+	@JsonProperty("starters")
+	private LineupRequirement lineupRequirements;
 
-    /** The start week. */
-    private int startWeek;
+	/** The start week. */
+	private int startWeek;
 
-    /** The end week. */
-    private int endWeek;
+	/** The end week. */
+	private int endWeek;
 
-    /** The lockout on. */
-    @JsonProperty("isHome")
-    @JsonDeserialize(using = BooleanDeserializer.class)
-    private boolean lockoutOn;
+	/** The lockout on. */
+	@JsonProperty("isHome")  // TODO : huh?
+	@JsonDeserialize(using = BooleanDeserializer.class)
+	private boolean lockoutOn;
 
-    /**
-     * Gets the name.
-     *
-     * @return the name
-     */
-    public final String getName() {
-        return name;
-    }
+	/**
+	 * Gets the name.
+	 *
+	 * @return the name
+	 */
+	public final String getName() {
+		return name;
+	}
 
-    /**
-     * Sets the name.
-     *
-     * @param name the new name
-     */
-    public final void setName(final String name) {
-        this.name = name;
-    }
+	/**
+	 * Sets the name.
+	 *
+	 * @param name the new name
+	 */
+	public final void setName(final String name) {
+		this.name = name;
+	}
 
-    /**
-     * Gets the injured reserve size.
-     *
-     * @return the injured reserve size
-     */
-    public final int getInjuredReserveSize() {
-        return injuredReserveSize;
-    }
+	/**
+	 * Gets the injured reserve size.
+	 *
+	 * @return the injured reserve size
+	 */
+	public final int getInjuredReserveSize() {
+		return injuredReserveSize;
+	}
 
-    /**
-     * Sets the injured reserve size.
-     *
-     * @param injuredReserveSize the new injured reserve size
-     */
-    public final void setInjuredReserveSize(final int injuredReserveSize) {
-        this.injuredReserveSize = injuredReserveSize;
-    }
+	/**
+	 * Sets the injured reserve size.
+	 *
+	 * @param injuredReserveSize the new injured reserve size
+	 */
+	public final void setInjuredReserveSize(final int injuredReserveSize) {
+		this.injuredReserveSize = injuredReserveSize;
+	}
 
-    /**
-     * Gets the taxi squad size.
-     *
-     * @return the taxi squad size
-     */
-    public final int getTaxiSquadSize() {
-        return taxiSquadSize;
-    }
+	/**
+	 * Gets the taxi squad size.
+	 *
+	 * @return the taxi squad size
+	 */
+	public final int getTaxiSquadSize() {
+		return taxiSquadSize;
+	}
 
-    /**
-     * Sets the taxi squad size.
-     *
-     * @param taxiSquadSize the new taxi squad size
-     */
-    public final void setTaxiSquadSize(final int taxiSquadSize) {
-        this.taxiSquadSize = taxiSquadSize;
-    }
+	/**
+	 * Sets the taxi squad size.
+	 *
+	 * @param taxiSquadSize the new taxi squad size
+	 */
+	public final void setTaxiSquadSize(final int taxiSquadSize) {
+		this.taxiSquadSize = taxiSquadSize;
+	}
 
-    /**
-     * Gets the franchise list.
-     *
-     * @return the franchise list
-     */
-    public final FranchiseArrayWrapper getFranchiseList() {
-        return franchiseList;
-    }
+	/**
+	 * Gets the franchise list.
+	 *
+	 * @return the franchise list
+	 */
+	public final FranchiseArrayWrapper getFranchiseList() {
+		return franchiseList;
+	}
 
-    /**
-     * Sets the franchise list.
-     *
-     * @param franchiseList the new franchise list
-     */
-    public final void setFranchiseList(final FranchiseArrayWrapper franchiseList) {
-        this.franchiseList = franchiseList;
-    }
+	/**
+	 * Sets the franchise list.
+	 *
+	 * @param franchiseList the new franchise list
+	 */
+	public final void setFranchiseList(final FranchiseArrayWrapper franchiseList) {
+		this.franchiseList = franchiseList;
+	}
 
-    /**
-     * Gets the roster size.
-     *
-     * @return the roster size
-     */
-    public final int getRosterSize() {
-        return rosterSize;
-    }
+	/**
+	 * Gets the roster size.
+	 *
+	 * @return the roster size
+	 */
+	public final int getRosterSize() {
+		return rosterSize;
+	}
 
-    /**
-     * Sets the roster size.
-     *
-     * @param rosterSize the new roster size
-     */
-    public final void setRosterSize(final int rosterSize) {
-        this.rosterSize = rosterSize;
-    }
+	/**
+	 * Sets the roster size.
+	 *
+	 * @param rosterSize the new roster size
+	 */
+	public final void setRosterSize(final int rosterSize) {
+		this.rosterSize = rosterSize;
+	}
 
-    /**
-     * Gets the id.
-     *
-     * @return the id
-     */
-    public final int getId() {
-        return id;
-    }
+	/**
+	 * Gets the id.
+	 *
+	 * @return the id
+	 */
+	public final int getId() {
+		return id;
+	}
 
-    /**
-     * Sets the id.
-     *
-     * @param id the new id
-     */
-    public final void setId(final int id) {
-        this.id = id;
-    }
+	/**
+	 * Sets the id.
+	 *
+	 * @param id the new id
+	 */
+	public final void setId(final int id) {
+		this.id = id;
+	}
 
-    /**
-     * Gets the server id.
-     *
-     * @return the server id
-     */
-    public final int getServerId() {
-        return serverId;
-    }
+	/**
+	 * Gets the server id.
+	 *
+	 * @return the server id
+	 */
+	public final int getServerId() {
+		return serverId;
+	}
 
-    /**
-     * Sets the server id.
-     *
-     * @param serverId the new server id
-     */
-    public final void setServerId(final int serverId) {
-        this.serverId = serverId;
-    }
+	/**
+	 * Sets the server id.
+	 *
+	 * @param serverId the new server id
+	 */
+	public final void setServerId(final int serverId) {
+		this.serverId = serverId;
+	}
 
-    /**
-     * Gets the head to head type.
-     *
-     * @return the head to head type
-     */
-    public final H2HType getHeadToHeadType() {
-        return headToHeadType;
-    }
+	/**
+	 * Gets the head to head type.
+	 *
+	 * @return the head to head type
+	 */
+	public final H2HType getHeadToHeadType() {
+		return headToHeadType;
+	}
 
-    /**
-     * Sets the head to head type.
-     *
-     * @param headToHeadType the new head to head type
-     */
-    public final void setHeadToHeadType(final H2HType headToHeadType) {
-        this.headToHeadType = headToHeadType;
-    }
+	/**
+	 * Sets the head to head type.
+	 *
+	 * @param headToHeadType the new head to head type
+	 */
+	public final void setHeadToHeadType(final H2HType headToHeadType) {
+		this.headToHeadType = headToHeadType;
+	}
 
-    /**
-     * Gets the franchise id.
-     *
-     * @return the franchise id
-     */
-    public final String getFranchiseId() {
-        return franchiseId;
-    }
+	/**
+	 * Gets the franchise id.
+	 *
+	 * @return the franchise id
+	 */
+	public final String getFranchiseId() {
+		return franchiseId;
+	}
 
-    /**
-     * Sets the franchise id.
-     *
-     * @param franchiseId the new franchise id
-     */
-    public final void setFranchiseId(final String franchiseId) {
-        this.franchiseId = franchiseId;
-    }
+	/**
+	 * Sets the franchise id.
+	 *
+	 * @param franchiseId the new franchise id
+	 */
+	public final void setFranchiseId(final String franchiseId) {
+		this.franchiseId = franchiseId;
+	}
 
-    /**
-     * Gets the division list.
-     *
-     * @return the division list
-     */
-    public final DivisionArrayWrapper getDivisionList() {
-        return divisionList;
-    }
+	/**
+	 * Gets the division list.
+	 *
+	 * @return the division list
+	 */
+	public final DivisionArrayWrapper getDivisionList() {
+		return divisionList;
+	}
 
-    /**
-     * Sets the division list.
-     *
-     * @param divisionList the new division list
-     */
-    public final void setDivisionList(final DivisionArrayWrapper divisionList) {
-        this.divisionList = divisionList;
-    }
+	/**
+	 * Sets the division list.
+	 *
+	 * @param divisionList the new division list
+	 */
+	public final void setDivisionList(final DivisionArrayWrapper divisionList) {
+		this.divisionList = divisionList;
+	}
 
-    /**
-     * Gets the conference list.
-     *
-     * @return the conference list
-     */
-    public final ConferenceArrayWrapper getConferenceList() {
-        return conferenceList;
-    }
+	/**
+	 * Gets the conference list.
+	 *
+	 * @return the conference list
+	 */
+	public final ConferenceArrayWrapper getConferenceList() {
+		return conferenceList;
+	}
 
-    /**
-     * Sets the conference list.
-     *
-     * @param conferenceList the new conference list
-     */
-    public final void setConferenceList(final ConferenceArrayWrapper conferenceList) {
-        this.conferenceList = conferenceList;
-    }
+	/**
+	 * Sets the conference list.
+	 *
+	 * @param conferenceList the new conference list
+	 */
+	public final void setConferenceList(final ConferenceArrayWrapper conferenceList) {
+		this.conferenceList = conferenceList;
+	}
 
-    /**
-     * Gets the lineup requirements.
-     *
-     * @return the lineup requirements
-     */
-    public final LineupRequirement getLineupRequirements() {
-        return lineupRequirements;
-    }
+	/**
+	 * Gets the lineup requirements.
+	 *
+	 * @return the lineup requirements
+	 */
+	public final LineupRequirement getLineupRequirements() {
+		return lineupRequirements;
+	}
 
-    /**
-     * Sets the lineup requirements.
-     *
-     * @param lineupRequirements the new lineup requirements
-     */
-    public final void setLineupRequirements(final LineupRequirement lineupRequirements) {
-        this.lineupRequirements = lineupRequirements;
-    }
+	/**
+	 * Sets the lineup requirements.
+	 *
+	 * @param lineupRequirements the new lineup requirements
+	 */
+	public final void setLineupRequirements(final LineupRequirement lineupRequirements) {
+		this.lineupRequirements = lineupRequirements;
+	}
 
-    /**
-     * Gets the start week.
-     *
-     * @return the start week
-     */
-    public final int getStartWeek() {
-        return startWeek;
-    }
+	/**
+	 * Gets the start week.
+	 *
+	 * @return the start week
+	 */
+	public final int getStartWeek() {
+		return startWeek;
+	}
 
-    /**
-     * Sets the start week.
-     *
-     * @param startWeek the new start week
-     */
-    public final void setStartWeek(final int startWeek) {
-        this.startWeek = startWeek;
-    }
+	/**
+	 * Sets the start week.
+	 *
+	 * @param startWeek the new start week
+	 */
+	public final void setStartWeek(final int startWeek) {
+		this.startWeek = startWeek;
+	}
 
-    /**
-     * Gets the end week.
-     *
-     * @return the end week
-     */
-    public final int getEndWeek() {
-        return endWeek;
-    }
+	/**
+	 * Gets the end week.
+	 *
+	 * @return the end week
+	 */
+	public final int getEndWeek() {
+		return endWeek;
+	}
 
-    /**
-     * Sets the end week.
-     *
-     * @param endWeek the new end week
-     */
-    public final void setEndWeek(final int endWeek) {
-        this.endWeek = endWeek;
-    }
+	/**
+	 * Sets the end week.
+	 *
+	 * @param endWeek the new end week
+	 */
+	public final void setEndWeek(final int endWeek) {
+		this.endWeek = endWeek;
+	}
 }
