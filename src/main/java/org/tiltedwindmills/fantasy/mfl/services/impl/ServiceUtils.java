@@ -71,7 +71,7 @@ public final class ServiceUtils {
 	/**
 	 * Gets a string representation of the given calendar.
 	 *
-	 * @param dateTime the date & time to parse.
+	 * @param dateTime the date and time to parse.
 	 * @return the now
 	 */
 	public static String getStringForCalendar(final DateTime dateTime) {

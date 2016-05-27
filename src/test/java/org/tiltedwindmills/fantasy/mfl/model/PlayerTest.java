@@ -40,7 +40,7 @@ public class PlayerTest {
 	public void hashCodeTest() {
 
 		Player player = new Player("a name", "9", "NOS", Position.QUARTERBACK);
-		assertThat(player.hashCode(), is(Objects.hashCode(9)));
+		assertThat(player.hashCode(), is(Objects.hashCode("9")));
 	}
 
 	@Test
