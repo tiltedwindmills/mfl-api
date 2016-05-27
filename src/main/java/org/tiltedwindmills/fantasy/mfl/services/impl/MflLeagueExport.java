@@ -2,6 +2,7 @@ package org.tiltedwindmills.fantasy.mfl.services.impl;
 
 import org.tiltedwindmills.fantasy.mfl.model.LeagueResponse;
 import org.tiltedwindmills.fantasy.mfl.model.draft.DraftResultsResponse;
+import org.tiltedwindmills.fantasy.mfl.model.freeagents.FreeAgentsResponse;
 import org.tiltedwindmills.fantasy.mfl.model.leaguesearch.SearchLeagueResponse;
 import org.tiltedwindmills.fantasy.mfl.model.livescoring.LiveScoringResponse;
 import org.tiltedwindmills.fantasy.mfl.model.standings.StandingsResponse;
@@ -104,5 +105,11 @@ public interface MflLeagueExport {
 
 	@GET("/{year}/export?TYPE=draftResults&JSON=1")
 	DraftResultsResponse getDraftResults(@Query("L") int league, @Path("year") int year);
+
+	@GET("/{year}/export?TYPE=freeAgents&JSON=1")
+	FreeAgentsResponse getFreeAgents(@Query("L") int league, @Path("year") int year);
+
+	@GET("/{year}/export?TYPE=freeAgents&JSON=1")
+	FreeAgentsResponse getFreeAgentsByPosition(@Query("L") int league, @Query("POSITION") String position, @Path("year") int year);
 
 }

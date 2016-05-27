@@ -3,6 +3,7 @@ package org.tiltedwindmills.fantasy.mfl.services;
 import java.util.List;
 
 import org.tiltedwindmills.fantasy.mfl.model.League;
+import org.tiltedwindmills.fantasy.mfl.model.Position;
 import org.tiltedwindmills.fantasy.mfl.model.draft.DraftPick;
 import org.tiltedwindmills.fantasy.mfl.model.leaguesearch.LeagueSearchResult;
 import org.tiltedwindmills.fantasy.mfl.model.livescoring.LiveScoringWrapper;
@@ -77,4 +78,26 @@ public interface LeagueService {
 	 * @return the draft picks
 	 */
 	List<DraftPick> getDraftPicks(int mflLeagueId, String serverId, int year);
+
+
+	/**
+	 * Gets a list of free agent player IDs.
+	 *
+	 * @param mflLeagueId the mfl league id
+	 * @param serverId the server id
+	 * @param year the year
+	 * @return the free agents
+	 */
+	List<String> getFreeAgents(int mflLeagueId, String serverId, int year);
+
+	/**
+	 * Gets a list of free agent player IDs, filtered by the given Position.
+	 *
+	 * @param position the position
+	 * @param mflLeagueId the mfl league id
+	 * @param serverId the server id
+	 * @param year the year
+	 * @return the free agents
+	 */
+	List<String> getFreeAgents(Position position, int mflLeagueId, String serverId, int year);
 }
