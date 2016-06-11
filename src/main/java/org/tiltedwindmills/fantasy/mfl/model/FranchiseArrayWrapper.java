@@ -28,7 +28,7 @@ public class FranchiseArrayWrapper extends AbstractObject {
 	 */
 	public final List<Franchise> getFranchises() {
 		if (franchises == null) {
-			franchises = new ArrayList<Franchise>();
+			franchises = new ArrayList<>();
 		}
 		return franchises;
 	}

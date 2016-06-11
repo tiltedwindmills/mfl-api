@@ -30,7 +30,7 @@ public class Draft extends AbstractObject {
 	public final List<DraftPick> getPicks() {
 
 		if (picks == null) {
-			picks = new ArrayList<DraftPick>();
+			picks = new ArrayList<>();
 		}
 
 		return picks;

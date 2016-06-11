@@ -33,7 +33,7 @@ public class InjuriesWrapper extends AbstractObject {
 	public final List<Injury> getInjuries() {
 
 		if (injuries == null) {
-			injuries = new ArrayList<Injury>();
+			injuries = new ArrayList<>();
 		}
 
 		return injuries;
