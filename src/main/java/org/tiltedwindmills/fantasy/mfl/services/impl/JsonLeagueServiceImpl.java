@@ -1,15 +1,19 @@
 package org.tiltedwindmills.fantasy.mfl.services.impl;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 import org.tiltedwindmills.fantasy.mfl.model.League;
 import org.tiltedwindmills.fantasy.mfl.model.LeagueResponse;
+import org.tiltedwindmills.fantasy.mfl.model.Position;
 import org.tiltedwindmills.fantasy.mfl.model.draft.DraftPick;
 import org.tiltedwindmills.fantasy.mfl.model.draft.DraftResultsResponse;
+import org.tiltedwindmills.fantasy.mfl.model.freeagents.FreeAgentsResponse;
 import org.tiltedwindmills.fantasy.mfl.model.leaguesearch.LeagueSearchResult;
 import org.tiltedwindmills.fantasy.mfl.model.leaguesearch.LeagueSearchResultWrapper;
 import org.tiltedwindmills.fantasy.mfl.model.leaguesearch.SearchLeagueResponse;
@@ -191,5 +195,53 @@ public final class JsonLeagueServiceImpl extends AbstractJsonServiceImpl impleme
 		}
 
 		return null;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 *
+	 * @see
+	 * org.tiltedwindmills.fantasy.mfl.services.LeagueService#getFreeAgents(int,
+	 * java.lang.String, int)
+	 */
+	@Override
+	public List<String> getFreeAgents(int mflLeagueId, String serverId, int year) {
+
+		LOG.debug("Retrieving free agent IDs for {} league {}", year, mflLeagueId);
+
+		final MflLeagueExport leagueExport = getRestAdapter(serverId).create(MflLeagueExport.class);
+		final FreeAgentsResponse freeAgentsResponse = leagueExport.getFreeAgents(mflLeagueId, year);
+
+		if (freeAgentsResponse != null && !CollectionUtils.isEmpty(freeAgentsResponse.getPlayerIds())) {
+			return freeAgentsResponse.getPlayerIds();
+		}
+
+		return new ArrayList<>();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 *
+	 * @see
+	 * org.tiltedwindmills.fantasy.mfl.services.LeagueService#getFreeAgents(org.
+	 * tiltedwindmills.fantasy.mfl.model.Position, int, java.lang.String, int)
+	 */
+	@Override
+	public List<String> getFreeAgents(final Position position, final int mflLeagueId, final String serverId, final int year) {
+
+		LOG.debug("Retrieving {} free agent IDs for {} league {}", position, year, mflLeagueId);
+
+		if (position != null) {
+
+			final MflLeagueExport leagueExport = getRestAdapter(serverId).create(MflLeagueExport.class);
+			final FreeAgentsResponse freeAgentsResponse =
+					leagueExport.getFreeAgentsByPosition(mflLeagueId, position.getType(), year);
+
+			if (freeAgentsResponse != null && !CollectionUtils.isEmpty(freeAgentsResponse.getPlayerIds())) {
+				return freeAgentsResponse.getPlayerIds();
+			}
+		}
+
+		return new ArrayList<>();
 	}
 }
